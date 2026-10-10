@@ -1,6 +1,1 @@
-@MovieTracker.API_HostAddress = http://localhost:5153
-
-GET {{MovieTracker.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
+@MovieTracker.API_HostAddress = https://localhost:7226
