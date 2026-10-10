@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MovieTracker.API/MovieTracker.API.csproj" />
+    <Project Path="src/MovieTracker.Core/MovieTracker.Core.csproj" />
+    <Project Path="src/MovieTracker.UI/MovieTracker.UI.csproj" />
+  </Folder>
+</Solution>
