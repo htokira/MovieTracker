@@ -25,3 +25,8 @@ obj/
 # Ignore all local history of files
 .history
 .ionide
+/.vs/MovieTracker.slnx
+/src/MovieTracker.API/MovieTracker.API.csproj.user
+/MovieTracker.Data/Migrations/20261010132741_InitialCreate.cs
+/src/MovieTracker.API/movietracker.db
+/.vs/ProjectEvaluation

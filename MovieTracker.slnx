@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="MovieTracker.Data/MovieTracker.Data.csproj" Id="b498aa1d-7962-424c-9b63-fb36ab7760a2" />
     <Project Path="src/MovieTracker.API/MovieTracker.API.csproj" />
     <Project Path="src/MovieTracker.Core/MovieTracker.Core.csproj" />
     <Project Path="src/MovieTracker.UI/MovieTracker.UI.csproj" />
