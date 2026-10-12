@@ -10,6 +10,10 @@ namespace MovieTracker.Data
         public MovieTrackerContext(DbContextOptions<MovieTrackerContext> options) : base(options) { }
 
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<Movie> Movies => Set<Movie>();
+        public DbSet<Genre> Genres => Set<Genre>();
+        public DbSet<Person> Persons => Set<Person>();
+        public DbSet<MoviePerson> MoviePersons => Set<MoviePerson>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -32,6 +36,9 @@ namespace MovieTracker.Data
                  .HasForeignKey(t => t.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
             });
+
+            builder.Entity<MoviePerson>()
+                .HasKey(mp => new { mp.MovieId, mp.PersonId, mp.Role });
         }
     }
 }
