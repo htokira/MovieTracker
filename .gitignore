@@ -20,6 +20,7 @@ obj/
 
 # Built Visual Studio Code Extensions
 *.vsix
+.vs/
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
@@ -30,3 +31,8 @@ obj/
 /MovieTracker.Data/Migrations/20261010132741_InitialCreate.cs
 /src/MovieTracker.API/movietracker.db
 /.vs/ProjectEvaluation
+MovieTracker.slnLaunch.user
+MovieTracker.UI.csproj.user
+movietracker.db-wal
+movietracker.db-shm
+*user

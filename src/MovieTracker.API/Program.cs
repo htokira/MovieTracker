@@ -49,6 +49,9 @@ builder.Services
         };
     });
 
+builder.Services.Configure<TmdbSettings>(builder.Configuration.GetSection("TmdbSettings"));
+builder.Services.AddHttpClient<ITmdbService, TmdbService>();
+
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddControllers();
