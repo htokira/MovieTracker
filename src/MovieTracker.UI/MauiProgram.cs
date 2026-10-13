@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using MovieTracker.UI.Services;
+using MovieTracker.UI.ViewModels;
 
 namespace MovieTracker.UI;
 
@@ -14,6 +16,11 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+
+		builder.Services.AddSingleton<HttpClient>();
+		builder.Services.AddSingleton<ApiService>();
+		builder.Services.AddTransient<MainViewModel>();
+		builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

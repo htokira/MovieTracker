@@ -17,6 +17,21 @@ namespace MovieTracker.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
 
+            modelBuilder.Entity("GenreMovie", b =>
+                {
+                    b.Property<int>("GenresId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MoviesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("GenresId", "MoviesId");
+
+                    b.HasIndex("MoviesId");
+
+                    b.ToTable("GenreMovie");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -143,6 +158,86 @@ namespace MovieTracker.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.Genre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Movie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MediaType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PosterUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("ReleaseYear")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Movies");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.MoviePerson", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("MovieId", "PersonId", "Role");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("MoviePersons");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Persons");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -257,6 +352,21 @@ namespace MovieTracker.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("GenreMovie", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("GenresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieTracker.Core.Models.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MoviesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -308,6 +418,25 @@ namespace MovieTracker.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.MoviePerson", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.Movie", "Movie")
+                        .WithMany("MoviePersons")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieTracker.Core.Models.Person", "Person")
+                        .WithMany("MoviePersons")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.RefreshToken", b =>
                 {
                     b.HasOne("MovieTracker.Core.Models.User", "User")
@@ -317,6 +446,16 @@ namespace MovieTracker.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Movie", b =>
+                {
+                    b.Navigation("MoviePersons");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Person", b =>
+                {
+                    b.Navigation("MoviePersons");
                 });
 #pragma warning restore 612, 618
         }
