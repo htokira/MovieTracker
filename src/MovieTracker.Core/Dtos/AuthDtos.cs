@@ -10,6 +10,13 @@ namespace MovieTracker.Core.Dtos
     [property: Required, MinLength(8), MaxLength(100)] string Password,
     [property: Required, StringLength(50, MinimumLength = 2)] string DisplayName);
 
+    public record LoginRequest(
+    [property: Required, EmailAddress] string Email,
+    [property: Required] string Password);
+
+    public record RefreshRequest(
+    [property: Required] string RefreshToken);
+
     public record AuthResponse(
         string AccessToken,
         DateTime AccessTokenExpiresAt,
