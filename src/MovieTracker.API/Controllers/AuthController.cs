@@ -48,6 +48,27 @@ namespace MovieTracker.API.Controllers
             return Ok(await IssueTokensAsync(user));
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
+        {
+            var user = await _users.FindByEmailAsync(request.Email.Trim());
+            if (user is null)
+                return InvalidCredentials();
+
+            if (await _users.IsLockedOutAsync(user))
+                return Problem(title: "Too many login tries, try again later.",
+                    statusCode: StatusCodes.Status423Locked);
+
+            if (!await _users.CheckPasswordAsync(user, request.Password))
+            {
+                await _users.AccessFailedAsync(user);
+                return InvalidCredentials();
+            }
+
+            await _users.ResetAccessFailedCountAsync(user);
+            return Ok(await IssueTokensAsync(user));
+        }
+
         private async Task<AuthResponse> IssueTokensAsync(User user)
         {
             var (accessToken, accessExpires) = _tokens.CreateAccessToken(user);
@@ -64,5 +85,7 @@ namespace MovieTracker.API.Controllers
 
             return new AuthResponse(accessToken, accessExpires, refreshToken);
         }
+
+        private ObjectResult InvalidCredentials() => Problem(title: "Wrong email or password.", statusCode: StatusCodes.Status401Unauthorized);
     }
 }
