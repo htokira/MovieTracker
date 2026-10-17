@@ -14,11 +14,11 @@ namespace MovieTracker.Core.Dtos
         DateTime CreatedAt);
 
     public record UpdateProfileRequest(
-        [property: Required, StringLength(50, MinimumLength = 2)] string DisplayName,
-        [property: MaxLength(500), Url] string? AvatarUrl,
-        [property: MaxLength(500)] string? Bio);
+        [Required, StringLength(50, MinimumLength = 2)] string DisplayName,
+        [MaxLength(500), Url] string? AvatarUrl,
+        [MaxLength(500)] string? Bio);
 
     public record ChangePasswordRequest(
-        [property: Required] string CurrentPassword,
-        [property: Required, MinLength(8), MaxLength(100)] string NewPassword);
+        [Required] string CurrentPassword,
+        [Required, MinLength(8), MaxLength(100)] string NewPassword);
 }
