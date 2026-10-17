@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MovieTracker.API.Services;
 using MovieTracker.API.Settings;
@@ -69,6 +70,46 @@ namespace MovieTracker.API.Controllers
             return Ok(await IssueTokensAsync(user));
         }
 
+        [HttpPost("refresh")]
+        public async Task<ActionResult<AuthResponse>> Refresh(RefreshRequest request)
+        {
+            var hash = _tokens.HashToken(request.RefreshToken);
+            var stored = await _db.RefreshTokens
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.TokenHash == hash);
+
+            if (stored is null)
+                return InvalidToken();
+
+            if (stored.RevokedAt is not null)
+            {
+                await RevokeAllForUserAsync(stored.UserId);
+                return InvalidToken();
+            }
+
+            if (!stored.IsActive)
+                return InvalidToken();
+
+            stored.RevokedAt = DateTime.UtcNow;
+            return Ok(await IssueTokensAsync(stored.User));
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(RefreshRequest request)
+        {
+            var hash = _tokens.HashToken(request.RefreshToken);
+            var stored = await _db.RefreshTokens
+                .FirstOrDefaultAsync(t => t.TokenHash == hash && t.RevokedAt == null);
+
+            if (stored is not null)
+            {
+                stored.RevokedAt = DateTime.UtcNow;
+                await _db.SaveChangesAsync();
+            }
+
+            return NoContent();
+        }
+
         private async Task<AuthResponse> IssueTokensAsync(User user)
         {
             var (accessToken, accessExpires) = _tokens.CreateAccessToken(user);
@@ -86,6 +127,17 @@ namespace MovieTracker.API.Controllers
             return new AuthResponse(accessToken, accessExpires, refreshToken);
         }
 
+        private async Task RevokeAllForUserAsync(Guid userId)
+        {
+            var active = await _db.RefreshTokens
+                .Where(t => t.UserId == userId && t.RevokedAt == null)
+                .ToListAsync();
+            foreach (var token in active)
+                token.RevokedAt = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+        }
+
         private ObjectResult InvalidCredentials() => Problem(title: "Wrong email or password.", statusCode: StatusCodes.Status401Unauthorized);
+        private ObjectResult InvalidToken() => Problem(title: "Invalid refresh token", statusCode: StatusCodes.Status401Unauthorized);
     }
 }
