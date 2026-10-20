@@ -1,1 +1,124 @@
 @MovieTracker.API_HostAddress = https://localhost:7226
+@host = https://localhost:7226
+@email = test@example.com
+@password = Test1234
+
+### 1. registration (200)
+# @name register
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}", "displayName": "Test User" }
+
+### 2. same email registration (400)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}", "displayName": "Test User" }
+
+### 3. weak password (400)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "weak@example.com", "password": "abc", "displayName": "Weak" }
+
+### 4.wrong password (401)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "WrongPass1" }
+
+### 5. correct password login (200)
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+### 6. profile no token (401)
+GET {{host}}/api/users/me
+
+### 7. profile with token (200)
+GET {{host}}/api/users/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 8. update user (200)
+PUT {{host}}/api/users/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "displayName": "New Name", "avatarUrl": null, "bio": "Hello" }
+
+### 9. wrong name (400)
+PUT {{host}}/api/users/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "displayName": "a", "avatarUrl": null, "bio": null }
+
+### 10. refresh token (200)
+# @name refresh1
+POST {{host}}/api/auth/refresh
+Content-Type: application/json
+
+{ "refreshToken": "{{login.response.body.$.refreshToken}}" }
+
+### 11. old refresh token again (401)
+POST {{host}}/api/auth/refresh
+Content-Type: application/json
+
+{ "refreshToken": "{{login.response.body.$.refreshToken}}" }
+
+### 12. login again
+# @name login2
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+### 13. logout (204)
+POST {{host}}/api/auth/logout
+Content-Type: application/json
+
+{ "refreshToken": "{{login2.response.body.$.refreshToken}}" }
+
+### 14. refresh after logout (401)
+POST {{host}}/api/auth/refresh
+Content-Type: application/json
+
+{ "refreshToken": "{{login2.response.body.$.refreshToken}}" }
+
+### 15. login then change password
+# @name login3
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+###
+POST {{host}}/api/users/me/change-password
+Authorization: Bearer {{login3.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "currentPassword": "{{password}}", "newPassword": "NewPass1234" }
+
+### 16. old password (401), new password (200)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+###
+# @name login4
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "NewPass1234" }
+
+### 17. delete user (204)
+DELETE {{host}}/api/users/me
+Authorization: Bearer {{login4.response.body.$.accessToken}}
+
+### 18. after deleting (401)
+GET {{host}}/api/users/me
+Authorization: Bearer {{login4.response.body.$.accessToken}}
