@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using MovieTracker.Core.Dtos;
-using MovieTracker.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MovieTracker.Core.Dtos;
+using MovieTracker.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
@@ -21,6 +22,16 @@ namespace MovieTracker.Tests.Services
         {
             var customFactory = factory.WithWebHostBuilder(builder =>
             {
+                builder.ConfigureAppConfiguration((context, configBuilder) =>
+                {
+                    configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
+                    {
+                        { "Jwt:Key", "PipelineplsWorkPipelineplsWorkPipelineplsWorkPipelinepls" },
+                        { "Jwt:Issuer", "TestIssuer" },
+                        { "Jwt:Audience", "TestAudience" }
+                    });
+                });
+
                 builder.ConfigureServices(services =>
                 {
                     services.RemoveAll(typeof(DbContextOptions<MovieTrackerContext>));
