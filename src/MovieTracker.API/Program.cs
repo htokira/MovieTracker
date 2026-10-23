@@ -59,11 +59,22 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<MovieTrackerContext>();
+
+    if (app.Environment.EnvironmentName == "Testing")
+    {
+        db.Database.EnsureCreated();
+    }
+    else
+    {
+        db.Database.Migrate();
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
-    using var scope = app.Services.CreateScope();
-    scope.ServiceProvider.GetRequiredService<MovieTrackerContext>().Database.Migrate();
-
     app.MapOpenApi();
 }
 

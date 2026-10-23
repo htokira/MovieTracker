@@ -20,6 +20,7 @@ jobs:
     - name: Build and Run Tests Directly
       run: dotnet run --project MovieTracker.Tests/MovieTracker.Tests.csproj --configuration Release
       env:
+        ASPNETCORE_ENVIRONMENT: "Testing"
         Jwt__Key: "IfthisworkworkIwillgencry6767yayhappyhappy"
         Jwt__Issuer: "TestIssuer"
         Jwt__Audience: "TestAudience"
