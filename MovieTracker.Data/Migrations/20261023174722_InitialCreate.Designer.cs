@@ -11,8 +11,8 @@ using MovieTracker.Data;
 namespace MovieTracker.Data.Migrations
 {
     [DbContext(typeof(MovieTrackerContext))]
-    [Migration("20261012093041_AddMovieCatalogue")]
-    partial class AddMovieCatalogue
+    [Migration("20261023174722_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
