@@ -17,5 +17,9 @@ jobs:
       with:
         dotnet-version: '10.0.x'
 
-    - name: Build and Run Tests
+    - name: Build and Run Tests Directly
       run: dotnet run --project MovieTracker.Tests/MovieTracker.Tests.csproj --configuration Release
+      env:
+        Jwt__Key: "IfthisworkworkIwillgencry6767yayhappyhappy"
+        Jwt__Issuer: "TestIssuer"
+        Jwt__Audience: "TestAudience"
