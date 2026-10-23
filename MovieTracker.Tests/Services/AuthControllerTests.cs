@@ -13,35 +13,13 @@ using System.Text;
 
 namespace MovieTracker.Tests.Services
 {
-    public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
+    public class AuthControllerTests : IClassFixture<TestWebApplicationFactory>
     {
         private readonly HttpClient _client;
 
-        public AuthControllerTests(WebApplicationFactory<Program> factory)
+        public AuthControllerTests(TestWebApplicationFactory factory)
         {
-            var customFactory = factory.WithWebHostBuilder(builder =>
-            { 
-                builder.ConfigureAppConfiguration((context, configBuilder) =>
-                {
-                    configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
-                    {
-                        { "Jwt:Key", "PipelineplsWorkPipelineplsWorkPipelineplsWorkPipelinepls" },
-                        { "Jwt:Issuer", "TestIssuer" },
-                        { "Jwt:Audience", "TestAudience" }
-                    });
-                });
-
-                builder.ConfigureServices(services =>
-                {
-                    services.RemoveAll(typeof(DbContextOptions<MovieTrackerContext>));
-                    services.AddDbContext<MovieTrackerContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("TestAuthDb");
-                    });
-                });
-            });
-
-            _client = customFactory.CreateClient();
+            _client = factory.CreateClient();
         }
 
         [Fact]
@@ -62,13 +40,20 @@ namespace MovieTracker.Tests.Services
         public async Task Login_WithValidData_ReturnsOkAndTokens()
         {
             var registerReq = new RegisterRequest("loginuser@example.com", "StrongPassword123!", "Jane");
-            await _client.PostAsJsonAsync("/api/auth/register", registerReq);
+            var registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerReq);
+
+            var registerBody = await registerResponse.Content.ReadAsStringAsync();
+
+            registerResponse.IsSuccessStatusCode.Should().BeTrue(
+                $"registration failed: {(int)registerResponse.StatusCode} {registerBody}");
 
             var loginReq = new LoginRequest("loginuser@example.com", "StrongPassword123!");
 
             var response = await _client.PostAsJsonAsync("/api/auth/login", loginReq);
 
-            response.IsSuccessStatusCode.Should().BeTrue();
+            var body = await response.Content.ReadAsStringAsync();
+
+            response.IsSuccessStatusCode.Should().BeTrue($"Login returned {(int)response.StatusCode} {response.StatusCode}. Body: {body}");
 
             var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
             result.Should().NotBeNull();
@@ -79,14 +64,24 @@ namespace MovieTracker.Tests.Services
         public async Task Refresh_WithValidToken_ReturnsNewTokens()
         {
             var registerReq = new RegisterRequest("refreshuser@example.com", "StrongPassword123!", "Refresh User");
-            var regRes = await _client.PostAsJsonAsync("/api/auth/register", registerReq);
+            var regRes = await _client.PostAsJsonAsync( "/api/auth/register", registerReq);
+
+            var regBody = await regRes.Content.ReadAsStringAsync();
+
+            regRes.IsSuccessStatusCode.Should().BeTrue(
+                $"registration failed: {(int)regRes.StatusCode} {regBody}");
+
             var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>();
+
+            tokens.Should().NotBeNull();
 
             var refreshReq = new RefreshRequest(tokens!.RefreshToken);
 
             var response = await _client.PostAsJsonAsync("/api/auth/refresh", refreshReq);
 
-            response.IsSuccessStatusCode.Should().BeTrue();
+            var body = await response.Content.ReadAsStringAsync();
+
+            response.IsSuccessStatusCode.Should().BeTrue($"Refresh returned {(int)response.StatusCode} {response.StatusCode}. Body: {body}");
             var newTokens = await response.Content.ReadFromJsonAsync<AuthResponse>();
             newTokens.Should().NotBeNull();
             newTokens!.AccessToken.Should().NotBeNullOrEmpty();

@@ -14,35 +14,13 @@ using System.Text;
 
 namespace MovieTracker.Tests.Services
 {
-    public class UsersControllerTests : IClassFixture<WebApplicationFactory<Program>>
+    public class UsersControllerTests : IClassFixture<TestWebApplicationFactory>
     {
         private readonly HttpClient _client;
 
-        public UsersControllerTests(WebApplicationFactory<Program> factory)
+        public UsersControllerTests(TestWebApplicationFactory factory)
         {
-            var customFactory = factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureAppConfiguration((context, configBuilder) =>
-                {
-                    configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
-                    {
-                        { "Jwt:Key", "PipelineplsWorkPipelineplsWorkPipelineplsWorkPipelinepls" },
-                        { "Jwt:Issuer", "TestIssuer" },
-                        { "Jwt:Audience", "TestAudience" }
-                    });
-                });
-
-                builder.ConfigureServices(services =>
-                {
-                    services.RemoveAll(typeof(DbContextOptions<MovieTrackerContext>));
-                    services.AddDbContext<MovieTrackerContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("TestUsersDb");
-                    });
-                });
-            });
-
-            _client = customFactory.CreateClient();
+            _client = factory.CreateClient();
         }
 
         private async Task AuthenticateClientAsync()
@@ -62,7 +40,9 @@ namespace MovieTracker.Tests.Services
 
             var response = await _client.GetAsync("/api/users/me");
 
-            response.IsSuccessStatusCode.Should().BeTrue();
+            var body = await response.Content.ReadAsStringAsync();
+
+            response.IsSuccessStatusCode.Should().BeTrue($"request returned {(int)response.StatusCode} {response.StatusCode}: {body}");
             var profile = await response.Content.ReadFromJsonAsync<UserProfileResponse>();
             profile.Should().NotBeNull();
             profile!.Email.Should().Contain("@example.com");
@@ -77,7 +57,9 @@ namespace MovieTracker.Tests.Services
 
             var response = await _client.PutAsJsonAsync("/api/users/me", updateReq);
 
-            response.IsSuccessStatusCode.Should().BeTrue();
+            var body = await response.Content.ReadAsStringAsync();
+
+            response.IsSuccessStatusCode.Should().BeTrue($"request returned {(int)response.StatusCode} {response.StatusCode}: {body}");
             var profile = await response.Content.ReadFromJsonAsync<UserProfileResponse>();
             profile.Should().NotBeNull();
             profile!.DisplayName.Should().Be("Updated Name");
