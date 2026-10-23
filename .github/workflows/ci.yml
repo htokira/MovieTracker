@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: '10.0.x'
 
-  - name: Restore dependencies
+    - name: Restore dependencies
       run: dotnet restore MovieTracker.Tests/MovieTracker.Tests.csproj
 
     - name: Build API and Tests
