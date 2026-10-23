@@ -24,4 +24,4 @@ jobs:
       run: dotnet build MovieTracker.Tests/MovieTracker.Tests.csproj --no-restore --configuration Release
 
     - name: Run Tests
-      run: dotnet test MovieTracker.Tests/MovieTracker.Tests.csproj --no-build --verbosity normal --configuration Release
+      run: dotnet test MovieTracker.Tests/MovieTracker.Tests.csproj --no-build --verbosity normal --configuration Release -p:TestingPlatformDotnetTestSupport=true
