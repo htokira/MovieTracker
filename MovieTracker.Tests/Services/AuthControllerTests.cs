@@ -63,5 +63,37 @@ namespace MovieTracker.Tests.Services
             result.Should().NotBeNull();
             result!.AccessToken.Should().NotBeNullOrEmpty();
         }
+
+        [Fact]
+        public async Task Refresh_WithValidToken_ReturnsNewTokens()
+        {
+            var registerReq = new RegisterRequest("refreshuser@example.com", "StrongPassword123!", "Refresh User");
+            var regRes = await _client.PostAsJsonAsync("/api/auth/register", registerReq);
+            var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>();
+
+            var refreshReq = new RefreshRequest(tokens!.RefreshToken);
+
+            var response = await _client.PostAsJsonAsync("/api/auth/refresh", refreshReq);
+
+            response.IsSuccessStatusCode.Should().BeTrue();
+            var newTokens = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            newTokens.Should().NotBeNull();
+            newTokens!.AccessToken.Should().NotBeNullOrEmpty();
+            newTokens.RefreshToken.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task Logout_WithValidToken_ReturnsNoContent()
+        {
+            var registerReq = new RegisterRequest("logoutuser@example.com", "StrongPassword123!", "Logout User");
+            var regRes = await _client.PostAsJsonAsync("/api/auth/register", registerReq);
+            var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>();
+
+            var refreshReq = new RefreshRequest(tokens!.RefreshToken);
+
+            var response = await _client.PostAsJsonAsync("/api/auth/logout", refreshReq);
+
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+        }
     }
 }
