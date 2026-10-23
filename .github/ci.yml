@@ -1,0 +1,27 @@
+name: CI AND TESTS
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+  - name: Restore dependencies
+      run: dotnet restore MovieTracker.Tests/MovieTracker.Tests.csproj
+
+    - name: Build API and Tests
+      run: dotnet build MovieTracker.Tests/MovieTracker.Tests.csproj --no-restore --configuration Release
+
+    - name: Run Tests
+      run: dotnet test MovieTracker.Tests/MovieTracker.Tests.csproj --no-build --verbosity normal --configuration Release
