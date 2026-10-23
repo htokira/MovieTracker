@@ -55,7 +55,7 @@ namespace MovieTracker.Tests.Services
         }
 
         [Fact]
-        public void HashToken_ShouldReturnConsistentHash()
+        public void HashToken_ReturnsConsistentHash()
         {
             var rawToken = "some_random_refresh_token_string";
 
