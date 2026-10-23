@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MovieTracker.Data\MovieTracker.Data.csproj" />
     <ProjectReference Include="..\src\MovieTracker.API\MovieTracker.API.csproj" />
     <ProjectReference Include="..\src\MovieTracker.Core\MovieTracker.Core.csproj" />
   </ItemGroup>
