@@ -5,8 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
-		<UseVSTest>true</UseVSTest>
+		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
   <ItemGroup>
