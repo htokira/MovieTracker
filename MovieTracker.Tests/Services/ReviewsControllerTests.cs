@@ -199,5 +199,45 @@ namespace MovieTracker.Tests.Services
             after.StatusCode.Should().Be(HttpStatusCode.OK);
             (await after.Content.ReadFromJsonAsync<ReviewResponse>(cancellationToken: TestContext.Current.CancellationToken))!.Rating.Should().Be(6);
         }
+
+        [Fact]
+        public async Task Delete_RemovesOwnReview()
+        {
+            var movieId = NewMovieId();
+            var client = await CreateAuthenticatedClientAsync();
+            await client.PutAsJsonAsync(MyReviewUrl(movieId), new UpsertReviewRequest(6, "ok"), cancellationToken: TestContext.Current.CancellationToken);
+
+            var response = await client.DeleteAsync(MyReviewUrl(movieId), TestContext.Current.CancellationToken);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+            (await client.GetAsync(MyReviewUrl(movieId), TestContext.Current.CancellationToken)).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await GetReviewsAsync(client, movieId)).TotalReviews.Should().Be(0);
+        }
+
+        [Fact]
+        public async Task Delete_WhenNoReview_ReturnsNotFound()
+        {
+            var client = await CreateAuthenticatedClientAsync();
+
+            var response = await client.DeleteAsync(MyReviewUrl(NewMovieId()), TestContext.Current.CancellationToken);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task Delete_DoesNotTouchOtherUsersReviews()
+        {
+            var movieId = NewMovieId();
+            var owner = await CreateAuthenticatedClientAsync("Owner");
+            var stranger = await CreateAuthenticatedClientAsync("Stranger");
+            await owner.PutAsJsonAsync(MyReviewUrl(movieId), new UpsertReviewRequest(9, "mine"), cancellationToken: TestContext.Current.CancellationToken);
+
+            var response = await stranger.DeleteAsync(MyReviewUrl(movieId), TestContext.Current.CancellationToken);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            var reviews = await GetReviewsAsync(owner, movieId);
+            reviews.TotalReviews.Should().Be(1);
+            reviews.Items.Single().AuthorName.Should().Be("Owner");
+        }
     }
 }
