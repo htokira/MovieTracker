@@ -271,6 +271,44 @@ namespace MovieTracker.Data.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId", "MovieId")
+                        .IsUnique();
+
+                    b.ToTable("Reviews", t =>
+                        {
+                            t.HasCheckConstraint("CK_Reviews_Rating", "Rating >= 1 AND Rating <= 10");
+                        });
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -438,6 +476,17 @@ namespace MovieTracker.Data.Migrations
                 });
 
             modelBuilder.Entity("MovieTracker.Core.Models.RefreshToken", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Review", b =>
                 {
                     b.HasOne("MovieTracker.Core.Models.User", "User")
                         .WithMany()

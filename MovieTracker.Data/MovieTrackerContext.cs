@@ -14,6 +14,7 @@ namespace MovieTracker.Data
         public DbSet<Genre> Genres => Set<Genre>();
         public DbSet<Person> Persons => Set<Person>();
         public DbSet<MoviePerson> MoviePersons => Set<MoviePerson>();
+        public DbSet<Review> Reviews => Set<Review>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,6 +36,22 @@ namespace MovieTracker.Data
                  .WithMany()
                  .HasForeignKey(t => t.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<Review>(e =>
+            {
+                e.HasKey(r => r.Id);
+                e.Property(r => r.Text).HasMaxLength(2000);
+
+                e.HasIndex(r => new { r.UserId, r.MovieId }).IsUnique();
+                e.HasIndex(r => r.MovieId);
+
+                e.HasOne(r => r.User)
+                 .WithMany()
+                 .HasForeignKey(r => r.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.ToTable(t => t.HasCheckConstraint("CK_Reviews_Rating", "Rating >= 1 AND Rating <= 10"));
             });
 
             builder.Entity<MoviePerson>()
