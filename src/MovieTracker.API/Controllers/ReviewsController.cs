@@ -66,6 +66,63 @@ namespace MovieTracker.API.Controllers
             return review is null ? NotFound() : Ok(review);
         }
 
+        [HttpPut("me")]
+        [Authorize]
+        public async Task<ActionResult<ReviewResponse>> UpsertMyReview(int movieId, UpsertReviewRequest request)
+        {
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+
+            if (!await _db.Users.AnyAsync(u => u.Id == userId)) return Unauthorized();
+
+            var now = DateTime.UtcNow;
+            var text = string.IsNullOrWhiteSpace(request.Text) ? null : request.Text.Trim();
+
+            var review = await _db.Reviews
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.MovieId == movieId);
+
+            if (review is null)
+            {
+                review = new Review
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    MovieId = movieId,
+                    CreatedAt = now
+                };
+                _db.Reviews.Add(review);
+            }
+
+            review.Rating = request.Rating;
+            review.Text = text;
+            review.UpdatedAt = now;
+
+            await _db.SaveChangesAsync();
+
+            var response = await _db.Reviews
+                .AsNoTracking()
+                .Where(r => r.Id == review.Id)
+                .Select(ToResponse)
+                .SingleAsync();
+
+            return Ok(response);
+        }
+
+        [HttpDelete("me")]
+        [Authorize]
+        public async Task<IActionResult> DeleteMyReview(int movieId)
+        {
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+
+            var review = await _db.Reviews
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.MovieId == movieId);
+            if (review is null) return NotFound();
+
+            _db.Reviews.Remove(review);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         private bool TryGetUserId(out Guid userId) =>
             Guid.TryParse(User.FindFirst("sub")?.Value, out userId);
     }
