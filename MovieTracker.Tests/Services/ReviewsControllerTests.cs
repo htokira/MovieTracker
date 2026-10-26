@@ -119,5 +119,85 @@ namespace MovieTracker.Tests.Services
 
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
+
+        [Fact]
+        public async Task GetReviews_ReturnsCountAndRoundedAverage()
+        {
+            var movieId = NewMovieId();
+            foreach (var rating in new[] { 7, 8, 8 })
+            {
+                var user = await CreateAuthenticatedClientAsync();
+                await user.PutAsJsonAsync(MyReviewUrl(movieId), new UpsertReviewRequest(rating, null), cancellationToken: TestContext.Current.CancellationToken);
+            }
+
+            var reviews = await GetReviewsAsync(_factory.CreateClient(), movieId);
+
+            reviews.TotalReviews.Should().Be(3);
+            reviews.AverageRating.Should().Be(7.7);
+            reviews.Items.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public async Task GetReviews_ForMovieWithoutReviews_ReturnsEmptyListAndNullAverage()
+        {
+            var reviews = await GetReviewsAsync(_factory.CreateClient(), NewMovieId());
+
+            reviews.TotalReviews.Should().Be(0);
+            reviews.AverageRating.Should().BeNull();
+            reviews.Items.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task GetReviews_IsPaginatedNewestFirst()
+        {
+            var movieId = NewMovieId();
+            foreach (var rating in new[] { 1, 2, 3 })
+            {
+                var user = await CreateAuthenticatedClientAsync();
+                await user.PutAsJsonAsync(MyReviewUrl(movieId), new UpsertReviewRequest(rating, null), cancellationToken: TestContext.Current.CancellationToken);
+            }
+            var anonymous = _factory.CreateClient();
+
+            var firstPage = await GetReviewsAsync(anonymous, movieId, "?page=1&pageSize=2");
+            var secondPage = await GetReviewsAsync(anonymous, movieId, "?page=2&pageSize=2");
+
+            firstPage.TotalReviews.Should().Be(3);
+            firstPage.Items.Select(i => i.Rating).Should().Equal(3, 2);
+            secondPage.Items.Select(i => i.Rating).Should().Equal(1);
+        }
+
+        [Theory]
+        [InlineData("?page=0")]
+        [InlineData("?pageSize=0")]
+        [InlineData("?pageSize=51")]
+        public async Task GetReviews_InvalidPaging_ReturnsBadRequest(string query)
+        {
+            var response = await _factory.CreateClient().GetAsync($"/api/movies/{NewMovieId()}/reviews{query}", TestContext.Current.CancellationToken);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GetReviews_InvalidMovieId_ReturnsNotFound()
+        {
+            var response = await _factory.CreateClient().GetAsync("/api/movies/0/reviews", TestContext.Current.CancellationToken);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetMyReview_ReturnsNotFoundUntilReviewExists()
+        {
+            var movieId = NewMovieId();
+            var client = await CreateAuthenticatedClientAsync();
+
+            var before = await client.GetAsync(MyReviewUrl(movieId), TestContext.Current.CancellationToken);
+            await client.PutAsJsonAsync(MyReviewUrl(movieId), new UpsertReviewRequest(6, "ok"), cancellationToken: TestContext.Current.CancellationToken);
+            var after = await client.GetAsync(MyReviewUrl(movieId), TestContext.Current.CancellationToken);
+
+            before.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            after.StatusCode.Should().Be(HttpStatusCode.OK);
+            (await after.Content.ReadFromJsonAsync<ReviewResponse>(cancellationToken: TestContext.Current.CancellationToken))!.Rating.Should().Be(6);
+        }
     }
 }
