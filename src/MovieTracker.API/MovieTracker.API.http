@@ -122,3 +122,21 @@ Authorization: Bearer {{login4.response.body.$.accessToken}}
 ### 18. after deleting (401)
 GET {{host}}/api/users/me
 Authorization: Bearer {{login4.response.body.$.accessToken}}
+
+### 19. add or update a review (200)
+PUT {{host}}/api/movies/603/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "rating": 9, "text": "good i guess" }
+
+### 20. review and avg (200)
+GET {{host}}/api/movies/603/reviews?page=1&pageSize=10
+
+### 21. my review (200)
+GET {{host}}/api/movies/603/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 22. delete review (204)
+DELETE {{host}}/api/movies/603/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
