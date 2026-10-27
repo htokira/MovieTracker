@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using MovieTracker.Core.Models;
+using MovieTracker.Core.Dtos;
 
 namespace MovieTracker.UI.Services;
 
@@ -13,7 +13,7 @@ public class ApiService
         _httpClient.BaseAddress = new Uri("https://localhost:7226/"); 
     }
 
-    public async Task<IEnumerable<Movie>> GetMoviesAsync(string? query = null, int page = 1)
+    public async Task<IEnumerable<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1)
     {
         var url = string.IsNullOrWhiteSpace(query) 
             ? $"api/movies?page={page}" 
@@ -21,12 +21,24 @@ public class ApiService
 
         try
         {
-            var movies = await _httpClient.GetFromJsonAsync<IEnumerable<Movie>>(url);
-            return movies ?? Enumerable.Empty<Movie>();
+            var movies = await _httpClient.GetFromJsonAsync<IEnumerable<MovieListItemDto>>(url);
+            return movies ?? Enumerable.Empty<MovieListItemDto>();
         }
         catch
         {
-            return Enumerable.Empty<Movie>();
+            return Enumerable.Empty<MovieListItemDto>();
+        }
+    }
+
+    public async Task<MovieDetailDto?> GetMovieDetailsAsync(int id)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<MovieDetailDto>($"api/movies/{id}");
+        }
+        catch
+        {
+            return null;
         }
     }
 }
