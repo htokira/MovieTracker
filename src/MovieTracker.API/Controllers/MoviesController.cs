@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieTracker.API.Services;
+using MovieTracker.Core.Dtos;
 
 namespace MovieTracker.API.Controllers;
 
@@ -22,5 +23,13 @@ public class MoviesController : ControllerBase
             : await _tmdbService.SearchMoviesAsync(query, page);
 
         return Ok(movies);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MovieDetailDto>> GetMovieById(int id)
+    {
+        var movie = await _tmdbService.GetMovieDetailsAsync(id);
+        if (movie == null) return NotFound();
+        return Ok(movie);
     }
 }

@@ -1,5 +1,5 @@
-@MovieTracker.API_HostAddress = https://localhost:7226
-@host = https://localhost:7226
+@MovieTracker.API_HostAddress = http://localhost:5153
+@host = http://localhost:5153
 @email = test@example.com
 @password = Test1234
 
@@ -140,3 +140,15 @@ Authorization: Bearer {{login.response.body.$.accessToken}}
 ### 22. delete review (204)
 DELETE {{host}}/api/movies/603/reviews/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 23. get popular movies (200)
+GET {{host}}/api/movies
+Content-Type: application/json
+
+### 24. search movies (200)
+GET {{host}}/api/movies?query=інтерстеллар&page=1
+Content-Type: application/json
+
+### 25. get movie by id (200)
+GET {{host}}/api/movies/550
+Content-Type: application/json

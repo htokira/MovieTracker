@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using MovieTracker.Core.Models;
+using MovieTracker.Core.Dtos;
 using MovieTracker.UI.Services;
 
 namespace MovieTracker.UI.ViewModels;
@@ -13,7 +13,7 @@ public class MainViewModel : INotifyPropertyChanged
     private string _searchQuery = string.Empty;
     private bool _isLoading;
 
-    public ObservableCollection<Movie> Movies { get; set; } = new();
+    public ObservableCollection<MovieListItemDto> Movies { get; set; } = new();
 
     public string SearchQuery
     {
