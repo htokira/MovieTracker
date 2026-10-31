@@ -70,10 +70,11 @@ namespace MovieTracker.API.Services
 
             var movie = new MovieDetailDto
             {
-                Id = item.GetProperty("id").GetInt32(),
+                Id = item.TryGetProperty("id", out var movieId) ? movieId.GetInt32() : 0,
                 Title = item.GetProperty("title").GetString() ?? string.Empty,
-                Description = item.GetProperty("overview").GetString() ?? string.Empty,
-                ReleaseYear = DateTime.TryParse(item.GetProperty("release_date").GetString(), out var date) ? date.Year : 0,
+                Description = item.TryGetProperty("overview", out var overview) ? overview.GetString() ?? string.Empty : string.Empty,
+                ReleaseYear = item.TryGetProperty("release_date", out var releaseDate) 
+                && DateTime.TryParse(releaseDate.GetString(), out var date) ? date.Year : null,
                 Rating = item.GetProperty("vote_average").GetDouble(),
                 MediaType = "Movie",
                 PosterUrl = item.TryGetProperty("poster_path", out var poster) && poster.ValueKind != JsonValueKind.Null 
