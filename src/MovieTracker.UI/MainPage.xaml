@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
              xmlns:models="clr-namespace:MovieTracker.Core.Models;assembly=MovieTracker.Core"
+             xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
              x:Class="MovieTracker.UI.MainPage"
              Title="Каталог фільмів">
 
@@ -20,7 +21,7 @@
         <!-- Список фільмів -->
         <CollectionView Grid.Row="1" ItemsSource="{Binding Movies}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Movie">
+                <DataTemplate x:DataType="dto:MovieListItemDto">
                     <Border HeightRequest="120" Margin="0,5" Padding="10">
                         <Grid ColumnDefinitions="80, *">
                             <Image Grid.Column="0" Source="{Binding PosterUrl}" Aspect="AspectFill" />
