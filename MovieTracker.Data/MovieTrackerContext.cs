@@ -54,8 +54,36 @@ namespace MovieTracker.Data
                 e.ToTable(t => t.HasCheckConstraint("CK_Reviews_Rating", "Rating >= 1 AND Rating <= 10"));
             });
 
-            builder.Entity<MoviePerson>()
-                .HasKey(mp => new { mp.MovieId, mp.PersonId, mp.Role });
+            builder.Entity<Movie>(e =>
+            {
+                e.HasKey(m => m.Id);
+                e.Property(m => m.Id).ValueGeneratedNever();
+                e.Property(m => m.Title).IsRequired().HasMaxLength(255);
+                e.Property(m => m.Description).HasMaxLength(4000);
+                e.Property(m => m.PosterUrl).HasMaxLength(500);
+                e.Property(m => m.MediaType).IsRequired().HasMaxLength(50);
+
+                e.HasMany(m => m.Genres)
+                 .WithMany(g => g.Movies);
+
+                e.HasMany(m => m.MoviePersons)
+                 .WithOne(mp => mp.Movie)
+                 .HasForeignKey(mp => mp.MovieId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<MoviePerson>(e =>
+            {
+                e.HasKey(mp => new { mp.MovieId, mp.PersonId, mp.Role });
+                e.Property(mp => mp.Role).HasMaxLength(100);
+            });
+
+            builder.Entity<Genre>(e =>
+            {
+                e.HasKey(g => g.Id);
+                e.Property(g => g.Id).ValueGeneratedNever();
+                e.Property(g => g.Name).IsRequired().HasMaxLength(100);
+            });
         }
     }
 }
