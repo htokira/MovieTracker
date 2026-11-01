@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MovieTracker.API.Services;
+using MovieTracker.Core.Dtos;
 using MovieTracker.Data;
+using Moq;
 
 namespace MovieTracker.Tests;
 
@@ -35,6 +38,24 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
             services.AddDbContext<MovieTrackerContext>(options =>
                 options.UseInMemoryDatabase(_databaseName));
+
+            services.RemoveAll<ITmdbService>();
+
+            var tmdbServiceMock = new Mock<ITmdbService>();
+            tmdbServiceMock
+                .Setup(s => s.GetMovieDetailsAsync(It.IsAny<int>()))
+                .ReturnsAsync((int id) => new MovieDetailDto
+                {
+                    Id = id,
+                    Title = $"Test Movie {id}",
+                    Description = "Test Description",
+                    ReleaseYear = 2024,
+                    Rating = 8.5,
+                    MediaType = "Movie",
+                    PosterUrl = "https://example.com/poster.jpg"
+                });
+
+            services.AddSingleton(tmdbServiceMock.Object);
         });
     }
 }

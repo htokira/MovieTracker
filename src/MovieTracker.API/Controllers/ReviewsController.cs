@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieTracker.Core.Dtos;
 using MovieTracker.Core.Models;
 using MovieTracker.Data;
+using MovieTracker.API.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ namespace MovieTracker.API.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly MovieTrackerContext _db;
+        private readonly ITmdbService _tmdbService;
 
-        public ReviewsController(MovieTrackerContext db)
+        public ReviewsController(MovieTrackerContext db, ITmdbService tmdbService)
         {
             _db = db;
+            _tmdbService = tmdbService;
         }
 
         private static readonly Expression<Func<Review, ReviewResponse>> ToResponse = r =>
@@ -73,6 +76,31 @@ namespace MovieTracker.API.Controllers
             if (!TryGetUserId(out var userId)) return Unauthorized();
 
             if (!await _db.Users.AnyAsync(u => u.Id == userId)) return Unauthorized();
+
+            var movie = await _db.Movies.FindAsync(movieId);
+
+            if (movie == null)
+            {
+                var movieDetail = await _tmdbService.GetMovieDetailsAsync(movieId);
+                if (movieDetail == null)
+                {
+                    return NotFound(new { message = $"Movie with ID {movieId} not found on TMDB." });
+                }
+
+                movie = new Movie
+                {
+                    Id = movieDetail.Id,
+                    Title = movieDetail.Title,
+                    Description = movieDetail.Description,
+                    ReleaseYear = movieDetail.ReleaseYear ?? 0,
+                    Rating = movieDetail.Rating,
+                    MediaType = movieDetail.MediaType,
+                    PosterUrl = movieDetail.PosterUrl
+                };
+
+                _db.Movies.Add(movie);
+                await _db.SaveChangesAsync(); 
+            }
 
             var now = DateTime.UtcNow;
             var text = string.IsNullOrWhiteSpace(request.Text) ? null : request.Text.Trim();

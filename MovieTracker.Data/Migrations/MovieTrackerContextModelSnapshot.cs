@@ -161,11 +161,11 @@ namespace MovieTracker.Data.Migrations
             modelBuilder.Entity("MovieTracker.Core.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -176,28 +176,31 @@ namespace MovieTracker.Data.Migrations
             modelBuilder.Entity("MovieTracker.Core.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(4000)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MediaType")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PosterUrl")
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Rating")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("ReleaseYear")
+                    b.Property<int?>("ReleaseYear")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -214,6 +217,7 @@ namespace MovieTracker.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Role")
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("MovieId", "PersonId", "Role");
@@ -488,6 +492,12 @@ namespace MovieTracker.Data.Migrations
 
             modelBuilder.Entity("MovieTracker.Core.Models.Review", b =>
                 {
+                    b.HasOne("MovieTracker.Core.Models.Movie", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MovieTracker.Core.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -500,6 +510,8 @@ namespace MovieTracker.Data.Migrations
             modelBuilder.Entity("MovieTracker.Core.Models.Movie", b =>
                 {
                     b.Navigation("MoviePersons");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("MovieTracker.Core.Models.Person", b =>
