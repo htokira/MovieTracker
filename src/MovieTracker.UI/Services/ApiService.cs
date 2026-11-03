@@ -13,21 +13,40 @@ public class ApiService
         _httpClient.BaseAddress = new Uri("http://localhost:7226/"); 
     }
 
-    public async Task<IEnumerable<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1)
+    public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
     {
-        var url = string.IsNullOrWhiteSpace(query) 
-            ? $"api/movies?page={page}" 
-            : $"api/movies?query={Uri.EscapeDataString(query)}&page={page}";
+        var movies = await _httpClient.GetFromJsonAsync<IEnumerable<MovieListItemDto>>(
+            $"api/movies/popular?page={page}");
 
-        try
+        return movies ?? Enumerable.Empty<MovieListItemDto>();
+    }
+
+    public async Task<IEnumerable<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1, 
+    int? genreId = null, string? sortBy = null)
+    {
+        var parameters = new List<string>
         {
-            var movies = await _httpClient.GetFromJsonAsync<IEnumerable<MovieListItemDto>>(url);
-            return movies ?? Enumerable.Empty<MovieListItemDto>();
-        }
-        catch
+            $"page={page}"
+        };
+
+        if (!string.IsNullOrEmpty(query))
         {
-            return Enumerable.Empty<MovieListItemDto>();
+            parameters.Add($"query={query}");
         }
+
+        if (genreId.HasValue)
+        {
+            parameters.Add($"genreId={genreId.Value}");
+        }
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            parameters.Add($"sortBy={sortBy}");
+        }
+
+        var url = $"api/movies?{string.Join("&", parameters)}";
+        var movies = await _httpClient.GetFromJsonAsync<IEnumerable<MovieListItemDto>>(url);
+        return movies ?? Enumerable.Empty<MovieListItemDto>();
     }
 
     public async Task<MovieDetailDto?> GetMovieDetailsAsync(int id)
