@@ -77,8 +77,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   background-color: transparent;
   color: var(--color-text-secondary);
   border-radius: 50%;
@@ -94,8 +94,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   margin-left: var(--space-2);
   background-color: var(--color-purple-subtle);
   color: var(--color-purple);
