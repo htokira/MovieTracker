@@ -16,11 +16,11 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMovies([FromQuery] string? query, [FromQuery] int page = 1)
+    public async Task<IActionResult> GetMovies([FromQuery] string? query, [FromQuery] int page = 1, [FromQuery] int? genreId = null)
     {
         var movies = string.IsNullOrWhiteSpace(query)
-            ? await _tmdbService.GetPopularMoviesAsync(page)
-            : await _tmdbService.SearchMoviesAsync(query, page);
+            ? await _tmdbService.GetPopularMoviesAsync(page, genreId)
+            : await _tmdbService.SearchMoviesAsync(query, page, genreId);
 
         return Ok(movies);
     }
