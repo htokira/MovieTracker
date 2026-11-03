@@ -10,6 +10,15 @@ namespace MovieTracker.API.Services
         private readonly HttpClient _httpClient;
         private readonly TmdbSettings _settings;
 
+        private static readonly Dictionary<int, string> GenreDictionary = new()
+        {
+            { 28, "Бойовик" }, { 12, "Пригоди" }, { 16, "Анімація" }, { 35, "Комедія" },
+            { 80, "Кримінал" }, { 99, "Документальний" }, { 18, "Драма" }, { 10751, "Сімейний" },
+            { 14, "Фентезі" }, { 36, "Історія" }, { 27, "Жахи" }, { 10402, "Музика" },
+            { 9648, "Детектив" }, { 10749, "Мелодрама" }, { 878, "Наукова фантастика" },
+            { 10770, "Телефільм" }, { 53, "Трилер" }, { 10752, "Військовий" }, { 37, "Вестерн" }
+        };
+
         public TmdbService(HttpClient httpClient, IOptions<TmdbSettings> options)
         {
             _httpClient = httpClient;
@@ -22,10 +31,28 @@ namespace MovieTracker.API.Services
             return await FetchMoviesAsync(url);
         }
 
-        public async Task<IEnumerable<MovieListItemDto>> SearchMoviesAsync(string query, int page = 1)
+        public async Task<IEnumerable<MovieListItemDto>> GetDiscoverMoviesAsync(int page = 1, int? genreId = null, string? sortBy = null)
+        {
+            var sort = string.IsNullOrEmpty(sortBy) ? "popularity.desc" : sortBy;
+
+            var url = $"{_settings.BaseUrl}discover/movie?api_key={_settings.ApiKey}&language=uk-UA&sort_by={sort}&page={page}";
+            
+            if (genreId.HasValue)
+            {
+                url += $"&with_genres={genreId.Value}";
+            }
+            
+            return await FetchMoviesAsync(url);
+        }
+
+        public async Task<IEnumerable<MovieListItemDto>> SearchMoviesAsync(string query, int page = 1, int? genreId = null)
         {
             var url = $"{_settings.BaseUrl}search/movie?api_key={_settings.ApiKey}&language=uk-UA&query={Uri.EscapeDataString(query)}&page={page}";
-            return await FetchMoviesAsync(url);
+            var movies = await FetchMoviesAsync(url);
+
+            return genreId.HasValue 
+                ? movies.Where(m => m.Genres.Any(g => g.Id == genreId.Value)) 
+                : movies;
         }
 
         private async Task<IEnumerable<MovieListItemDto>> FetchMoviesAsync(string url)
@@ -41,7 +68,7 @@ namespace MovieTracker.API.Services
 
             foreach (var item in results.EnumerateArray())
             {
-                movies.Add(new MovieListItemDto
+                var movieDto = new MovieListItemDto
                 {
                     Id = item.GetProperty("id").GetInt32(),
                     Title = item.GetProperty("title").GetString() ?? string.Empty,
@@ -52,7 +79,22 @@ namespace MovieTracker.API.Services
                     PosterUrl = item.TryGetProperty("poster_path", out var poster) && poster.ValueKind != JsonValueKind.Null 
                         ? $"https://image.tmdb.org/t/p/w500{poster.GetString()}" 
                         : null
-                });
+                };
+
+                // Парсимо жанри
+                if (item.TryGetProperty("genre_ids", out var genreIdsProp) && genreIdsProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var genreIdEl in genreIdsProp.EnumerateArray())
+                    {
+                        var genreId = genreIdEl.GetInt32();
+                        if (GenreDictionary.TryGetValue(genreId, out var genreName))
+                        {
+                            movieDto.Genres.Add(new GenreDto { Id = genreId, Name = genreName });
+                        }
+                    }
+                }
+
+                movies.Add(movieDto);
             }
 
             return movies;

@@ -142,13 +142,29 @@ DELETE {{host}}/api/movies/603/reviews/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ### 23. get popular movies (200)
+GET {{host}}/api/movies/popular
+Content-Type: application/json
+
+### 24. get discover movies / all movies (200)
 GET {{host}}/api/movies
 Content-Type: application/json
 
-### 24. search movies (200)
+### 25. get movies filtered by genre (Документальний, id = 99) (200)
+GET {{host}}/api/movies?genreId=99&page=1
+Content-Type: application/json
+
+### 26. get movies sorted by release date descending (200)
+GET {{host}}/api/movies?sortBy=primary_release_date.desc&page=1
+Content-Type: application/json
+
+### 27. search movies (200)
 GET {{host}}/api/movies?query=інтерстеллар&page=1
 Content-Type: application/json
 
-### 25. get movie by id (200)
+### 28. search movies with genre filter (200)
+GET {{host}}/api/movies?query=марсіанин&genreId=12&page=1
+Content-Type: application/json
+
+### 29. get movie by id (200)
 GET {{host}}/api/movies/550
 Content-Type: application/json
