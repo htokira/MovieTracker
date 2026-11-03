@@ -9,11 +9,11 @@ namespace MovieTracker.Core.Dtos
         public double Rating { get; set; }
         public string MediaType { get; set; } = "Movie";
         public string? PosterUrl { get; set; }
+        public List<GenreDto> Genres { get; set; } = new();
     }
 
     public class MovieDetailDto : MovieListItemDto
     {
-        public List<GenreDto> Genres { get; set; } = new();
         public List<MoviePersonDto> MoviePersons { get; set; } = new();
     }
 
