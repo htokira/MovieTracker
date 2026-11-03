@@ -25,14 +25,24 @@ namespace MovieTracker.API.Services
             _settings = options.Value;
         }
 
-        public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1, int? genreId = null)
+        public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
         {
             var url = $"{_settings.BaseUrl}movie/popular?api_key={_settings.ApiKey}&language=uk-UA&page={page}";
-            var movies = await FetchMoviesAsync(url);
-        
-            return genreId.HasValue 
-                ? movies.Where(m => m.Genres.Any(g => g.Id == genreId.Value)) 
-                : movies;
+            return await FetchMoviesAsync(url);
+        }
+
+        public async Task<IEnumerable<MovieListItemDto>> GetDiscoverMoviesAsync(int page = 1, int? genreId = null, string? sortBy = null)
+        {
+            var sort = string.IsNullOrEmpty(sortBy) ? "popularity.desc" : sortBy;
+
+            var url = $"{_settings.BaseUrl}discover/movie?api_key={_settings.ApiKey}&language=uk-UA&sort_by={sort}&page={page}";
+            
+            if (genreId.HasValue)
+            {
+                url += $"&with_genres={genreId.Value}";
+            }
+            
+            return await FetchMoviesAsync(url);
         }
 
         public async Task<IEnumerable<MovieListItemDto>> SearchMoviesAsync(string query, int page = 1, int? genreId = null)
