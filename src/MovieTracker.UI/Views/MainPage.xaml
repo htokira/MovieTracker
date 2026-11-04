@@ -39,8 +39,9 @@
             Grid.Row="1" 
             ItemsSource="{Binding Movies}"
             SelectionMode="None"
-            ItemsLayout="VerticalGrid, 6"
-            Margin="12,0">
+            ItemsLayout="VerticalGrid, 5"
+            Margin="12,0"
+            SizeChanged="MoviesCollection_SizeChanged">
 
             <!-- Заголовок каталогу та популярні фільми -->
             <CollectionView.Header>
@@ -241,6 +242,7 @@
                 <DataTemplate x:DataType="dto:MovieListItemDto">
 
                     <VerticalStackLayout
+                        WidthRequest="280"
                         Padding="5"
                         Spacing="7"
                         Margin="0,0,0,15">
@@ -249,12 +251,14 @@
                             BackgroundColor="#292E3D"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 10"
-                            HeightRequest="235">
+                            HeightRequest="380"
+                            WidthRequest="280">
 
                             <Image
                                 Source="{Binding PosterUrl}"
                                 Aspect="AspectFill"
-                                HeightRequest="235" />
+                                HeightRequest="380"
+                                WidthRequest="280"/>
 
                         </Border>
 
@@ -264,7 +268,7 @@
                             FontSize="14"
                             FontAttributes="Bold"
                             LineBreakMode="TailTruncation"
-                            MaxLines="1" />
+                            MaxLines="3" />
 
                         <Grid ColumnDefinitions="*,Auto">
 
