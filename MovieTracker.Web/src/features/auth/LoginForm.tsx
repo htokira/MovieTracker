@@ -50,6 +50,7 @@ function LoginForm() {
           label="Email"
           name="email"
           type="email"
+          placeholder="example@gmail.com"
           value={input.email}
           onChange={handleInputChange}
           autoComplete="email"
@@ -59,6 +60,7 @@ function LoginForm() {
           label="Пароль"
           name="password"
           type="password"
+          placeholder="Введіть пароль"
           value={input.password}
           onChange={handleInputChange}
           autoComplete="current-password"
