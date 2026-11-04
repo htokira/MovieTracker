@@ -16,6 +16,7 @@ public class MainViewModel : INotifyPropertyChanged
     private string? _errorMessage;
     private string _selectedGenre = "Усі жанри";
     private string _selectedSort = "За популярністю";
+    private bool _isEmpty;
 
     private readonly Dictionary<string, int?> _genreIds = new()
     {
@@ -117,6 +118,19 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public bool IsEmpty
+    {
+        get => _isEmpty;
+        set
+        {
+            if (_isEmpty != value)
+            {
+                _isEmpty = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public ICommand SearchCommand { get; }
     public ICommand ApplyFiltersCommand { get; }
 
@@ -191,6 +205,8 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 Movies.Add(movie);
             }
+
+            IsEmpty = Movies.Count == 0;
         }
         catch (Exception ex)
         {

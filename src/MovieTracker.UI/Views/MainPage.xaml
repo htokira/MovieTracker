@@ -209,6 +209,19 @@
                             HeightRequest="45"
                             FontAttributes="Bold" />
 
+                        <VerticalStackLayout
+                            IsVisible="{Binding IsEmpty}"
+                            Padding="20"
+                            Spacing="8">
+
+                            <Label
+                                Text="Фільмів не знайдено"
+                                TextColor="White"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>
@@ -283,29 +296,6 @@
 
                 </VerticalStackLayout>
             </CollectionView.Footer>
-
-            <!-- Якщо каталог порожній -->
-            <CollectionView.EmptyView>
-                <VerticalStackLayout
-                    Padding="20"
-                    Spacing="8"
-                    HorizontalOptions="Center">
-
-                    <Label
-                        Text="Фільмів не знайдено"
-                        TextColor="White"
-                        FontSize="17"
-                        FontAttributes="Bold"
-                        HorizontalTextAlignment="Center" />
-
-                    <Label
-                        Text="Спробуйте змінити параметри пошуку."
-                        TextColor="#A0A5B5"
-                        FontSize="13"
-                        HorizontalTextAlignment="Center" />
-
-                </VerticalStackLayout>
-            </CollectionView.EmptyView>
 
         </CollectionView>
 
