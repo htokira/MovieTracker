@@ -10,7 +10,6 @@ public class ApiService
     public ApiService(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("http://localhost:7226/"); 
     }
 
     public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
