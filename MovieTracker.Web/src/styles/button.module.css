@@ -1,0 +1,22 @@
+.button {
+  padding: 10px var(--space-6);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-bg);
+  background-color: var(--color-teal);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s;
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--color-teal-hover);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fullWidth {
+  width: 100%;
+}

@@ -14,6 +14,9 @@
   --color-purple: #9185cc;
   --color-purple-subtle: rgba(145, 133, 204, 0.16);
 
+  --color-danger: #d98b8b;
+  --color-danger-subtle: rgba(217, 139, 139, 0.12);
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.3);
 

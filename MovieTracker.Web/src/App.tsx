@@ -1,19 +1,25 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout/Layout';
-
-const CatalogPlaceholder = () => <div style={{ padding: '2rem' }}>тут буде каталог колись</div>;
-const CollectionPlaceholder = () => <div style={{ padding: '2rem' }}>на днях буде колекція</div>;
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import PrivateRoute from "./components/PrivateRoute";
+import CatalogPage from "./pages/CatalogPage";
+import CollectionPage from "./pages/CollectionPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<CatalogPlaceholder />} />
-          <Route path="collection" element={<CollectionPlaceholder />} />
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+
+      <Route element={<Layout />}>
+        <Route index element={<CatalogPage />} />
+ 
+        <Route element={<PrivateRoute />}>
+          <Route path="collection" element={<CollectionPage />} />
         </Route>
-      </Routes>
-    </BrowserRouter>
+      </Route>
+    </Routes>
   );
 }
 
