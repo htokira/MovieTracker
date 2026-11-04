@@ -1,0 +1,317 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
+    BackgroundColor="#171923"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Верхня панель -->
+        <Grid
+            Grid.Row="0"
+            Padding="20,15"
+            ColumnDefinitions="*,Auto"
+            BackgroundColor="#202331">
+
+            <Label
+                Text="Movie Tracker" 
+                FontSize="24" 
+                FontAttributes="Bold" 
+                TextColor="White"
+                VerticalOptions="Center" />
+
+            <ImageButton
+                Grid.Column="1"
+                Source="Resources/Images/user.png"
+                WidthRequest="32"
+                HeightRequest="32"
+                BackgroundColor="Transparent"
+                Aspect="AspectFit"
+                VerticalOptions="Center" />
+        
+        </Grid>
+        
+        <!-- Список фільмів -->
+        <CollectionView
+            Grid.Row="1" 
+            ItemsSource="{Binding Movies}"
+            SelectionMode="None"
+            ItemsLayout="VerticalGrid, 5"
+            Margin="12,0"
+            SizeChanged="MoviesCollection_SizeChanged">
+
+            <!-- Заголовок каталогу та популярні фільми -->
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing ="18" Padding ="4,20">
+
+                    <!-- Пошук -->
+                    <Border
+                        BackgroundColor="#292E3D"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="12,0">
+
+                        <SearchBar
+                            Placeholder="Пошук фільмів..."
+                            PlaceholderColor="#A0A5B5"
+                            TextColor="White"
+                            BackgroundColor="Transparent"
+                            CancelButtonColor="White"
+                            FontSize="14"
+                            Text="{Binding SearchQuery}"
+                            SearchCommand="{Binding SearchCommand}" />
+
+                    </Border>
+
+                    <!-- Повідомлення про помилки -->
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        TextColor="#FF7777"
+                        FontSize="13"
+                        IsVisible="{Binding HasError}" />
+                    
+                    <!-- Популярні фільми -->
+                    <VerticalStackLayout Spacing ="12">
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label
+                                Text="Популярне зараз"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                            <Label
+                                Grid.Column="1"
+                                Text="TMDB"
+                                FontSize="12"
+                                TextColor="#A0A5B5"
+                                VerticalOptions="Center" />
+                        </Grid>
+
+                        <CollectionView
+                            ItemsSource="{Binding PopularMovies}"
+                            HorizontalScrollBarVisibility="Never"
+                            HeightRequest="300"
+                            SelectionMode="None"
+                            Margin="0">
+
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout
+                                    Orientation="Horizontal"
+                                    ItemSpacing="12" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="dto:MovieListItemDto">
+
+                                    <VerticalStackLayout
+                                        WidthRequest="135"
+                                        Padding="15"
+                                        Spacing="8"
+                                        Margin="0,0,25,0">
+
+                                        <Border
+                                            StrokeThickness="0"
+                                            StrokeShape="RoundRectangle 10"
+                                            BackgroundColor="#292E3D"
+                                            HeightRequest="195"
+                                            WidthRequest="135">
+
+                                            <Image
+                                                Source="{Binding PosterUrl}"
+                                                Aspect="AspectFill"
+                                                HeightRequest="195"
+                                                WidthRequest="135" />
+
+                                        </Border>
+
+                                        <Label
+                                            Text="{Binding Title}"
+                                            TextColor="White"
+                                            FontSize="13"
+                                            FontAttributes="Bold"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="3" />
+
+                                        <Grid ColumnDefinitions ="*, Auto">
+
+                                            <Label
+                                                Text="{Binding ReleaseYear}"
+                                                TextColor="#A0A5B5"
+                                                FontSize="11" />
+
+                                            <Label
+                                                Grid.Column="1"
+                                                Text="{Binding Rating, StringFormat='★ {0:F1}'}"
+                                                TextColor="#FFC857"
+                                                FontSize="11" />
+
+                                        </Grid>
+
+                                    </VerticalStackLayout>
+
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+
+                    <!-- Каталог фільмів -->
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Каталог фільмів"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <!-- Фільтри -->
+                        <Grid
+                            ColumnDefinitions ="*,*"
+                            ColumnSpacing="10">
+
+                            <Border
+                                BackgroundColor="#292E3D"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="8,0">
+
+                                <Picker
+                                    Title="Усі жанри"
+                                    ItemsSource="{Binding GenreOptions}"
+                                    SelectedItem="{Binding SelectedGenre}"
+                                    TextColor="White"
+                                    TitleColor="#A0A5B5"
+                                    FontSize="12" />
+
+                            </Border>
+
+                            <Border
+                                Grid.Column="1"
+                                BackgroundColor="#292E3D"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="8,0">
+
+                                <Picker
+                                    Title="Сортування"
+                                    ItemsSource="{Binding SortOptions}"
+                                    SelectedItem="{Binding SelectedSort}"
+                                    TextColor="White"
+                                    TitleColor="#A0A5B5"
+                                    FontSize="12" />
+
+                            </Border>
+
+                        </Grid>
+
+                        <Button
+                            Text="Застосувати фільтри"
+                            Command="{Binding ApplyFiltersCommand}"
+                            BackgroundColor="#6558D3"
+                            TextColor="White"
+                            CornerRadius="10"
+                            HeightRequest="45"
+                            FontAttributes="Bold" />
+
+                        <VerticalStackLayout
+                            IsVisible="{Binding IsEmpty}"
+                            Padding="20"
+                            Spacing="8">
+
+                            <Label
+                                Text="Фільмів не знайдено"
+                                TextColor="White"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </CollectionView.Header>
+
+            <!-- Картки фільмів каталогу -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:MovieListItemDto">
+
+                    <VerticalStackLayout
+                        WidthRequest="280"
+                        Padding="5"
+                        Spacing="7"
+                        Margin="0,0,0,15">
+
+                        <Border
+                            BackgroundColor="#292E3D"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 10"
+                            HeightRequest="380"
+                            WidthRequest="280">
+
+                            <Image
+                                Source="{Binding PosterUrl}"
+                                Aspect="AspectFill"
+                                HeightRequest="380"
+                                WidthRequest="280"/>
+
+                        </Border>
+
+                        <Label
+                            Text="{Binding Title}"
+                            TextColor="White"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="3" />
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <Label
+                                Text="{Binding ReleaseYear}"
+                                TextColor="#A0A5B5"
+                                FontSize="12" />
+
+                            <Label
+                                Grid.Column="1"
+                                Text="{Binding Rating, StringFormat='★ {0:F1}'}"
+                                TextColor="#FFC857"
+                                FontSize="12" />
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <!-- Індикатор завантаження -->
+            <CollectionView.Footer>
+                <VerticalStackLayout
+                    Padding="15"
+                    Spacing="10">
+
+                    <ActivityIndicator
+                        IsRunning="{Binding IsLoading}"
+                        IsVisible="{Binding IsLoading}"
+                        Color="#8B7CFF" />
+
+                    <Label
+                        Text="Завантаження..."
+                        TextColor="#A0A5B5"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding IsLoading}" />
+
+                </VerticalStackLayout>
+            </CollectionView.Footer>
+
+        </CollectionView>
+
+    </Grid>
+    
+</ContentPage>
