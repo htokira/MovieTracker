@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Bell, Clapperboard, User } from "lucide-react";
-import styles from "../../styles/navbar.module.css";
+import styles from "../styles/navbar.module.css";
 
 function getLinkClassName({ isActive }: { isActive: boolean }) {
   return isActive ? `${styles.link} ${styles.active}` : styles.link;
@@ -23,6 +23,9 @@ function Navbar() {
         <div className={styles.right}>
           <NavLink to="/collection" className={getLinkClassName}>
             Колекція
+          </NavLink>
+          <NavLink to="/login" className={getLinkClassName}>
+            Увійти
           </NavLink>
           <button
             type="button"

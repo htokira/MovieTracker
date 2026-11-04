@@ -2,15 +2,15 @@ export interface MovieListItemDto {
   id: number;
   title: string;
   description: string;
-  releaseYear: string | null;
+  releaseYear: number | null;
   rating: number;
   mediaType: string;
-  posterUrl: number | null;
+  posterUrl: string | null;
+  genres: GenreDto[];
 }
 
 export interface MovieDetailDto extends MovieListItemDto{
-  genres: GenreDto[];
-  moviePersons: MovieDetailDto[];
+  moviePersons: MoviePersonDto[];
 }
 
 export interface GenreDto {
@@ -20,6 +20,6 @@ export interface GenreDto {
 
 export interface MoviePersonDto {
   fullName: string;
-  PhotoUrl: string | null;
+  photoUrl: string | null;
   role: string;
 }
