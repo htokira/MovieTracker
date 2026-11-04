@@ -92,23 +92,32 @@
 
                         <CollectionView
                             ItemsSource="{Binding PopularMovies}"
-                            ItemsLayout="HorizontalList"
-                            HeightRequest="245"
-                            SelectionMode="None">
+                            HorizontalScrollBarVisibility="Never"
+                            HeightRequest="300"
+                            SelectionMode="None"
+                            Margin="0">
+
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout
+                                    Orientation="Horizontal"
+                                    ItemSpacing="12" />
+                            </CollectionView.ItemsLayout>
 
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="dto:MovieListItemDto">
 
                                     <VerticalStackLayout
                                         WidthRequest="135"
-                                        Spacing="6"
-                                        Margin="0,0,12,0">
+                                        Padding="15"
+                                        Spacing="8"
+                                        Margin="0,0,25,0">
 
                                         <Border
                                             StrokeThickness="0"
                                             StrokeShape="RoundRectangle 10"
                                             BackgroundColor="#292E3D"
-                                            HeightRequest="195">
+                                            HeightRequest="195"
+                                            WidthRequest="135">
 
                                             <Image
                                                 Source="{Binding PosterUrl}"
@@ -124,7 +133,7 @@
                                             FontSize="13"
                                             FontAttributes="Bold"
                                             LineBreakMode="TailTruncation"
-                                            MaxLines="1" />
+                                            MaxLines="3" />
 
                                         <Grid ColumnDefinitions ="*, Auto">
 
