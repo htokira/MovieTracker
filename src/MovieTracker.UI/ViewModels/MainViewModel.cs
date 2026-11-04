@@ -14,11 +14,41 @@ public class MainViewModel : INotifyPropertyChanged
    private string _searchQuery = string.Empty;
     private bool _isLoading;
     private string? _errorMessage;
-    private int? _selectedGenreId;
-    private string _selectedSortBy = "popularity.desc";
+    private string _selectedGenre = "Усі жанри";
+    private string _selectedSort = "За популярністю";
+
+    private readonly Dictionary<string, int?> _genreIds = new()
+    {
+        { "Усі жанри", null },
+        { "Бойовик", 28 },
+        { "Пригоди", 12 },
+        { "Анімація", 16 },
+        { "Комедія", 35 },
+        { "Кримінал", 80 },
+        { "Документальний", 99 },
+        { "Драма", 18 },
+        { "Сімейний", 10751 },
+        { "Фентезі", 14 },
+        { "Жахи", 27 },
+        { "Мелодрама", 10749 },
+        { "Фантастика", 878 },
+        { "Трилер", 53 }
+    };
+
+    private readonly Dictionary<string, string> _sortOptions = new()
+    {
+        { "За популярністю", "popularity.desc" },
+        { "За рейтингом ↓", "vote_average.desc" },
+        { "За рейтингом ↑", "vote_average.asc" },
+        { "За датою ↓", "primary_release_date.desc" },
+        { "За датою ↑", "primary_release_date.asc" }
+    };
 
     public ObservableCollection<MovieListItemDto> PopularMovies { get; } = new();
     public ObservableCollection<MovieListItemDto> Movies { get; } = new();
+    public ObservableCollection<string> GenreOptions { get; }
+
+    public ObservableCollection<string> SortOptions { get; }
 
     public string SearchQuery
     {
@@ -59,27 +89,29 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public int? SelectedGenreId
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    public string SelectedGenre
     {
-        get => _selectedGenreId;
+        get => _selectedGenre;
         set
         {
-            if (_selectedGenreId != value)
+            if (_selectedGenre != value)
             {
-                _selectedGenreId = value;
+                _selectedGenre = value;
                 OnPropertyChanged();
             }
         }
     }
 
-    public string SelectedSortBy
+    public string SelectedSort
     {
-        get => _selectedSortBy;
+        get => _selectedSort;
         set
         {
-            if (_selectedSortBy != value)
+            if (_selectedSort != value)
             {
-                _selectedSortBy = value;
+                _selectedSort = value;
                 OnPropertyChanged();
             }
         }
@@ -93,6 +125,8 @@ public class MainViewModel : INotifyPropertyChanged
         _apiService = apiService;
         SearchCommand = new Command(async () => await LoadMoviesAsync());
         ApplyFiltersCommand = new Command(async () => await LoadMoviesAsync());
+        GenreOptions = new ObservableCollection<string>(_genreIds.Keys);
+        SortOptions = new ObservableCollection<string>(_sortOptions.Keys);
     }
 
     public async Task InitializeAsync()
@@ -134,10 +168,22 @@ public class MainViewModel : INotifyPropertyChanged
 
         try
         {
+            int? genreId = null;
+            if (!string.IsNullOrEmpty(SelectedGenre) && _genreIds.TryGetValue(SelectedGenre, out var foundGenreId))
+            {
+                genreId = foundGenreId;
+            }
+
+            string sortBy = "popularity.desc";
+            if (!string.IsNullOrEmpty(SelectedSort) && _sortOptions.TryGetValue(SelectedSort, out var foundSort))
+            {
+                sortBy = foundSort;
+            }
+
             var movies = await _apiService.GetMoviesAsync(
                 query: SearchQuery, 
-                genreId: SelectedGenreId, 
-                sortBy: SelectedSortBy
+                genreId: genreId, 
+                sortBy: sortBy
             );
 
             Movies.Clear();
