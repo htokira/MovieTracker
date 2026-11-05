@@ -48,6 +48,7 @@ function RegisterForm() {
           label="Ім’я"
           name="displayName"
           type="text"
+          placeholder="Введіть ім'я"
           value={input.displayName}
           onChange={handleInputChange}
           autoComplete="nickname"
@@ -59,6 +60,7 @@ function RegisterForm() {
           label="Email"
           name="email"
           type="email"
+          placeholder="example@gmail.com"
           value={input.email}
           onChange={handleInputChange}
           autoComplete="email"
@@ -69,6 +71,7 @@ function RegisterForm() {
           label="Пароль"
           name="password"
           type="password"
+          placeholder="Введіть пароль мін. 8 символів"
           value={input.password}
           onChange={handleInputChange}
           autoComplete="new-password"

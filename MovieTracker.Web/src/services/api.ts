@@ -3,7 +3,7 @@ import type { AxiosError } from "axios";
 import { tokenStorage } from "./tokenStorage";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: 'http://localhost:7226/api',
   headers: { "Content-Type": "application/json" },
 });
 

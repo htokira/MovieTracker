@@ -1,0 +1,54 @@
+.carousel {
+  position: relative;
+}
+
+/* Flexbox з горизонтальною прокруткою та схованим скроллбаром */
+.list {
+  display: flex;
+  gap: var(--space-4);
+  margin: 0;
+  /* Запас зверху й знизу, щоб не обрізались підйом і тінь картки */
+  padding: var(--space-2) 0 var(--space-6);
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  flex: 0 0 180px;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-50%);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.arrow:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-teal);
+}
+
+.arrowLeft {
+  left: calc(var(--space-4) * -1);
+}
+
+.arrowRight {
+  right: calc(var(--space-4) * -1);
+}
