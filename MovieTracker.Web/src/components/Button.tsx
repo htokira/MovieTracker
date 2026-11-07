@@ -6,9 +6,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 function Button({ children, fullWidth = false, ...rest }: ButtonProps) {
-  const className = fullWidth
-    ? `${styles.button} ${styles.fullWidth}`
-    : styles.button;
+  const className = fullWidth ? `${styles.button} ${styles.fullWidth}`: styles.button;
 
   return (
     <button className={className} {...rest}>

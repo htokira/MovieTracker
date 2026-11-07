@@ -4,6 +4,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import CatalogPage from "./pages/CatalogPage";
 import CollectionPage from "./pages/CollectionPage";
 import LoginPage from "./pages/LoginPage";
+import MovieDetailsPage from "./pages/MovieDetailsPage";
 import RegisterPage from "./pages/RegisterPage";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
 
       <Route element={<Layout />}>
         <Route index element={<CatalogPage />} />
+        <Route path="movie/:id" element={<MovieDetailsPage />} />
  
         <Route element={<PrivateRoute />}>
           <Route path="collection" element={<CollectionPage />} />

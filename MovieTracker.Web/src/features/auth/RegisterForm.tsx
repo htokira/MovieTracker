@@ -44,41 +44,12 @@ function RegisterForm() {
       <h1 className={styles.title}>Реєстрація</h1>
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <Input
-          label="Ім’я"
-          name="displayName"
-          type="text"
-          placeholder="Введіть ім'я"
-          value={input.displayName}
-          onChange={handleInputChange}
-          autoComplete="nickname"
-          minLength={2}
-          maxLength={50}
-          required
-        />
-        <Input
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="example@gmail.com"
-          value={input.email}
-          onChange={handleInputChange}
-          autoComplete="email"
-          maxLength={256}
-          required
-        />
-        <Input
-          label="Пароль"
-          name="password"
-          type="password"
-          placeholder="Введіть пароль мін. 8 символів"
-          value={input.password}
-          onChange={handleInputChange}
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={100}
-          required
-        />
+        <Input label="Ім’я" name="displayName" type="text" placeholder="Введіть ім'я" value={input.displayName}
+          onChange={handleInputChange} autoComplete="nickname" minLength={2} maxLength={50} required/>
+        <Input label="Email" name="email" type="email" placeholder="example@gmail.com" value={input.email}
+          onChange={handleInputChange} autoComplete="email" maxLength={256} required/>
+        <Input label="Пароль" name="password" type="password" placeholder="Введіть пароль мін. 8 символів" value={input.password}
+          onChange={handleInputChange} autoComplete="new-password" minLength={8} maxLength={100} required/>
 
         {error && <ErrorMessage message={error} />}
 

@@ -61,7 +61,6 @@ function CatalogPage() {
         page: nextPage,
         sortBy: CATALOG_SORT,
       });
-
       setMovies((prevMovies) => [
         ...prevMovies,
         ...nextMovies.filter(
@@ -69,7 +68,6 @@ function CatalogPage() {
         ),
       ]);
       setPage(nextPage);
-
       setHasMore(nextMovies.length > 0);
     } catch {
       setLoadMoreError("Не вдалося завантажити ще фільми. Спробуйте ще раз.");
@@ -108,7 +106,7 @@ function CatalogPage() {
         {hasMore && movies.length > 0 && (
           <div className={styles.more}>
             <Button type="button" onClick={handleShowMore} disabled={isLoadingMore}>
-              {isLoadingMore ? "Завантаження…" : "Показати ще"}
+              {isLoadingMore ? "Завантажуємо…" : "Показати ще"}
             </Button>
           </div>
         )}
