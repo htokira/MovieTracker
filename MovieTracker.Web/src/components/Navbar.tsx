@@ -27,11 +27,7 @@ function Navbar() {
           <NavLink to="/login" className={getLinkClassName}>
             Увійти
           </NavLink>
-          <button
-            type="button"
-            className={styles.iconButton}
-            aria-label="Сповіщення"
-          >
+          <button type="button" className={styles.iconButton} aria-label="Сповіщення">
             <Bell size={20} />
           </button>
           <Link to="/profile" className={styles.avatar} aria-label="Мій профіль">

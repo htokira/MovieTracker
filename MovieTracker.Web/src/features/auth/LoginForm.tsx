@@ -46,26 +46,10 @@ function LoginForm() {
       <h1 className={styles.title}>Увійти в акаунт</h1>
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <Input
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="example@gmail.com"
-          value={input.email}
-          onChange={handleInputChange}
-          autoComplete="email"
-          required
-        />
-        <Input
-          label="Пароль"
-          name="password"
-          type="password"
-          placeholder="Введіть пароль"
-          value={input.password}
-          onChange={handleInputChange}
-          autoComplete="current-password"
-          required
-        />
+        <Input label="Email" name="email" type="email" placeholder="example@gmail.com" value={input.email} 
+        onChange={handleInputChange} autoComplete="email" required/>
+        <Input label="Пароль" name="password" type="password" placeholder="Введіть пароль" value={input.password}
+          onChange={handleInputChange} autoComplete="current-password" required/>
 
         {error && <ErrorMessage message={error} />}
 
