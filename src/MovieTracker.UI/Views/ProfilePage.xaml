@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.ProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    x:DataType="vm:ProfileViewModel"
+    Title="Мій акаунт"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Повідомлення та індикатор -->
+        <VerticalStackLayout Grid.Row="0">
+            <Label
+                Text="{Binding ErrorMessage}"
+                Style="{StaticResource ErrorLabel}"
+                IsVisible="{Binding HasError}"
+                HorizontalOptions="Center"
+                Margin="20,10,20,0" />
+
+            <Label
+                Text="{Binding StatusMessage}"
+                Style="{StaticResource SuccessLabel}"
+                IsVisible="{Binding HasStatus}"
+                HorizontalOptions="Center"
+                Margin="20,10,20,0" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#8B7CFF"
+                Margin="0,10,0,0" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout
+                x:Name="FormStack"
+                Padding="0,20"
+                Spacing="16"
+                HorizontalOptions="Center">
+
+                <!-- Шапка профілю -->
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+
+                        <Border
+                            WidthRequest="96"
+                            HeightRequest="96"
+                            BackgroundColor="#6558D3"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 48">
+
+                            <Grid>
+                                <Label
+                                    Text="{Binding AvatarInitial}"
+                                    FontSize="40"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+
+                                <Image Source="{Binding AvatarImage}" Aspect="AspectFill" />
+                            </Grid>
+                        </Border>
+
+                        <Label
+                            Text="{Binding HeaderName}"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center" />
+
+                        <Label
+                            Text="{Binding Email}"
+                            TextColor="#A0A5B5"
+                            FontSize="13"
+                            HorizontalOptions="Center" />
+
+                        <Label
+                            Text="{Binding CreatedText}"
+                            TextColor="#A0A5B5"
+                            FontSize="12"
+                            HorizontalOptions="Center" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Редагування профілю -->
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label
+                            Text="Профіль"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Ім’я" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                <Entry
+                                    Style="{StaticResource FieldEntry}"
+                                    MaxLength="50"
+                                    Text="{Binding DisplayName}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Посилання на аватар" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                <Entry
+                                    Style="{StaticResource FieldEntry}"
+                                    Placeholder="https://..."
+                                    Keyboard="Url"
+                                    MaxLength="500"
+                                    Text="{Binding AvatarUrl}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Про себе" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                <Editor
+                                    Style="{StaticResource FieldEditor}"
+                                    Placeholder="Кілька слів про ваші кіносмаки"
+                                    MaxLength="500"
+                                    Text="{Binding Bio}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Button
+                            Text="Зберегти"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding SaveProfileCommand}"
+                            IsEnabled="{Binding IsNotBusy}" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Зміна пароля -->
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label
+                            Text="Зміна пароля"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Поточний пароль" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                <Entry
+                                    Style="{StaticResource FieldEntry}"
+                                    IsPassword="True"
+                                    Text="{Binding CurrentPassword}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Новий пароль" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                <Entry
+                                    Style="{StaticResource FieldEntry}"
+                                    Placeholder="Мінімум 8 символів"
+                                    IsPassword="True"
+                                    Text="{Binding NewPassword}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Повторіть новий пароль" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                <Entry
+                                    Style="{StaticResource FieldEntry}"
+                                    IsPassword="True"
+                                    Text="{Binding ConfirmNewPassword}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Button
+                            Text="Змінити пароль"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ChangePasswordCommand}"
+                            IsEnabled="{Binding IsNotBusy}" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Вихід і видалення -->
+                <VerticalStackLayout Spacing="10">
+
+                    <Button
+                        Text="Вийти"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding LogoutCommand}"
+                        IsEnabled="{Binding IsNotBusy}" />
+
+                    <Button
+                        Text="Видалити акаунт"
+                        Style="{StaticResource DangerButton}"
+                        Command="{Binding DeleteAccountCommand}"
+                        IsEnabled="{Binding IsNotBusy}" />
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>
