@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Bell, Clapperboard, User } from "lucide-react";
-import styles from "../styles/navbar.module.css";
+import styles from "./navbar.module.css";
 
 function getLinkClassName({ isActive }: { isActive: boolean }) {
   return isActive ? `${styles.link} ${styles.active}` : styles.link;

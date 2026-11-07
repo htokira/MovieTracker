@@ -1,5 +1,5 @@
-import LoginForm from "../features/auth/LoginForm";
-import styles from "../styles/AuthPage.module.css";
+import LoginForm from "@/features/auth/AuthForm/LoginForm";
+import styles from "./AuthPage.module.css";
 
 function LoginPage() {
   return (

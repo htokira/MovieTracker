@@ -1,7 +1,7 @@
-import HorizontalScroll from "../components/HorizontalScroll";
-import MovieCard from "../components/MovieCard";
-import type { MovieListItemDto } from "../types/movie";
-import styles from "../styles/MovieCarousel.module.css";
+import HorizontalScroll from "@/components/HorizontalScroll/HorizontalScroll";
+import MovieCard from "@/components/MovieCard/MovieCard";
+import type { MovieListItemDto } from "@/types/movie";
+import styles from "./MovieCarousel.module.css";
 
 interface MovieCarouselProps {
   movies: MovieListItemDto[];

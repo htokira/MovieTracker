@@ -1,5 +1,5 @@
-import RegisterForm from "../features/auth/RegisterForm";
-import styles from "../styles/AuthPage.module.css";
+import RegisterForm from "@/features/auth/AuthForm/RegisterForm";
+import styles from "./AuthPage.module.css";
 
 function RegisterPage() {
   return (

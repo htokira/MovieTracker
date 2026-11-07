@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Film, Star } from "lucide-react";
-import type { MovieListItemDto } from "../types/movie";
-import styles from "../styles/MovieCard.module.css";
+import type { MovieListItemDto } from "@/types/movie";
+import styles from "./MovieCard.module.css";
 
 interface MovieCardProps {
   movie: MovieListItemDto;

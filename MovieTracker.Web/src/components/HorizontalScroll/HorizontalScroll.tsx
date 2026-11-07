@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import type { ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import styles from "../styles/HorizontalScroll.module.css";
+import styles from "./HorizontalScroll.module.css";
 
 interface HorizontalScrollProps {
   children: ReactNode;

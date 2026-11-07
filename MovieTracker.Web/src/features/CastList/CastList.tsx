@@ -1,7 +1,7 @@
 import { User } from "lucide-react";
-import HorizontalScroll from "../components/HorizontalScroll";
-import type { MoviePersonDto } from "../types/movie";
-import styles from "../styles/CastList.module.css";
+import HorizontalScroll from "@/components/HorizontalScroll/HorizontalScroll";
+import type { MoviePersonDto } from "@/types/movie";
+import styles from "./CastList.module.css";
 
 interface CastListProps {
   people: MoviePersonDto[];

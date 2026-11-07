@@ -1,13 +1,13 @@
 import { useState } from "react";
 import type { ChangeEvent, SyntheticEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import ErrorMessage from "../../components/ErrorMessage";
-import Input from "../../components/Input";
-import { getErrorMessage } from "../../services/getErrorMessage";
-import type { RegisterRequest } from "../../types/auth";
-import { useAuth } from "./useAuth";
-import styles from "../../styles/AuthForm.module.css";
+import Button from "@/components/Button/Button";
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+import Input from "@/components/Input/Input";
+import { getErrorMessage } from "@/services/getErrorMessage";
+import type { RegisterRequest } from "@/types/auth";
+import { useAuth } from "@/features/auth/useAuth";
+import styles from "./authForm.module.css";
 
 function RegisterForm() {
   const { register } = useAuth();

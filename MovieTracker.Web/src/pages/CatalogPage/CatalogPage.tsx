@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import Button from "../components/Button";
-import ErrorMessage from "../components/ErrorMessage";
-import Spinner from "../components/Spinner";
-import MovieCarousel from "../features/MovieCarousel";
-import MovieGrid from "../features/MovieGrid";
-import { movieService } from "../services/movieService";
-import type { MovieListItemDto } from "../types/movie";
-import styles from "../styles/CatalogPage.module.css";
+import Button from "@/components/Button/Button";
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+import Spinner from "@/components/Spinner/Spinner";
+import MovieCarousel from "@/features/catalog/MovieCarousel/MovieCarousel";
+import MovieGrid from "@/features/catalog/MovieGrid/MovieGrid";
+import { movieService } from "@/services/movieService";
+import type { MovieListItemDto } from "@/types/movie";
+import styles from "./CatalogPage.module.css";
 
 const CATALOG_SORT = "vote_count.desc";
 

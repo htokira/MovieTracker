@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import ErrorMessage from "../components/ErrorMessage";
-import Spinner from "../components/Spinner";
-import CastList from "../features/CastList";
-import MovieHero from "../features/MovieHero";
-import { movieService } from "../services/movieService";
-import type { MovieDetailDto } from "../types/movie";
-import styles from "../styles/MovieDetailsPage.module.css";
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+import Spinner from "@/components/Spinner/Spinner";
+import CastList from "@/features/CastList/CastList";
+import MovieHero from "@/features/MovieHero/MovieHero";
+import { movieService } from "@/services/movieService";
+import type { MovieDetailDto } from "@/types/movie";
+import styles from "./MovieDetailsPage.module.css";
 
 function MovieDetailsPage() {
   const { id } = useParams<{ id: string }>();

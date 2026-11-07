@@ -1,6 +1,6 @@
 import { Film, Star } from "lucide-react";
-import type { MovieDetailDto } from "../types/movie";
-import styles from "../styles/MovieHero.module.css";
+import type { MovieDetailDto } from "@/types/movie";
+import styles from "./MovieHero.module.css";
 
 interface MovieHeroProps {
   movie: MovieDetailDto;

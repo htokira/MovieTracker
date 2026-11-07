@@ -1,10 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { authService } from "../../services/authService";
-import { tokenStorage } from "../../services/tokenStorage";
-import { userService } from "../../services/userService";
-import type { LoginRequest, RegisterRequest } from "../../types/auth";
-import type { UserProfileResponse } from "../../types/user";
+import { authService } from "@/services/authService";
+import { tokenStorage } from "@/services/tokenStorage";
+import { userService } from "@/services/userService";
+import type { LoginRequest, RegisterRequest } from "@/types/auth";
+import type { UserProfileResponse } from "@/types/user";
 
 interface AuthContextValue {
   user: UserProfileResponse | null;
