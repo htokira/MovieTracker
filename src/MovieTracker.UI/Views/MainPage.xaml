@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    x:Name="MainPageRoot"
     x:Class="MovieTracker.UI.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -112,6 +113,13 @@
                                         Padding="15"
                                         Spacing="8"
                                         Margin="0,0,25,0">
+
+                                        <VerticalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={x:Reference MainPageRoot},
+                                                            Path=BindingContext.OpenMovieCommand}"
+                                                CommandParameter="{Binding .}" />
+                                        </VerticalStackLayout.GestureRecognizers>
 
                                         <Border
                                             StrokeThickness="0"
@@ -246,6 +254,13 @@
                         Padding="5"
                         Spacing="7"
                         Margin="0,0,0,15">
+
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={x:Reference MainPageRoot},
+                                            Path=BindingContext.OpenMovieCommand}"
+                                CommandParameter="{Binding .}" />
+                        </VerticalStackLayout.GestureRecognizers>
 
                         <Border
                             BackgroundColor="#292E3D"
