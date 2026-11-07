@@ -22,7 +22,19 @@ namespace MovieTracker.UI.Services
             _http = http;
         }
 
-        public UserProfileResponse? CurrentUser { get; private set; }
+        private UserProfileResponse? _currentUser;
+
+        public UserProfileResponse? CurrentUser
+        {
+            get => _currentUser;
+            private set
+            {
+                _currentUser = value;
+                AuthStateChanged?.Invoke();
+            }
+        }
+
+        public event Action? AuthStateChanged;
         public bool IsAuthenticated => CurrentUser is not null;
 
         public async Task RestoreSessionAsync()

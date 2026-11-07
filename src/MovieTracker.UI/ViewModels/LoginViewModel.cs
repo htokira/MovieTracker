@@ -19,12 +19,15 @@ namespace MovieTracker.UI.ViewModels
 
         public ICommand LoginCommand { get; }
         public ICommand GoToRegisterCommand { get; }
+        public ICommand GoBackCommand { get; }
+
 
         public LoginViewModel(AuthService auth)
         {
             _auth = auth;
             LoginCommand = new Command(async () => await LoginAsync());
             GoToRegisterCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(RegisterPage)));
+            GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
         }
 
         private async Task LoginAsync()
@@ -52,6 +55,5 @@ namespace MovieTracker.UI.ViewModels
                 IsBusy = false;
             }
         }
-        public ICommand GoBackCommand => new Command(async () => await Shell.Current.GoToAsync(".."));
     }
 }

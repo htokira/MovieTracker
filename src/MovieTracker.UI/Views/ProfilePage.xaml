@@ -43,6 +43,17 @@
                 Padding="0,20"
                 Spacing="16"
                 HorizontalOptions="Center">
+				
+				<Label
+                    Text="← До каталогу"
+                    TextColor="#A0A5B5"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
 
                 <!-- Шапка профілю -->
                 <Border

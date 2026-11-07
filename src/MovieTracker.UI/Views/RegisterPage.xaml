@@ -13,25 +13,22 @@
     SizeChanged="OnPageSizeChanged">
 
     <ScrollView>
-        <VerticalStackLayout x:Name="FormStack" HorizontalOptions="Fill" Padding="20,20" Spacing="20">
+		<VerticalStackLayout x:Name="FormStack" HorizontalOptions="Center" Padding="0,20" Spacing="20">
             <Label 
-                Text="← Назад" 
+                Text="← Назад до логіну" 
                 TextColor="#A0A5B5" 
                 FontSize="16" 
                 FontAttributes="Bold"
                 HorizontalOptions="Start">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
                 </Label.GestureRecognizers>
             </Label>
             <Border
-                HorizontalOptions="Center"
-                WidthRequest="350"
                 BackgroundColor="#202331"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 16"
                 Padding="24">
-
                 <VerticalStackLayout Spacing="14">
 
                     <Label

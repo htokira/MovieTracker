@@ -10,13 +10,14 @@ public partial class MainPage : ContentPage
     private readonly AuthService _auth;
     private bool _isInitialized;
 
-    public MainPage(MainViewModel viewModel, AuthService auth)
+    public MainPage(MainViewModel viewModel, AccountBarViewModel accountBar, AuthService auth)
     {
         InitializeComponent();
 
         _viewModel = viewModel;
         _auth = auth;
         BindingContext = _viewModel;
+        AccountBar.BindingContext = accountBar;
     }
 
     protected override async void OnAppearing()
@@ -30,19 +31,6 @@ public partial class MainPage : ContentPage
         var restoreSession = _auth.RestoreSessionAsync();
         await _viewModel.InitializeAsync();
         await restoreSession;
-
-        await _viewModel.InitializeAsync();
-    }
-
-    private async void OnAccountClicked(object? sender, EventArgs e)
-    {
-        var route = _auth.IsAuthenticated ? nameof(ProfilePage) : nameof(LoginPage);
-        await Shell.Current.GoToAsync(route);
-    }
-
-    private async void OnLoginClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(LoginPage));
     }
 
     private void MoviesCollection_SizeChanged(object sender, EventArgs e)

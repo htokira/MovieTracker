@@ -59,6 +59,7 @@ namespace MovieTracker.UI.ViewModels
         public ICommand ChangePasswordCommand { get; }
         public ICommand LogoutCommand { get; }
         public ICommand DeleteAccountCommand { get; }
+        public ICommand GoBackCommand { get; }
 
         public ProfileViewModel(AuthService auth)
         {
@@ -68,6 +69,7 @@ namespace MovieTracker.UI.ViewModels
             ChangePasswordCommand = new Command(async () => await ChangePasswordAsync());
             LogoutCommand = new Command(async () => await LogoutAsync());
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
+            GoBackCommand = new Command(async () => await Shell.Current.Navigation.PopToRootAsync());
 
             Load();
         }

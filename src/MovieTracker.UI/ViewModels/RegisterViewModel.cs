@@ -77,6 +77,5 @@ namespace MovieTracker.UI.ViewModels
                 IsBusy = false;
             }
         }
-        public ICommand GoBackCommand => new Command(async () => await Shell.Current.GoToAsync(".."));
     }
 }
