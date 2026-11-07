@@ -69,7 +69,7 @@
                                 Text="{Binding Password}" />
                         </Border>
                         <Label
-                            Text="Потрібні велика літера та цифра."
+                            Text="Потрібні велика та мала літери та цифра."
                             Style="{StaticResource FieldLabel}" />
                     </VerticalStackLayout>
 

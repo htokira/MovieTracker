@@ -33,7 +33,7 @@ public partial class MainPage : ContentPage
         await restoreSession;
     }
 
-    private void MoviesCollection_SizeChanged(object sender, EventArgs e)
+    private void MoviesCollection_SizeChanged(object? sender, EventArgs e)
     {
         if (sender is not CollectionView collectionView)
             return;

@@ -57,7 +57,7 @@ namespace MovieTracker.API.Controllers
                 return InvalidCredentials();
 
             if (await _users.IsLockedOutAsync(user))
-                return Problem(title: "Too many login tries, try again later.",
+                return Problem(title: "Забагато спроб входу, спробуйте ще раз пізніше.",
                     statusCode: StatusCodes.Status423Locked);
 
             if (!await _users.CheckPasswordAsync(user, request.Password))
@@ -137,7 +137,7 @@ namespace MovieTracker.API.Controllers
             await _db.SaveChangesAsync();
         }
 
-        private ObjectResult InvalidCredentials() => Problem(title: "Wrong email or password.", statusCode: StatusCodes.Status401Unauthorized);
-        private ObjectResult InvalidToken() => Problem(title: "Invalid refresh token", statusCode: StatusCodes.Status401Unauthorized);
+        private ObjectResult InvalidCredentials() => Problem(title: "Невірний email чи пароль.", statusCode: StatusCodes.Status401Unauthorized);
+        private ObjectResult InvalidToken() => Problem(title: "Недійсний токен оновлення", statusCode: StatusCodes.Status401Unauthorized);
     }
 }

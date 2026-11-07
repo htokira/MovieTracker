@@ -17,6 +17,18 @@ namespace MovieTracker.UI.Services
         private readonly SemaphoreSlim _refreshLock = new(1, 1);
         private string? _refreshToken;
 
+        private static readonly Dictionary<string, string> ErrorTranslations = new()
+        {
+            ["DuplicateEmail"] = "Акаунт із таким email уже існує.",
+            ["DuplicateUserName"] = "Акаунт із таким email уже існує.",
+            ["InvalidEmail"] = "Введіть коректний email.",
+            ["PasswordTooShort"] = "Пароль має містити щонайменше 8 символів.",
+            ["PasswordRequiresUpper"] = "Пароль має містити велику літеру.",
+            ["PasswordRequiresLower"] = "Пароль має містити малу літеру.",
+            ["PasswordRequiresDigit"] = "Пароль має містити цифру.",
+            ["PasswordMismatch"] = "Невірний поточний пароль."
+        };
+
         public AuthService(HttpClient http)
         {
             _http = http;
@@ -251,8 +263,8 @@ namespace MovieTracker.UI.Services
                 if (root.TryGetProperty("errors", out var errors) && errors.ValueKind == JsonValueKind.Object)
                 {
                     var messages = errors.EnumerateObject()
-                        .SelectMany(p => p.Value.EnumerateArray())
-                        .Select(m => m.GetString())
+                        .SelectMany(p => p.Value.EnumerateArray().Select(m =>
+                            ErrorTranslations.TryGetValue(p.Name, out var translated) ? translated : m.GetString()))
                         .Where(m => !string.IsNullOrWhiteSpace(m))
                         .Distinct();
 
