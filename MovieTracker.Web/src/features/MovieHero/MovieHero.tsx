@@ -1,6 +1,7 @@
-import { Film, Star } from "lucide-react";
+import { BookmarkPlus, Film, Star } from "lucide-react";
 import type { MovieDetailDto } from "@/types/movie";
 import styles from "./MovieHero.module.css";
+import Button from "@/components/Button/Button";
 
 interface MovieHeroProps {
   movie: MovieDetailDto;
@@ -47,6 +48,15 @@ function MovieHero({ movie }: MovieHeroProps) {
         ) : (
           <p className={styles.noDescription}>Опис відсутній</p>
         )}
+
+      <div className={styles.actions}>
+          <Button type="button">
+            <span className={styles.buttonContent}>
+              <BookmarkPlus size={18} />
+              Додати в колекцію
+            </span>
+          </Button>
+        </div>
       </div>
     </section>
   );

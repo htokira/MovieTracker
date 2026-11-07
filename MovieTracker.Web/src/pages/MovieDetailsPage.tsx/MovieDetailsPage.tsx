@@ -6,6 +6,7 @@ import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
 import CastList from "@/features/CastList/CastList";
 import MovieHero from "@/features/MovieHero/MovieHero";
+import ReviewSection from "@/features/review/ReviewSection/ReviewSection";
 import { movieService } from "@/services/movieService";
 import type { MovieDetailDto } from "@/types/movie";
 import styles from "./MovieDetailsPage.module.css";
@@ -45,14 +46,13 @@ function MovieDetailsPage() {
         }
       }
     }
-
     loadMovie();
-
+ 
     return () => {
       isIgnored = true;
     };
   }, [movieId, isIdValid]);
-
+ 
   function renderContent() {
     if (!isIdValid) {
       return <ErrorMessage message="Некоректний номер фільму." />;
@@ -72,10 +72,11 @@ function MovieDetailsPage() {
         {movie.moviePersons.length > 0 && (
           <CastList people={movie.moviePersons} />
         )}
+        <ReviewSection key={movie.id} movieId={movie.id} />
       </>
     );
   }
-
+ 
   return (
     <div className={styles.page}>
       <Link to="/" className={styles.back}>
@@ -86,5 +87,5 @@ function MovieDetailsPage() {
     </div>
   );
 }
-
+ 
 export default MovieDetailsPage;
