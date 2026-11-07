@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.MovieDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
+    Title="Інформація про фільм"
+    BackgroundColor="#171923"
+    Shell.NavBarIsVisible="False">
+
+    <Grid>
+
+        <ScrollView>
+            <VerticalStackLayout Spacing="20" Padding="20">
+
+                <!-- Основна інформація -->
+                <Grid ColumnDefinitions="140,*" ColumnSpacing="18">
+
+                    <Border
+                        Grid.Column="0"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 10"
+                        HeightRequest="210"
+                        WidthRequest="140"
+                        BackgroundColor="#292E3D">
+
+                        <Image
+                            Source="{Binding Movie.PosterUrl}"
+                            Aspect="AspectFill" />
+
+                    </Border>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Spacing="10"
+                        VerticalOptions="Center">
+
+                        <Label
+                            Text="{Binding Movie.Title}"
+                            TextColor="White"
+                            FontSize="22"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            Text="{Binding Movie.ReleaseYear}"
+                            TextColor="#A0A5B5"
+                            FontSize="15" />
+
+                        <Label
+                            Text="{Binding Movie.Rating, StringFormat='★ {0:F1}'}"
+                            TextColor="#FFC857"
+                            FontSize="17"
+                            FontAttributes="Bold" />
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+                <!-- Жанри -->
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="Жанри"
+                        TextColor="White"
+                        FontSize="19"
+                        FontAttributes="Bold" />
+
+                    <FlexLayout
+                        BindableLayout.ItemsSource="{Binding Movie.Genres}"
+                        Wrap="Wrap"
+                        Direction="Row">
+
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="dto:GenreDto">
+
+                                <Border
+                                    BackgroundColor="#292E3D"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 15"
+                                    Padding="12,6"
+                                    Margin="0,0,8,8">
+
+                                    <Label
+                                        Text="{Binding Name}"
+                                        TextColor="#B8B1FF"
+                                        FontSize="12" />
+
+                                </Border>
+
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+
+                    </FlexLayout>
+
+                </VerticalStackLayout>
+
+                <!-- Опис -->
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="Опис фільму"
+                        TextColor="White"
+                        FontSize="19"
+                        FontAttributes="Bold" />
+
+                    <Label
+                        Text="{Binding Movie.Description}"
+                        TextColor="#C5C8D3"
+                        FontSize="14"
+                        LineBreakMode="WordWrap" />
+
+                </VerticalStackLayout>
+
+                <!-- Акторський склад -->
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Акторський склад"
+                        TextColor="White"
+                        FontSize="19"
+                        FontAttributes="Bold" />
+
+                    <VerticalStackLayout
+                        BindableLayout.ItemsSource="{Binding Movie.MoviePersons}"
+                        Spacing="12">
+
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="dto:MoviePersonDto">
+
+                                <Grid
+                                    ColumnDefinitions="55,*"
+                                    ColumnSpacing="12">
+
+                                    <Border
+                                        WidthRequest="55"
+                                        HeightRequest="65"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="#292E3D">
+
+                                        <Image
+                                            Source="{Binding PhotoUrl}"
+                                            Aspect="AspectFill" />
+
+                                    </Border>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        VerticalOptions="Center"
+                                        Spacing="4">
+
+                                        <Label
+                                            Text="{Binding FullName}"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            FontAttributes="Bold" />
+
+                                        <Label
+                                            Text="{Binding Role}"
+                                            TextColor="#A0A5B5"
+                                            FontSize="12" />
+
+                                    </VerticalStackLayout>
+
+                                </Grid>
+
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+
+                <!-- Помилки -->
+                <Label
+                    Text="{Binding ErrorMessage}"
+                    TextColor="#FF7777"
+                    FontSize="14"
+                    IsVisible="{Binding HasError}" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Завантаження -->
+        <Grid
+            BackgroundColor="#CC171923"
+            IsVisible="{Binding IsLoading}">
+
+            <ActivityIndicator
+                IsRunning="{Binding IsLoading}"
+                Color="#8B7CFF"
+                WidthRequest="50"
+                HeightRequest="50"
+                VerticalOptions="Center"
+                HorizontalOptions="Center" />
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
