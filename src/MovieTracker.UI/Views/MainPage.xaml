@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
     BackgroundColor="#171923"
     Shell.NavBarIsVisible="False">
 
@@ -11,29 +12,63 @@
 
         <!-- Верхня панель -->
         <Grid
-            Grid.Row="0"
-            Padding="20,15"
-            ColumnDefinitions="*,Auto"
-            BackgroundColor="#202331">
+    Grid.Row="0"
+    Padding="20,15"
+    ColumnDefinitions="*,Auto"
+    BackgroundColor="#202331">
 
             <Label
-                Text="Movie Tracker" 
-                FontSize="24" 
-                FontAttributes="Bold" 
-                TextColor="White"
-                VerticalOptions="Center" />
+        Text="Movie Tracker"
+        FontSize="24"
+        FontAttributes="Bold"
+        TextColor="White"
+        VerticalOptions="Center" />
 
-            <ImageButton
-                Grid.Column="1"
-                Source="Resources/Images/user.png"
-                WidthRequest="32"
-                HeightRequest="32"
-                BackgroundColor="Transparent"
-                Aspect="AspectFit"
-                VerticalOptions="Center" />
-        
+            <Grid
+        x:Name="AccountBar"
+        x:DataType="vm:AccountBarViewModel"
+        Grid.Column="1"
+        VerticalOptions="Center">
+
+                <!-- Гість: кнопка входу -->
+                <Button
+            Text="Увійти"
+            Style="{StaticResource PrimaryButton}"
+            HeightRequest="36"
+            Padding="18,0"
+            FontSize="13"
+            Command="{Binding LoginCommand}"
+            IsVisible="{Binding IsGuest}" />
+
+                <!-- Авторизований: кружечок, що відкриває профіль -->
+                <Border
+            WidthRequest="36"
+            HeightRequest="36"
+            BackgroundColor="#6558D3"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 18"
+            IsVisible="{Binding IsAuthenticated}">
+
+                    <Grid>
+                        <Label
+                    Text="{Binding AvatarInitial}"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+
+                        <Image Source="{Binding AvatarImage}" Aspect="AspectFill" />
+                    </Grid>
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenProfileCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+            </Grid>
         </Grid>
-        
+
         <!-- Список фільмів -->
         <CollectionView
             Grid.Row="1" 

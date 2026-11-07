@@ -9,6 +9,67 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="FieldLabel" TargetType="Label">
+                <Setter Property="TextColor" Value="#A0A5B5" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+
+            <Style x:Key="ErrorLabel" TargetType="Label">
+                <Setter Property="TextColor" Value="#FF7777" />
+                <Setter Property="FontSize" Value="13" />
+            </Style>
+
+            <Style x:Key="SuccessLabel" TargetType="Label">
+                <Setter Property="TextColor" Value="#6FCF97" />
+                <Setter Property="FontSize" Value="13" />
+            </Style>
+
+            <Style x:Key="FieldBorder" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#292E3D" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Padding" Value="12,0" />
+            </Style>
+
+            <Style x:Key="FieldEntry" TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="PlaceholderColor" Value="#A0A5B5" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+
+            <Style x:Key="FieldEditor" TargetType="Editor">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="PlaceholderColor" Value="#A0A5B5" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="HeightRequest" Value="90" />
+            </Style>
+
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#6558D3" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="45" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+
+            <Style x:Key="SecondaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#292E3D" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="45" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+
+            <Style x:Key="DangerButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="#FF7777" />
+                <Setter Property="BorderColor" Value="#FF7777" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="HeightRequest" Value="45" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
