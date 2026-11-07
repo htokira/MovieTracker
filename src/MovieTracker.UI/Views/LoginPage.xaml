@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    x:DataType="vm:LoginViewModel"
+    Title="Вхід"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <ScrollView>
+        <VerticalStackLayout x:Name="FormStack" Padding="0,40" HorizontalOptions="Center">
+
+            <Border
+                BackgroundColor="#202331"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="24">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label
+                        Text="Вхід в акаунт"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+
+                    <Label
+                        Text="Увійдіть, щоб оцінювати фільми та вести свій список."
+                        Style="{StaticResource FieldLabel}" />
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Email" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                Placeholder="example@gmail.com"
+                                Keyboard="Email"
+                                Text="{Binding Email}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Пароль" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                IsPassword="True"
+                                ReturnType="Go"
+                                ReturnCommand="{Binding LoginCommand}"
+                                Text="{Binding Password}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        Style="{StaticResource ErrorLabel}"
+                        IsVisible="{Binding HasError}" />
+
+                    <Button
+                        Text="Увійти"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsNotBusy}" />
+
+                    <ActivityIndicator
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        Color="#8B7CFF" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                        <Label
+                            Text="Ще немає акаунта?"
+                            Style="{StaticResource FieldLabel}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Text="Зареєструватися"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#8B7CFF"
+                            VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
