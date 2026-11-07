@@ -13,9 +13,20 @@
     SizeChanged="OnPageSizeChanged">
 
     <ScrollView>
-        <VerticalStackLayout x:Name="FormStack" Padding="0,40" HorizontalOptions="Center">
-
+        <VerticalStackLayout x:Name="FormStack" HorizontalOptions="Fill" Padding="20,20" Spacing="20">
+            <Label 
+                Text="← Назад" 
+                TextColor="#A0A5B5" 
+                FontSize="16" 
+                FontAttributes="Bold"
+                HorizontalOptions="Start">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
             <Border
+                HorizontalOptions="Center"
+                WidthRequest="350"
                 BackgroundColor="#202331"
                 StrokeThickness="0"
                 StrokeShape="RoundRectangle 16"
