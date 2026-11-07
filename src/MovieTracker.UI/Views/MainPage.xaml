@@ -25,6 +25,7 @@
 
             <ImageButton
                 Grid.Column="1"
+                Clicked="OnAccountClicked"
                 Source="Resources/Images/user.png"
                 WidthRequest="32"
                 HeightRequest="32"

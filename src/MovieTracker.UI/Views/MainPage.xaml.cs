@@ -1,18 +1,21 @@
-﻿using MovieTracker.UI.ViewModels;
-using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Controls;
+using MovieTracker.UI.Services;
+using MovieTracker.UI.ViewModels;
 
 namespace MovieTracker.UI.Views;
 
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel _viewModel;
+    private readonly AuthService _auth;
     private bool _isInitialized;
 
-    public MainPage(MainViewModel viewModel)
+    public MainPage(MainViewModel viewModel, AuthService auth)
     {
         InitializeComponent();
 
         _viewModel = viewModel;
+        _auth = auth;
         BindingContext = _viewModel;
     }
 
@@ -24,8 +27,17 @@ public partial class MainPage : ContentPage
             return;
 
         _isInitialized = true;
+        var restoreSession = _auth.RestoreSessionAsync();
+        await _viewModel.InitializeAsync();
+        await restoreSession;
 
         await _viewModel.InitializeAsync();
+    }
+
+    private async void OnAccountClicked(object? sender, EventArgs e)
+    {
+        var route = _auth.IsAuthenticated ? nameof(ProfilePage) : nameof(LoginPage);
+        await Shell.Current.GoToAsync(route);
     }
 
     private void MoviesCollection_SizeChanged(object sender, EventArgs e)
