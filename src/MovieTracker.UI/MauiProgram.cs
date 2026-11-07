@@ -12,7 +12,7 @@ public static class MauiProgram
 		#if ANDROID
 				var apiBaseUrl = "http://10.0.2.2:7226/";
 		#else
-				var apiBaseUrl = "https://localhost:7226/";
+				var apiBaseUrl = "http://localhost:7226/";
 		#endif
 
 		var builder = MauiApp.CreateBuilder();

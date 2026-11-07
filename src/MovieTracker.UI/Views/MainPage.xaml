@@ -23,18 +23,30 @@
                 TextColor="White"
                 VerticalOptions="Center" />
 
-            <ImageButton
-                Grid.Column="1"
-                Clicked="OnAccountClicked"
-                Source="Resources/Images/user.png"
-                WidthRequest="32"
-                HeightRequest="32"
-                BackgroundColor="Transparent"
-                Aspect="AspectFit"
-                VerticalOptions="Center" />
-        
+            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+
+                <!-- Кнопка "Увійти" -->
+                <Button
+                    Text="Увійти"
+                    Style="{StaticResource PrimaryButton}"
+                    HeightRequest="35"
+                    Padding="15,0"
+                    Clicked="OnLoginClicked"
+                    IsVisible="{Binding IsNotAuthenticated}" />
+
+                <!-- Іконка профілю -->
+                <ImageButton
+                    Clicked="OnAccountClicked"
+                    Source="Resources/Images/user.png"
+                    WidthRequest="32"
+                    HeightRequest="32"
+                    BackgroundColor="Transparent"
+                    Aspect="AspectFit"
+                    IsVisible="{Binding IsAuthenticated}" />
+
+            </HorizontalStackLayout>
         </Grid>
-        
+
         <!-- Список фільмів -->
         <CollectionView
             Grid.Row="1" 

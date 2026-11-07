@@ -40,6 +40,11 @@ public partial class MainPage : ContentPage
         await Shell.Current.GoToAsync(route);
     }
 
+    private async void OnLoginClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(LoginPage));
+    }
+
     private void MoviesCollection_SizeChanged(object sender, EventArgs e)
     {
         if (sender is not CollectionView collectionView)
