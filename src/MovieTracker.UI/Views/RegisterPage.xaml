@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    x:DataType="vm:RegisterViewModel"
+    Title="Реєстрація"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <ScrollView>
+        <VerticalStackLayout x:Name="FormStack" Padding="0,40" HorizontalOptions="Center">
+
+            <Border
+                BackgroundColor="#202331"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="24">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label
+                        Text="Створення акаунта"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Ім’я" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                Placeholder="Як вас називати"
+                                MaxLength="50"
+                                Text="{Binding DisplayName}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Email" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                Placeholder="example@gmail.com"
+                                Keyboard="Email"
+                                Text="{Binding Email}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Пароль" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                Placeholder="Мінімум 8 символів"
+                                IsPassword="True"
+                                Text="{Binding Password}" />
+                        </Border>
+                        <Label
+                            Text="Потрібні велика літера та цифра."
+                            Style="{StaticResource FieldLabel}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Повторіть пароль" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                IsPassword="True"
+                                ReturnType="Go"
+                                ReturnCommand="{Binding RegisterCommand}"
+                                Text="{Binding ConfirmPassword}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Label
+                        Text="{Binding ErrorMessage}"
+                        Style="{StaticResource ErrorLabel}"
+                        IsVisible="{Binding HasError}" />
+
+                    <Button
+                        Text="Зареєструватися"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding RegisterCommand}"
+                        IsEnabled="{Binding IsNotBusy}" />
+
+                    <ActivityIndicator
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        Color="#8B7CFF" />
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                        <Label
+                            Text="Вже є акаунт?"
+                            Style="{StaticResource FieldLabel}"
+                            VerticalOptions="Center" />
+                        <Label
+                            Text="Увійти"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#8B7CFF"
+                            VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
