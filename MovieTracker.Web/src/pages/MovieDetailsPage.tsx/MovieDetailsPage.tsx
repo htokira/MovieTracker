@@ -78,13 +78,13 @@ function MovieDetailsPage() {
   }
  
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <Link to="/" className={styles.back}>
         <ArrowLeft size={18} />
         Назад до каталогу
       </Link>
       {renderContent()}
-    </div>
+    </main>
   );
 }
  

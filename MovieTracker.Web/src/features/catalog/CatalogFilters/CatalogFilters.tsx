@@ -24,12 +24,7 @@ function CatalogFilters({
 
   return (
     <aside className={styles.filters}>
-      <Select
-        label="Жанр"
-        name="genre"
-        value={genreId ?? ""}
-        onChange={handleGenreChange}
-      >
+      <Select label="Жанр" name="genre" value={genreId ?? ""} onChange={handleGenreChange}>
         <option value="">Усі жанри</option>
         {GENRES.map((genre) => (
           <option key={genre.id} value={genre.id}>
@@ -38,12 +33,7 @@ function CatalogFilters({
         ))}
       </Select>
 
-      <button
-        type="button"
-        className={styles.reset}
-        onClick={onReset}
-        disabled={!hasActiveFilters}
-      >
+      <button type="button" className={styles.reset} onClick={onReset} disabled={!hasActiveFilters}>
         <X size={16} />
         Скинути фільтри
       </button>

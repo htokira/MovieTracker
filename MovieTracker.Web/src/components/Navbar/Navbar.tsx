@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { Bell, Clapperboard, User } from "lucide-react";
+import { Bell, Clapperboard } from "lucide-react";
 import Avatar from "@/components/Avatar/Avatar";
 import { useAuth } from "@/features/auth/useAuth";
 import styles from "./navbar.module.css";
