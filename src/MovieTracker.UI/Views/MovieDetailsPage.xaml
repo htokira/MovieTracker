@@ -155,16 +155,20 @@
                         FontSize="19"
                         FontAttributes="Bold" />
 
-                    <VerticalStackLayout
+                    <FlexLayout
                         BindableLayout.ItemsSource="{Binding Movie.MoviePersons}"
-                        Spacing="12">
+                        Direction="Row"
+                        Wrap="Wrap"
+                        JustifyContent="Start"
+                        AlignItems="Start">
 
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="dto:MoviePersonDto">
 
-                                <Grid
-                                    ColumnDefinitions="55,*"
-                                    ColumnSpacing="12">
+                                <VerticalStackLayout
+                                    WidthRequest="105"
+                                    Margin="0,0,12,15"
+                                    Spacing="6">
 
                                     <Border
                                         WidthRequest="55"
@@ -179,30 +183,27 @@
 
                                     </Border>
 
-                                    <VerticalStackLayout
-                                        Grid.Column="1"
-                                        VerticalOptions="Center"
-                                        Spacing="4">
+                                    <Label
+                                        Text="{Binding FullName}"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        FontAttributes="Bold"
+                                        MaxLines="2"
+                                        LineBreakMode="TailTruncation" />
 
-                                        <Label
-                                            Text="{Binding FullName}"
-                                            TextColor="White"
-                                            FontSize="14"
-                                            FontAttributes="Bold" />
+                                    <Label
+                                        Text="{Binding Role}"
+                                        TextColor="#A0A5B5"
+                                        FontSize="11"
+                                        MaxLines="2"
+                                        LineBreakMode="TailTruncation" />
 
-                                        <Label
-                                            Text="{Binding Role}"
-                                            TextColor="#A0A5B5"
-                                            FontSize="12" />
-
-                                    </VerticalStackLayout>
-
-                                </Grid>
+                                </VerticalStackLayout>
 
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
 
-                    </VerticalStackLayout>
+                    </FlexLayout>
 
                 </VerticalStackLayout>
 
