@@ -207,6 +207,106 @@
 
                 </VerticalStackLayout>
 
+                <!-- Відгуки -->
+                <VerticalStackLayout Spacing="15">
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <Label
+                            Text="Відгуки користувачів"
+                            TextColor="White"
+                            FontSize="19"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            Grid.Column="1"
+                            Text="{Binding Reviews.TotalReviews, StringFormat='Всього: {0}'}"
+                            TextColor="#A0A5B5"
+                            FontSize="12"
+                            VerticalOptions="Center" />
+
+                    </Grid>
+
+                    <HorizontalStackLayout
+                        Spacing="8"
+                        IsVisible ="{Binding HasReviews}">
+
+                        <Label
+                            Text="★"
+                            TextColor="#FFC857"
+                            FontSize="22" />
+
+                        <Label
+                            Text="{Binding Reviews.AverageRating, StringFormat='{0:F1} / 10'}"
+                            TextColor="White"
+                            FontSize="18"
+                            FontAttributes="Bold" />
+
+                    </HorizontalStackLayout>
+
+                    <ActivityIndicator
+                        IsRunning="{Binding IsLoadingReviews}"
+                        IsVisible="{Binding IsLoadingReviews}"
+                        Color="#8B7CFF" />
+
+                    <Label
+                        Text="Відгуків про цей фільм поки немає."
+                        TextColor="#A0A5B5"
+                        FontSize="14"
+                        IsVisible="{Binding HasNoReviews}" />
+
+                    <VerticalStackLayout
+                        BindableLayout.ItemsSource="{Binding Reviews.Items}"
+                        Spacing="12"
+                        IsVisible="{Binding HasReviews}">
+
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="dto:ReviewResponse">
+                                <Border
+                                    BackgroundColor="#202331"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 12"
+                                    Padding="15">
+
+                                    <VerticalStackLayout Spacing="8">
+
+                                        <Grid ColumnDefinitions="*,Auto">
+
+                                            <Label
+                                                Text="{Binding AuthorName}"
+                                                TextColor="White"
+                                                FontSize="14"
+                                                FontAttributes="Bold" />
+
+                                            <Label
+                                                Grid.Column="1"
+                                                Text="{Binding Rating, StringFormat='★ {0}/10'}"
+                                                TextColor="#FFC857"
+                                                FontSize="13"
+                                                FontAttributes="Bold" />
+
+                                        </Grid>
+
+                                        <Label
+                                            Text="{Binding Text}"
+                                            TextColor="#C5C8D3"
+                                            FontSize="13"
+                                            LineBreakMode="WordWrap" />
+
+                                        <Label
+                                            Text="{Binding UpdatedAt, StringFormat='Оновлено: {0:dd.MM.yyyy}'}"
+                                            TextColor="#777E91"
+                                            FontSize="11" />
+                                            
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+
                 <!-- Помилки -->
                 <Label
                     Text="{Binding ErrorMessage}"

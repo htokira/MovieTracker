@@ -14,6 +14,8 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
     private MovieDetailDto? _movie;
     private bool _isLoading;
     private string? _errorMessage = string.Empty;
+    private MovieReviewsResponse? _reviews;
+    private bool _isLoadingReviews;
 
     public MovieDetailDto? Movie
     {
@@ -57,6 +59,39 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
+    public MovieReviewsResponse? Reviews
+    {
+        get => _reviews;
+        set
+        {
+            if (_reviews != value)
+            {
+                _reviews = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasReviews));
+                OnPropertyChanged(nameof(HasNoReviews));
+            }
+        }
+    }
+
+    public bool IsLoadingReviews
+    {
+        get => _isLoadingReviews;
+        set
+        {
+            if (_isLoadingReviews != value)
+            {
+                _isLoadingReviews = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasNoReviews));
+            }
+        }
+    }
+
+    public bool HasReviews => Reviews?.Items?.Count > 0;
+
+    public bool HasNoReviews => !IsLoadingReviews && Reviews != null && Reviews.TotalReviews == 0;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public MovieDetailsViewModel(ApiService apiService)
@@ -75,6 +110,8 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
 
             if (Movie == null)
                 ErrorMessage = "Не вдалося знайти інформацію про фільм.";
+
+            await LoadReviewsAsync(movieId);
         }
         catch (Exception ex)
         {
@@ -84,6 +121,25 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    public async Task LoadReviewsAsync(int movieId)
+    {
+        try
+        {
+            IsLoadingReviews = true;
+            Reviews = null;
+
+            Reviews = await _apiService.GetMovieReviewsAsync(movieId);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading reviews: {ex.Message}");
+        }
+        finally
+        {
+            IsLoadingReviews = false;
         }
     }
 
