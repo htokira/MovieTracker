@@ -16,6 +16,15 @@
             ColumnDefinitions="Auto,*,Auto"
             BackgroundColor="#202331">
 
+            <Button
+                Text="‹ Назад"
+                Clicked="OnBackClicked"
+                BackgroundColor="Transparent"
+                TextColor="White"
+                FontSize="14"
+                Padding="5,0"
+                VerticalOptions="Center" />
+
             <Label
                 Grid.Column="1"
                 Text="Movie Tracker"

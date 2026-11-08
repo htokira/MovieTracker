@@ -22,4 +22,9 @@ public partial class MovieDetailsPage : ContentPage, IQueryAttributable
             _ = _viewModel.LoadMovieAsync(movieId);
         }
     }
+
+    private async void OnBackClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
 }
