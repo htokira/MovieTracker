@@ -8,9 +8,35 @@
     BackgroundColor="#171923"
     Shell.NavBarIsVisible="False">
 
-    <Grid>
+    <Grid RowDefinitions="Auto,*">
 
-        <ScrollView>
+        <Grid
+            Grid.Row="0"
+            Padding="15"
+            ColumnDefinitions="Auto,*,Auto"
+            BackgroundColor="#202331">
+
+            <Label
+                Grid.Column="1"
+                Text="Movie Tracker"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="White"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <ImageButton
+                Grid.Column="2"
+                Source="Resources/Images/user.png"
+                WidthRequest="32"
+                HeightRequest="32"
+                BackgroundColor="Transparent"
+                Aspect="AspectFit"
+                VerticalOptions="Center" />
+
+        </Grid>
+
+        <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="20" Padding="20">
 
                 <!-- Основна інформація -->
