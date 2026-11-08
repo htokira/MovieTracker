@@ -11,7 +11,7 @@ public class MainViewModel : INotifyPropertyChanged
 {
     private readonly ApiService _apiService;
 
-   private string _searchQuery = string.Empty;
+    private string _searchQuery = string.Empty;
     private bool _isLoading;
     private string? _errorMessage;
     private string _selectedGenre = "Усі жанри";
@@ -133,6 +133,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand SearchCommand { get; }
     public ICommand ApplyFiltersCommand { get; }
+    public ICommand OpenMovieCommand { get; }
 
     public MainViewModel(ApiService apiService)
     {
@@ -141,6 +142,14 @@ public class MainViewModel : INotifyPropertyChanged
         ApplyFiltersCommand = new Command(async () => await LoadMoviesAsync());
         GenreOptions = new ObservableCollection<string>(_genreIds.Keys);
         SortOptions = new ObservableCollection<string>(_sortOptions.Keys);
+        OpenMovieCommand = new Command<MovieListItemDto>(async movie =>
+        {
+            if (movie == null)
+                return;
+
+            await Shell.Current.GoToAsync(
+                $"movie-details?movieId={movie.Id}");
+        });
     }
 
     public async Task InitializeAsync()

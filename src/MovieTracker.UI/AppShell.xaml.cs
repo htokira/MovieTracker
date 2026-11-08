@@ -17,5 +17,7 @@ public partial class AppShell : Shell
             Title = "Головна",
             Content = mainPage
         });
+
+        Routing.RegisterRoute("movie-details", typeof(MovieDetailsPage));
     }
 }

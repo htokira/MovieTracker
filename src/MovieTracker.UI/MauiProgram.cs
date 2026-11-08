@@ -29,6 +29,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ApiService>();
 		builder.Services.AddTransient<MainViewModel>();
 		builder.Services.AddTransient<MainPage>();
+		builder.Services.AddTransient<MovieDetailsViewModel>();
+		builder.Services.AddTransient<MovieDetailsPage>();
 		builder.Services.AddSingleton<AppShell>();
 
         builder.Services.AddSingleton<AuthService>();

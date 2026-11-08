@@ -59,4 +59,13 @@ public class ApiService
             return null;
         }
     }
+
+    public async Task<MovieReviewsResponse?> GetMovieReviewsAsync(
+    int movieId,
+    int page = 1,
+    int pageSize = 10)
+    {
+        return await _httpClient.GetFromJsonAsync<MovieReviewsResponse>(
+            $"api/movies/{movieId}/reviews?page={page}&pageSize={pageSize}");
+    }
 }
