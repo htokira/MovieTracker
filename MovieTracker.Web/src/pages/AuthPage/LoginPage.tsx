@@ -3,10 +3,10 @@ import styles from "./AuthPage.module.css";
 
 function LoginPage() {
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <LoginForm />
-    </div>
+    </main>
   );
 }
-
+ 
 export default LoginPage;

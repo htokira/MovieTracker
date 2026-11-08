@@ -12,6 +12,7 @@ interface AuthContextValue {
   login: (data: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
+  updateUser: (user: UserProfileResponse) => void;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
@@ -62,8 +63,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   }
 
+  function updateUser(updatedUser: UserProfileResponse) {
+    setUser(updatedUser);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
