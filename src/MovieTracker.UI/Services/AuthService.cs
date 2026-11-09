@@ -16,6 +16,7 @@ namespace MovieTracker.UI.Services
         private readonly HttpClient _http;
         private readonly SemaphoreSlim _refreshLock = new(1, 1);
         private string? _refreshToken;
+        internal const string NetworkError = "Не вдалося зв’язатися із сервером. Перевірте, чи запущено API.";
 
         private static readonly Dictionary<string, string> ErrorTranslations = new()
         {
@@ -164,7 +165,7 @@ namespace MovieTracker.UI.Services
             return null;
         }
 
-        private async Task<HttpResponseMessage> SendAuthorizedAsync(Func<HttpRequestMessage> createRequest)
+        internal async Task<HttpResponseMessage> SendAuthorizedAsync(Func<HttpRequestMessage> createRequest)
         {
             var response = await _http.SendAsync(createRequest());
             if (response.StatusCode != HttpStatusCode.Unauthorized || !await RefreshAsync())
@@ -241,7 +242,7 @@ namespace MovieTracker.UI.Services
             }
         }
 
-        private static async Task<string?> GuardAsync(Func<Task<string?>> action)
+        internal static async Task<string?> GuardAsync(Func<Task<string?>> action)
         {
             try
             {
@@ -249,11 +250,11 @@ namespace MovieTracker.UI.Services
             }
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
             {
-                return "Не вдалося зв’язатися із сервером. Перевірте, чи запущено API.";
+                return NetworkError;
             }
         }
 
-        private static async Task<string> ReadErrorAsync(HttpResponseMessage response)
+        internal static async Task<string> ReadErrorAsync(HttpResponseMessage response)
         {
             try
             {

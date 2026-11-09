@@ -1,15 +1,18 @@
 using System.Net.Http.Json;
 using MovieTracker.Core.Dtos;
+using System.Net;
 
 namespace MovieTracker.UI.Services;
 
 public class ApiService
 {
     private readonly HttpClient _httpClient;
+    private readonly AuthService _auth;
 
-    public ApiService(HttpClient httpClient)
+    public ApiService(HttpClient httpClient, AuthService auth)
     {
         _httpClient = httpClient;
+        _auth = auth;
     }
 
     public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
@@ -68,4 +71,48 @@ public class ApiService
         return await _httpClient.GetFromJsonAsync<MovieReviewsResponse>(
             $"api/movies/{movieId}/reviews?page={page}&pageSize={pageSize}");
     }
+
+    private static string MyReviewUrl(int movieId) => $"api/movies/{movieId}/reviews/me";
+
+    public async Task<(ReviewResponse? Review, string? Error)> GetMyReviewAsync(int movieId)
+    {
+        try
+        {
+            var response = await _auth.SendAuthorizedAsync(
+                () => new HttpRequestMessage(HttpMethod.Get, MyReviewUrl(movieId)));
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return (null, null);
+
+            if (!response.IsSuccessStatusCode)
+                return (null, await AuthService.ReadErrorAsync(response));
+
+            return (await response.Content.ReadFromJsonAsync<ReviewResponse>(), null);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            return (null, AuthService.NetworkError);
+        }
+    }
+
+    public Task<string?> SaveMyReviewAsync(int movieId, int rating, string? text) => AuthService.GuardAsync(async () =>
+    {
+        var response = await _auth.SendAuthorizedAsync(() => new HttpRequestMessage(HttpMethod.Put, MyReviewUrl(movieId))
+        {
+            Content = JsonContent.Create(new UpsertReviewRequest(rating, text))
+        });
+
+        return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+    });
+
+    public Task<string?> DeleteMyReviewAsync(int movieId) => AuthService.GuardAsync(async () =>
+    {
+        var response = await _auth.SendAuthorizedAsync(
+            () => new HttpRequestMessage(HttpMethod.Delete, MyReviewUrl(movieId)));
+
+        if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotFound)
+            return null;
+
+        return await AuthService.ReadErrorAsync(response);
+    });
 }

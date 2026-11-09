@@ -48,7 +48,7 @@ namespace MovieTracker.UI.ViewModels
                 ErrorMessage = await _auth.LoginAsync(Email.Trim(), Password);
 
                 if (ErrorMessage is null)
-                    await Shell.Current.Navigation.PopToRootAsync();
+                    await Shell.Current.GoToAsync("..");
             }
             finally
             {

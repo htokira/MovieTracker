@@ -27,4 +27,10 @@ public partial class MovieDetailsPage : ContentPage, IQueryAttributable
     {
         await Shell.Current.GoToAsync("..");
     }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _ = _viewModel.RefreshMyReviewAsync();
+    }
 }
