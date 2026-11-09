@@ -1,0 +1,29 @@
+.tracking {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.status {
+  flex: 1;
+  max-width: 260px;
+}
+
+.addButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.addButton:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-teal);
+}

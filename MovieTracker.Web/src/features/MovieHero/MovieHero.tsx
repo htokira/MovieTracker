@@ -1,13 +1,14 @@
-import { BookmarkPlus, Film, Star } from "lucide-react";
+import type { ReactNode } from "react";
+import { Film, Star } from "lucide-react";
 import type { MovieDetailDto } from "@/types/movie";
 import styles from "./MovieHero.module.css";
-import Button from "@/components/Button/Button";
 
 interface MovieHeroProps {
   movie: MovieDetailDto;
+  children?: ReactNode;
 }
 
-function MovieHero({ movie }: MovieHeroProps) {
+function MovieHero({ movie, children }: MovieHeroProps) {
   const { title, posterUrl, releaseYear, rating, genres, description } = movie;
 
   return (
@@ -49,14 +50,7 @@ function MovieHero({ movie }: MovieHeroProps) {
           <p className={styles.noDescription}>Опис відсутній</p>
         )}
 
-      <div className={styles.actions}>
-          <Button type="button">
-            <span className={styles.buttonContent}>
-              <BookmarkPlus size={18} />
-              Додати в колекцію
-            </span>
-          </Button>
-        </div>
+        {children && <div className={styles.actions}>{children}</div>}
       </div>
     </section>
   );

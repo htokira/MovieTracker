@@ -24,13 +24,13 @@ function App() {
  
         <Route element={<PrivateRoute />}>
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="collection" element={<CollectionPage />} />
+          <Route path="collections" element={<CollectionPage />} />
         </Route>
-
+ 
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );
 }
- 
+
 export default App;

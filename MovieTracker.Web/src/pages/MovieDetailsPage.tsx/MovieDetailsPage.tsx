@@ -4,8 +4,10 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
+import { useAuth } from "@/features/auth/useAuth";
 import CastList from "@/features/CastList/CastList";
 import MovieHero from "@/features/MovieHero/MovieHero";
+import MovieTracking from "@/features/MovieTracking/MovieTracking";
 import ReviewSection from "@/features/review/ReviewSection/ReviewSection";
 import { movieService } from "@/services/movieService";
 import type { MovieDetailDto } from "@/types/movie";
@@ -13,20 +15,22 @@ import styles from "./MovieDetailsPage.module.css";
 
 function MovieDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const movieId = Number(id);
   const isIdValid = Number.isInteger(movieId);
-
+ 
   const [movie, setMovie] = useState<MovieDetailDto | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+ 
   useEffect(() => {
     if (!isIdValid) {
       return;
     }
-
+ 
+    // Не оновлюємо стан, якщо компонент розмонтовано або id вже інший
     let isIgnored = false;
-
+ 
     async function loadMovie() {
       setIsLoading(true);
       setError(null);
@@ -38,7 +42,7 @@ function MovieDetailsPage() {
       } catch (err) {
         if (!isIgnored) {
           const isNotFound = isAxiosError(err) && err.response?.status === 404;
-          setError(isNotFound ? "Фільм не знайдено." : "Не вдалося завантажити фільм. Спробуйте пізніше.");
+          setError( isNotFound ? "Фільм не знайдено." : "Не вдалося завантажити фільм. Спробуйте пізніше.");
         }
       } finally {
         if (!isIgnored) {
@@ -46,6 +50,7 @@ function MovieDetailsPage() {
         }
       }
     }
+ 
     loadMovie();
  
     return () => {
@@ -68,7 +73,9 @@ function MovieDetailsPage() {
     }
     return (
       <>
-        <MovieHero movie={movie} />
+        <MovieHero movie={movie}>
+          {user && <MovieTracking />}
+        </MovieHero>
         {movie.moviePersons.length > 0 && (
           <CastList people={movie.moviePersons} />
         )}
@@ -78,13 +85,13 @@ function MovieDetailsPage() {
   }
  
   return (
-    <main className={styles.page}>
+    <section className={styles.page}>
       <Link to="/" className={styles.back}>
         <ArrowLeft size={18} />
         Назад до каталогу
       </Link>
       {renderContent()}
-    </main>
+    </section>
   );
 }
  
