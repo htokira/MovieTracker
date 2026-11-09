@@ -30,3 +30,14 @@
   border-color: var(--color-teal);
   box-shadow: 0 0 0 3px var(--color-teal-subtle);
 }
+
+.input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}

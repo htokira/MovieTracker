@@ -46,4 +46,9 @@ export const reviewService = {
     );
     return response.data;
   },
+
+  // Видалити свій відгук
+  deleteMyReview: async (movieId: number): Promise<void> => {
+    await api.delete(`${getReviewsUrl(movieId)}/me`);
+  },
 };

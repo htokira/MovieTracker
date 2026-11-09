@@ -3,10 +3,10 @@ import styles from "./AuthPage.module.css";
 
 function RegisterPage() {
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <RegisterForm />
-    </div>
+    </main>
   );
 }
-
+ 
 export default RegisterPage;

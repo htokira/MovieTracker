@@ -6,7 +6,7 @@ function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <p className={styles.code}>404</p>
       <h1 className={styles.title}>Сторінку не знайдено</h1>
       <p className={styles.text}>
@@ -15,7 +15,7 @@ function NotFoundPage() {
       <Button type="button" onClick={() => navigate("/")}>
         На головну
       </Button>
-    </div>
+    </main>
   );
 }
 

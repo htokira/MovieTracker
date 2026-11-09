@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, SyntheticEvent } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Input from "@/components/Input/Input";
@@ -9,20 +9,13 @@ import type { LoginRequest } from "@/types/auth";
 import { useAuth } from "@/features/auth/useAuth";
 import styles from "./AuthForm.module.css";
 
-interface LocationState {
-  from?: string;
-}
-
 function LoginForm() {
   const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as LocationState | null)?.from ?? "/";
-
+ 
   const [input, setInput] = useState<LoginRequest>({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+ 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     setInput({ ...input, [e.target.name]: e.target.value });
   }
@@ -33,7 +26,6 @@ function LoginForm() {
     setIsSubmitting(true);
     try {
       await login(input);
-      navigate(from, { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -42,7 +34,7 @@ function LoginForm() {
   }
 
   return (
-    <div className={styles.card}>
+    <section className={styles.card}>
       <h1 className={styles.title}>Увійти в акаунт</h1>
 
       <form className={styles.form} onSubmit={handleSubmit}>
@@ -64,7 +56,7 @@ function LoginForm() {
           Зареєструватися
         </Link>
       </p>
-    </div>
+    </section>
   );
 }
 

@@ -10,11 +10,12 @@
 
 .inner {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   height: 100%;
-  max-width: 100%;
+  max-width: var(--container-width);
   margin: 0 auto;
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-6);
 }
 
 .left {
@@ -77,8 +78,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   background-color: transparent;
   color: var(--color-text-secondary);
   border-radius: 50%;
@@ -90,19 +91,26 @@
   color: var(--color-text-primary);
 }
 
-.avatar {
+.avatarLink {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
   margin-left: var(--space-2);
-  background-color: var(--color-purple-subtle);
-  color: var(--color-purple);
   border-radius: 50%;
+  transition: opacity 0.15s;
+}
+
+.avatarLink:hover {
+  opacity: 0.85;
+}
+
+.loginLink {
+  padding: var(--space-2) var(--space-4);
+  font-weight: 600;
+  color: var(--color-bg);
+  background-color: var(--color-teal);
+  border-radius: var(--radius-sm);
   transition: background-color 0.15s;
 }
 
-.avatar:hover {
-  background-color: var(--color-surface-raised);
+.loginLink:hover {
+  background-color: var(--color-teal-hover);
 }

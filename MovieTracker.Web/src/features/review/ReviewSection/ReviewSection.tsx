@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
 import { reviewService } from "@/services/reviewService";
@@ -9,6 +10,8 @@ import { useAuth } from "@/features/auth/useAuth";
 import ReviewForm from "@/features/review/ReviewForm/ReviewForm";
 import ReviewList from "@/features/review/ReviewList/ReviewList";
 import styles from "./ReviewSection.module.css";
+
+const PREVIEW_COUNT = 3;
 
 interface ReviewSectionProps {
   movieId: number;
@@ -23,6 +26,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
   const [myReview, setMyReview] = useState<ReviewResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [reloadKey, setReloadKey] = useState<number>(0);
 
   useEffect(() => {
@@ -53,6 +57,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
     };
   }, [movieId, reloadKey]);
 
+  // власний відгук
   const userId = user?.id;
   useEffect(() => {
     if (!userId) {
@@ -99,6 +104,20 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
     setReloadKey((prevKey) => prevKey + 1);
   }
 
+  function handleDeleted() {
+    const deletedId = ownReview?.id;
+    setMyReview(null);
+    setReviewsData((prevData) =>
+      prevData
+        ? {
+            ...prevData,
+            items: prevData.items.filter((item) => item.id !== deletedId),
+          }
+        : prevData
+    );
+    setReloadKey((prevKey) => prevKey + 1);
+  }
+
   function renderForm() {
     if (isAuthLoading) {
       return null;
@@ -114,7 +133,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
       );
     }
     return (
-      <ReviewForm key={ownReview?.id ?? "new"} movieId={movieId} initialReview={ownReview} onSaved={handleSaved}/>
+      <ReviewForm key={ownReview?.id ?? "new"} movieId={movieId} initialReview={ownReview} onSaved={handleSaved} onDeleted={handleDeleted}/>
     );
   }
 
@@ -139,7 +158,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
 
       {reviewsData && reviewsData.totalReviews > 0 && (
         <p className={styles.summary}>
-          <Star size={16} fill="currentColor" />
+          <Star size={24} fill="currentColor" />
           {reviewsData.averageRating}
           <span className={styles.count}>
             · Відгуків: {reviewsData.totalReviews}
