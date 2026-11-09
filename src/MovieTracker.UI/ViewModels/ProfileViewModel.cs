@@ -69,7 +69,7 @@ namespace MovieTracker.UI.ViewModels
             ChangePasswordCommand = new Command(async () => await ChangePasswordAsync());
             LogoutCommand = new Command(async () => await LogoutAsync());
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
-            GoBackCommand = new Command(async () => await Shell.Current.Navigation.PopToRootAsync());
+            GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
 
             Load();
         }

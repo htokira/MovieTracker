@@ -6,12 +6,14 @@ public partial class MovieDetailsPage : ContentPage, IQueryAttributable
 {
     private readonly MovieDetailsViewModel _viewModel;
 
-    public MovieDetailsPage(MovieDetailsViewModel viewModel)
+    public MovieDetailsPage(MovieDetailsViewModel viewModel, AccountBarViewModel accountBar)
     {
         InitializeComponent();
 
         _viewModel = viewModel;
         BindingContext = _viewModel;
+
+        AccountBar.BindingContext = accountBar;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)

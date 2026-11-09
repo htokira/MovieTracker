@@ -45,7 +45,7 @@
                 HorizontalOptions="Center">
 				
 				<Label
-                    Text="← До каталогу"
+                    Text="← Назад"
                     TextColor="#A0A5B5"
                     FontSize="16"
                     FontAttributes="Bold"
