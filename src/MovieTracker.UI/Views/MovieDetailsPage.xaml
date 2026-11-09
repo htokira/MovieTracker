@@ -249,6 +249,101 @@
                         IsVisible="{Binding IsLoadingReviews}"
                         Color="#8B7CFF" />
 
+                    <Border
+                        BackgroundColor="#202331"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="15">
+
+                        <VerticalStackLayout Spacing="12">
+
+                            <!-- Гість -->
+                            <VerticalStackLayout Spacing="10" IsVisible="{Binding IsGuest}">
+                                <Label
+                                    Text="Увійдіть, щоб оцінити фільм і залишити відгук."
+                                    TextColor="#A0A5B5"
+                                    FontSize="14" />
+
+                                <Button
+                                    Text="Увійти"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HeightRequest="36"
+                                    Padding="18,0"
+                                    FontSize="13"
+                                    HorizontalOptions="Start"
+                                    Command="{Binding GoToLoginCommand}" />
+                            </VerticalStackLayout>
+
+                            <!-- Авторизований користувач -->
+                            <VerticalStackLayout Spacing="12" IsVisible="{Binding IsAuthenticated}">
+
+                                <Label
+                                    Text="{Binding ReviewFormTitle}"
+                                    TextColor="White"
+                                    FontSize="16"
+                                    FontAttributes="Bold" />
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Оцінка (1–10)" Style="{StaticResource FieldLabel}" />
+                                    <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                        <Picker
+                                            Title="Оберіть оцінку"
+                                            ItemsSource="{Binding RatingOptions}"
+                                            SelectedItem="{Binding MyRating}"
+                                            TextColor="White"
+                                            TitleColor="#A0A5B5"
+                                            BackgroundColor="Transparent"
+                                            FontSize="14" />
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Відгук (необов’язково)" Style="{StaticResource FieldLabel}" />
+                                    <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                                        <Editor
+                                            Style="{StaticResource FieldEditor}"
+                                            Placeholder="Поділіться враженнями про фільм"
+                                            MaxLength="2000"
+                                            Text="{Binding MyReviewText}" />
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <Label
+                                    Text="{Binding ReviewFormError}"
+                                    Style="{StaticResource ErrorLabel}"
+                                    IsVisible="{Binding HasReviewFormError}" />
+
+                                <Label
+                                    Text="{Binding ReviewFormStatus}"
+                                    Style="{StaticResource SuccessLabel}"
+                                    IsVisible="{Binding HasReviewFormStatus}" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <Button
+                                        Text="{Binding SaveReviewButtonText}"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Command="{Binding SaveReviewCommand}"
+                                        IsEnabled="{Binding IsReviewNotBusy}" />    
+
+                                    <Button
+                                        Grid.Column="1"
+                                        Text="Видалити"
+                                        Style="{StaticResource DangerButton}"
+                                        Padding="20,0"
+                                        Command="{Binding DeleteReviewCommand}"
+                                        IsEnabled="{Binding IsReviewNotBusy}"
+                                        IsVisible="{Binding HasMyReview}" />    
+                                </Grid>
+
+                                <ActivityIndicator
+                                    IsRunning="{Binding IsReviewBusy}"
+                                    IsVisible="{Binding IsReviewBusy}"
+                                    Color="#8B7CFF" />
+
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
                     <Label
                         Text="Відгуків про цей фільм поки немає."
                         TextColor="#A0A5B5"
