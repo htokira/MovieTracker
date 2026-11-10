@@ -4,6 +4,7 @@ namespace MovieTracker.Core.Models
     {
         public int Id { get; set; }
         public string FullName { get; set; } = string.Empty;
+        public string? PhotoUrl { get; set; }
 
         public ICollection<MoviePerson> MoviePersons { get; set; } = new List<MoviePerson>();
     }

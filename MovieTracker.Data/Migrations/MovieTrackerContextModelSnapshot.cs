@@ -217,10 +217,10 @@ namespace MovieTracker.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Role")
-                        .HasMaxLength(100)
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("MovieId", "PersonId", "Role");
+                    b.HasKey("MovieId", "PersonId");
 
                     b.HasIndex("PersonId");
 
@@ -230,11 +230,15 @@ namespace MovieTracker.Data.Migrations
             modelBuilder.Entity("MovieTracker.Core.Models.Person", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FullName")
                         .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -492,7 +496,7 @@ namespace MovieTracker.Data.Migrations
 
             modelBuilder.Entity("MovieTracker.Core.Models.Review", b =>
                 {
-                    b.HasOne("MovieTracker.Core.Models.Movie", null)
+                    b.HasOne("MovieTracker.Core.Models.Movie", "Movie")
                         .WithMany("Reviews")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -503,6 +507,8 @@ namespace MovieTracker.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Movie");
 
                     b.Navigation("User");
                 });

@@ -46,6 +46,11 @@ namespace MovieTracker.Data
                 e.HasIndex(r => new { r.UserId, r.MovieId }).IsUnique();
                 e.HasIndex(r => r.MovieId);
 
+                e.HasOne(r => r.Movie)
+                 .WithMany(m => m.Reviews)
+                 .HasForeignKey(r => r.MovieId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
                 e.HasOne(r => r.User)
                  .WithMany()
                  .HasForeignKey(r => r.UserId)
@@ -72,10 +77,31 @@ namespace MovieTracker.Data
                  .OnDelete(DeleteBehavior.Cascade);
             });
 
+            builder.Entity<Person>(e =>
+            {
+                e.HasKey(p => p.Id);
+                e.Property(p => p.Id).ValueGeneratedNever();
+                e.Property(p => p.FullName)
+                 .IsRequired()
+                 .HasMaxLength(255);
+
+                e.Property(p => p.PhotoUrl)
+                 .HasMaxLength(500);
+            });
+
             builder.Entity<MoviePerson>(e =>
             {
-                e.HasKey(mp => new { mp.MovieId, mp.PersonId, mp.Role });
-                e.Property(mp => mp.Role).HasMaxLength(100);
+                e.HasKey(mp => new { mp.MovieId, mp.PersonId });
+
+                e.HasOne(mp => mp.Movie)
+                 .WithMany(m => m.MoviePersons)
+                 .HasForeignKey(mp => mp.MovieId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(mp => mp.Person)
+                 .WithMany(p => p.MoviePersons)
+                 .HasForeignKey(mp => mp.PersonId)
+                 .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Genre>(e =>

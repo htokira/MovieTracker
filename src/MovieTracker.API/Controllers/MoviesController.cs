@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieTracker.API.Services;
 using MovieTracker.Core.Dtos;
+using MovieTracker.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MovieTracker.API.Controllers;
 
@@ -9,10 +11,12 @@ namespace MovieTracker.API.Controllers;
 public class MoviesController : ControllerBase
 {
     private readonly ITmdbService _tmdbService;
+    private readonly MovieTrackerContext _db;
 
-    public MoviesController(ITmdbService tmdbService)
+    public MoviesController(ITmdbService tmdbService, MovieTrackerContext db)
     {
         _tmdbService = tmdbService;
+        _db = db;
     }
 
     [HttpGet]
@@ -32,11 +36,55 @@ public class MoviesController : ControllerBase
         return Ok(movies);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<MovieDetailDto>> GetMovieById(int id)
     {
-        var movie = await _tmdbService.GetMovieDetailsAsync(id);
-        if (movie == null) return NotFound();
-        return Ok(movie);
+        var localMovie = await _db.Movies
+            .AsNoTracking()
+            .Include(m => m.Genres)
+            .Include(m => m.MoviePersons)
+                .ThenInclude(mp => mp.Person)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (localMovie != null)
+        {
+            var movieDto = new MovieDetailDto
+            {
+                Id = localMovie.Id,
+                Title = localMovie.Title,
+                Description = localMovie.Description,
+                ReleaseYear = localMovie.ReleaseYear,
+                Rating = localMovie.Rating,
+                MediaType = localMovie.MediaType,
+                PosterUrl = localMovie.PosterUrl,
+
+                Genres = localMovie.Genres
+                    .Select(g => new GenreDto
+                    {
+                        Id = g.Id,
+                        Name = g.Name
+                    })
+                    .ToList(),
+
+                MoviePersons = localMovie.MoviePersons
+                    .Select(mp => new MoviePersonDto
+                    {
+                        PersonId = mp.PersonId,
+                        FullName = mp.Person.FullName,
+                        PhotoUrl = mp.Person.PhotoUrl,
+                        Role = mp.Role
+                    })
+                    .ToList()
+            };
+
+            return Ok(movieDto);
+        }
+
+        var tmdbMovie = await _tmdbService.GetMovieDetailsAsync(id);
+
+        if (tmdbMovie == null)
+            return NotFound();
+
+        return Ok(tmdbMovie);
     }
 }

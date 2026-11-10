@@ -87,6 +87,57 @@ namespace MovieTracker.API.Controllers
                     return NotFound(new { message = $"Movie with ID {movieId} not found on TMDB." });
                 }
 
+                var genreIds = movieDetail.Genres.Select(g => g.Id).ToList();
+                var existingGenres = await _db.Genres.Where(g => genreIds.Contains(g.Id)).ToListAsync();
+                var genresList = new List<Genre>();
+
+                foreach (var genre in movieDetail.Genres)
+                {
+                    var existingGenre = existingGenres.FirstOrDefault(g => g.Id == genre.Id);
+                    if (existingGenre != null)
+                    {
+                        genresList.Add(existingGenre);
+                    }
+                    else
+                    {
+                        var newGenre = new Genre { Id = genre.Id, Name = genre.Name };
+                        _db.Genres.Add(newGenre);
+                        genresList.Add(newGenre);
+                    }
+                }
+
+                var personIds = movieDetail.MoviePersons.Select(mp => mp.PersonId).ToList();
+                var existingPersons = await _db.Persons.Where(p => personIds.Contains(p.Id)).ToListAsync();
+                var moviePersonsList = new List<MoviePerson>();
+
+                foreach (var mpDto in movieDetail.MoviePersons)
+                {
+                    var person = existingPersons.FirstOrDefault(p => p.Id == mpDto.PersonId);
+                    if (person == null)
+                    {
+                        person = new Person
+                        {
+                            Id = mpDto.PersonId,
+                            FullName = mpDto.FullName,
+                            PhotoUrl = mpDto.PhotoUrl
+                        };
+                        _db.Persons.Add(person);
+                        existingPersons.Add(person);
+                    }
+                    else
+                    {
+                        person.FullName = mpDto.FullName;
+                        person.PhotoUrl = mpDto.PhotoUrl;
+                    }
+
+                    moviePersonsList.Add(new MoviePerson
+                    {
+                        MovieId = movieDetail.Id,
+                        Person = person,
+                        Role = mpDto.Role
+                    });
+                }
+
                 movie = new Movie
                 {
                     Id = movieDetail.Id,
@@ -95,7 +146,9 @@ namespace MovieTracker.API.Controllers
                     ReleaseYear = movieDetail.ReleaseYear ?? 0,
                     Rating = movieDetail.Rating,
                     MediaType = movieDetail.MediaType,
-                    PosterUrl = movieDetail.PosterUrl
+                    PosterUrl = movieDetail.PosterUrl,
+                    Genres = genresList,
+                    MoviePersons = moviePersonsList
                 };
 
                 _db.Movies.Add(movie);
