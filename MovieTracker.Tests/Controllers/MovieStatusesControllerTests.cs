@@ -2,12 +2,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using MovieTracker.API.Services;
 using MovieTracker.Core.Dtos;
 using MovieTracker.Core.Models;
+using MovieTracker.Data;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -53,6 +55,24 @@ namespace MovieTracker.Tests.Controllers
 
         private static StringContent Json(string json) =>
             new(json, Encoding.UTF8, "application/json");
+
+        // Фільм із одним жанром і одним актором (для тестів спільних Genres/Persons).
+        // Якщо MovieDetailDto/GenreDto/MoviePersonDto відрізняються, підлаштуй типи під них.
+        private static MovieDetailDto MakeMovie(int id, int genreId, int personId) => new()
+        {
+            Id = id,
+            Title = $"Test Movie {id}",
+            Description = "Test",
+            ReleaseYear = 2020,
+            Rating = 7.5,
+            MediaType = "movie",
+            PosterUrl = null,
+            Genres = new() { new() { Id = genreId, Name = "Action" } },
+            MoviePersons = new()
+            {
+                new() { PersonId = personId, FullName = "Test Actor", PhotoUrl = null, Role = "Actor" }
+            }
+        };
 
         // ---------- Без авторизації ----------
 
@@ -102,6 +122,44 @@ namespace MovieTracker.Tests.Controllers
             var list = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies");
             list!.TotalCount.Should().Be(1);
             list.Items.Single().Status.Should().Be(WatchStatus.Watched);
+        }
+
+        [Fact]
+        public async Task SetStatus_TwoMoviesSharingGenreAndPerson_ReusesThemWithoutDuplicates()
+        {
+            const int genreId = 9001;
+            const int personId = 9002;
+
+            var tmdb = new Mock<ITmdbService>();
+            tmdb.Setup(s => s.GetMovieDetailsAsync(701)).ReturnsAsync(MakeMovie(701, genreId, personId));
+            tmdb.Setup(s => s.GetMovieDetailsAsync(702)).ReturnsAsync(MakeMovie(702, genreId, personId));
+
+            var factory = _factory.WithWebHostBuilder(builder =>
+                builder.ConfigureServices(services =>
+                {
+                    services.RemoveAll<ITmdbService>();
+                    services.AddSingleton(tmdb.Object);
+                }));
+            var client = await CreateAuthorizedClientAsync(factory);
+
+            var first = await client.PutAsJsonAsync("/api/movies/701/status", new SetWatchStatusRequest(WatchStatus.Planned));
+            var second = await client.PutAsJsonAsync("/api/movies/702/status", new SetWatchStatusRequest(WatchStatus.Planned));
+            // Повторний запит на вже збережений фільм: TMDB вдруге не викликається
+            var repeat = await client.PutAsJsonAsync("/api/movies/701/status", new SetWatchStatusRequest(WatchStatus.Watched));
+
+            first.StatusCode.Should().Be(HttpStatusCode.OK);
+            second.StatusCode.Should().Be(HttpStatusCode.OK);
+            repeat.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            using var scope = factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<MovieTrackerContext>();
+
+            (await db.Genres.CountAsync(g => g.Id == genreId)).Should().Be(1);
+            (await db.Persons.CountAsync(p => p.Id == personId)).Should().Be(1);
+            (await db.Movies.CountAsync(m => m.Id == 701 || m.Id == 702)).Should().Be(2);
+
+            tmdb.Verify(s => s.GetMovieDetailsAsync(701), Times.Once);
+            tmdb.Verify(s => s.GetMovieDetailsAsync(702), Times.Once);
         }
 
         // ---------- Валідація ----------
