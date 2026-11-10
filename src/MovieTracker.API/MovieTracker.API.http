@@ -1,5 +1,5 @@
-@MovieTracker.API_HostAddress = http://localhost:5153
-@host = http://localhost:5153
+@MovieTracker.API_HostAddress = http://localhost:7226
+@host = http://localhost:7226
 @email = test@example.com
 @password = Test1234
 
@@ -167,4 +167,14 @@ Content-Type: application/json
 
 ### 29. get movie by id (200)
 GET {{host}}/api/movies/550
+Content-Type: application/json
+
+### 30. Get my taste profile (404 if not analyzed yet, or 200 with profile)
+GET {{host}}/api/taste-profile/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+### 31. Trigger taste profile analysis (200)
+POST {{host}}/api/taste-profile/analyze
+Authorization: Bearer {{login.response.body.$.accessToken}}
 Content-Type: application/json
