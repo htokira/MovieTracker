@@ -1,5 +1,5 @@
-import { Star } from "lucide-react";
-import styles from "./ReviewSummary.module.css";
+import RatingBadge from "@/components/RatingBadge/RatingBadge";
+import styles from "./reviewSummary.module.css";
 
 interface ReviewSummaryProps {
   averageRating: number | null;
@@ -9,8 +9,7 @@ interface ReviewSummaryProps {
 function ReviewSummary({ averageRating, totalReviews }: ReviewSummaryProps) {
   return (
     <p className={styles.summary}>
-      <Star size={16} fill="currentColor" />
-      {averageRating}
+      <RatingBadge>{averageRating}</RatingBadge>
       <span className={styles.count}>· Відгуків: {totalReviews}</span>
     </p>
   );

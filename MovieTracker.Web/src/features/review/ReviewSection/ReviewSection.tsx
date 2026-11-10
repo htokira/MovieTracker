@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import buttonStyles from "@/components/Button/button.module.css";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
-import { reviewService } from "@/services/reviewService";
-import type { MovieReviewsResponse, ReviewResponse } from "../../../types/review";
 import { useAuth } from "@/features/auth/useAuth";
+import { reviewService } from "@/services/reviewService";
+import type { MovieReviewsResponse, ReviewResponse } from "@/types/review";
 import ReviewForm from "@/features/review/ReviewForm/ReviewForm";
 import ReviewList from "@/features/review/ReviewList/ReviewList";
 import ReviewSummary from "@/features/review/ReviewSummary/ReviewSummary";
-import styles from "./ReviewSection.module.css";
-import button from "@/components/Button/button.module.css"
+import styles from "./reviewSection.module.css";
 
 const PREVIEW_COUNT = 3;
- 
+
 interface ReviewSectionProps {
   movieId: number;
 }
- 
+
 function ReviewSection({ movieId }: ReviewSectionProps) {
   const { user, isLoading: isAuthLoading } = useAuth();
- 
+
   const [reviewsData, setReviewsData] = useState<MovieReviewsResponse | null>(
     null
   );
   const [myReview, setMyReview] = useState<ReviewResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
- 
   const [reloadKey, setReloadKey] = useState<number>(0);
- 
+
   useEffect(() => {
     let isIgnored = false;
- 
+
     async function loadReviews() {
       try {
         const data = await reviewService.getReviews(movieId);
@@ -49,22 +48,22 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
         }
       }
     }
- 
+
     loadReviews();
- 
+
     return () => {
       isIgnored = true;
     };
   }, [movieId, reloadKey]);
- 
+
   const userId = user?.id;
   useEffect(() => {
     if (!userId) {
       return;
     }
- 
+
     let isIgnored = false;
- 
+
     async function loadMyReview() {
       try {
         const review = await reviewService.getMyReview(movieId);
@@ -77,16 +76,16 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
         }
       }
     }
- 
+
     loadMyReview();
- 
+
     return () => {
       isIgnored = true;
     };
   }, [movieId, userId]);
- 
+
   const ownReview = userId ? myReview : null;
- 
+
   function handleSaved(review: ReviewResponse) {
     setMyReview(review);
     setReviewsData((prevData) =>
@@ -102,7 +101,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
     );
     setReloadKey((prevKey) => prevKey + 1);
   }
- 
+
   function handleDeleted() {
     const deletedId = ownReview?.id;
     setMyReview(null);
@@ -116,7 +115,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
     );
     setReloadKey((prevKey) => prevKey + 1);
   }
- 
+
   function renderForm() {
     if (isAuthLoading) {
       return null;
@@ -135,7 +134,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
       <ReviewForm key={ownReview?.id ?? "new"} movieId={movieId} initialReview={ownReview} onSaved={handleSaved} onDeleted={handleDeleted}/>
     );
   }
- 
+
   function renderReviews() {
     if (isLoading) {
       return <Spinner />;
@@ -148,13 +147,13 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
         <p className={styles.empty}>Відгуків поки немає. Станьте першим!</p>
       );
     }
- 
+
     return (
       <>
         <ReviewList reviews={reviewsData.items.slice(0, PREVIEW_COUNT)} />
         {reviewsData.totalReviews > PREVIEW_COUNT && (
           <div className={styles.more}>
-            <Link to={`/movie/${movieId}/reviews`} className={button.button}>
+            <Link to={`/movie/${movieId}/reviews`} className={`${buttonStyles.button} ${buttonStyles.secondary}`}>
               Показати більше
             </Link>
           </div>
@@ -162,19 +161,19 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
       </>
     );
   }
- 
+
   return (
     <section className={styles.section}>
-      <h2 className={styles.title}>Відгуки</h2>
- 
+      <h2>Відгуки</h2>
+
       {reviewsData && reviewsData.totalReviews > 0 && (
         <ReviewSummary averageRating={reviewsData.averageRating} totalReviews={reviewsData.totalReviews}/>
       )}
- 
+
       {renderForm()}
       {renderReviews()}
     </section>
   );
 }
- 
+
 export default ReviewSection;

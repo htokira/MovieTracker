@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import Button from "@/components/Button/Button";
-import CollectionCard from "@/components/CollectionCard/CollectionCard";
-import styles from "./CollectionPage.module.css";
+import CollectionCard from "@/features/collection/CollectionCard/CollectionCard";
+import styles from "./collectionPage.module.css";
 
 interface Collection {
   id: number;
@@ -36,9 +36,7 @@ function CollectionPage() {
   return (
     <section className={styles.page} aria-labelledby="collections-title">
       <section className={styles.header}>
-        <h1 id="collections-title" className={styles.title}>
-          Мої колекції
-        </h1>
+        <h1 id="collections-title">Мої колекції</h1>
         <Button type="button" onClick={handleCreate}>
           <Plus size={18} />
           Створити нову колекцію

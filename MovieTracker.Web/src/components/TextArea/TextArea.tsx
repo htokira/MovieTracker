@@ -1,6 +1,6 @@
 import type { TextareaHTMLAttributes } from "react";
-import styles from "./Textarea.module.css";
-import inputStyles from "@/components/Input/Input.module.css";
+import styles from "./textarea.module.css";
+import fieldStyles from "@/components/Input/input.module.css";
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
@@ -9,11 +9,11 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 function TextArea({ label, name, ...rest }: TextAreaProps) {
   return (
-    <div className={inputStyles.field}>
-      <label htmlFor={name} className={inputStyles.label}>
+    <div className={fieldStyles.field}>
+      <label htmlFor={name} className={fieldStyles.label}>
         {label}
       </label>
-      <textarea id={name} name={name} className={`${inputStyles.input} ${styles.textarea}`} {...rest}/>
+      <textarea id={name} name={name} className={`${fieldStyles.input} ${styles.textarea}`} {...rest}/>
     </div>
   );
 }

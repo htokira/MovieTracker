@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { isAxiosError } from "axios";
-import { ArrowLeft } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import BackButton from "@/components/BackButton/BackButton";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
 import { useAuth } from "@/features/auth/useAuth";
-import CastList from "@/features/CastList/CastList";
-import MovieHero from "@/features/MovieHero/MovieHero";
-import MovieTracking from "@/features/MovieTracking/MovieTracking";
+import CastList from "@/features/movie/CastList/CastList";
+import MovieHero from "@/features/movie/MovieHero/MovieHero";
+import MovieTracking from "@/features/movie/MovieTracking/MovieTracking";
 import ReviewSection from "@/features/review/ReviewSection/ReviewSection";
 import { movieService } from "@/services/movieService";
 import type { MovieDetailDto } from "@/types/movie";
-import styles from "./MovieDetailsPage.module.css";
+import styles from "./movieDetailsPage.module.css";
 
 function MovieDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -86,10 +86,7 @@ function MovieDetailsPage() {
  
   return (
     <section className={styles.page}>
-      <Link to="/" className={styles.back}>
-        <ArrowLeft size={18} />
-        Назад до каталогу
-      </Link>
+      <BackButton to="/" label="Назад до каталогу" />
       {renderContent()}
     </section>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import BackButton from "@/components/BackButton/BackButton";
 import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
@@ -8,7 +8,8 @@ import ReviewList from "@/features/review/ReviewList/ReviewList";
 import ReviewSummary from "@/features/review/ReviewSummary/ReviewSummary";
 import { reviewService } from "@/services/reviewService";
 import type { ReviewResponse } from "@/types/review";
-import styles from "./AllReviewsPage.module.css";
+import { appendUniqueById } from "@/utils/appendUniqueById";
+import styles from "./allReviewsPage.module.css";
 
 const PAGE_SIZE = 20;
 
@@ -69,12 +70,7 @@ function AllReviewsPage() {
     setLoadMoreError(null);
     try {
       const data = await reviewService.getReviews(movieId, nextPage, PAGE_SIZE);
-      setReviews((prevReviews) => [
-        ...prevReviews,
-        ...data.items.filter(
-          (item) => !prevReviews.some((prev) => prev.id === item.id)
-        ),
-      ]);
+      setReviews((prevReviews) => appendUniqueById(prevReviews, data.items));
       setTotalReviews(data.totalReviews);
       setAverageRating(data.averageRating);
       setPage(nextPage);
@@ -118,16 +114,11 @@ function AllReviewsPage() {
 
   return (
     <section className={styles.page}>
-      <Link to={isIdValid ? `/movie/${movieId}` : "/"} className={styles.back}>
-        <ArrowLeft size={18} />
-        {isIdValid ? "Назад до фільму" : "Назад до каталогу"}
-      </Link>
-
-      <h1 className={styles.title}>Усі відгуки</h1>
-
+      <BackButton to={isIdValid ? `/movie/${movieId}` : "/"} label={isIdValid ? "Назад до фільму" : "Назад до каталогу"}/>
+      <h1>Усі відгуки</h1>
       {renderContent()}
     </section>
   );
 }
-
+ 
 export default AllReviewsPage;

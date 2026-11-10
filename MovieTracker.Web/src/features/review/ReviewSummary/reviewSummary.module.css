@@ -1,14 +1,8 @@
 .summary {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  margin: 0;
   font-weight: 600;
   color: var(--color-text-primary);
-}
-
-.summary svg {
-  color: var(--color-purple);
 }
 
 .count {

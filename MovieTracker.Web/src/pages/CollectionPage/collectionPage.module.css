@@ -12,24 +12,13 @@
   gap: var(--space-4);
 }
 
-.title {
-  margin: 0;
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .empty {
-  margin: 0;
   padding: var(--space-8);
   color: var(--color-text-secondary);
   text-align: center;

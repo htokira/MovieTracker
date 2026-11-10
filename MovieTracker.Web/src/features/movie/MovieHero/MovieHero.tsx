@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
-import { Film, Star } from "lucide-react";
+import { Film } from "lucide-react";
+import Poster from "@/components/Poster/Poster";
+import RatingBadge from "@/components/RatingBadge/RatingBadge";
 import type { MovieDetailDto } from "@/types/movie";
-import styles from "./MovieHero.module.css";
+import styles from "./movieHero.module.css";
 
 interface MovieHeroProps {
   movie: MovieDetailDto;
-  children?: ReactNode;
+  children?: ReactNode; // додатковий блок під описом
 }
 
 function MovieHero({ movie, children }: MovieHeroProps) {
@@ -14,13 +16,7 @@ function MovieHero({ movie, children }: MovieHeroProps) {
   return (
     <section className={styles.hero}>
       <div className={styles.posterWrapper}>
-        {posterUrl ? (
-          <img src={posterUrl} alt={title} className={styles.poster} />
-        ) : (
-          <div className={styles.posterPlaceholder}>
-            <Film size={48} />
-          </div>
-        )}
+        <Poster src={posterUrl} alt={title} fallbackIcon={<Film size={48} />} />
       </div>
 
       <div className={styles.info}>
@@ -28,10 +24,7 @@ function MovieHero({ movie, children }: MovieHeroProps) {
 
         <p className={styles.meta}>
           <span>{releaseYear || "—"}</span>
-          <span className={styles.rating}>
-            <Star size={16} fill="currentColor" />
-            {rating > 0 ? rating.toFixed(1) : "—"}
-          </span>
+          <RatingBadge>{rating > 0 ? rating.toFixed(1) : "—"}</RatingBadge>
         </p>
 
         {genres.length > 0 && (

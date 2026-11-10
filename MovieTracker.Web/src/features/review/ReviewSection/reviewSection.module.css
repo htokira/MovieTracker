@@ -7,15 +7,7 @@
   max-width: 800px;
 }
 
-.title {
-  margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
 .hint {
-  margin: 0;
   color: var(--color-text-secondary);
 }
 
@@ -29,7 +21,6 @@
 }
 
 .empty {
-  margin: 0;
   color: var(--color-text-muted);
 }
 

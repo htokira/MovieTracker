@@ -1,0 +1,32 @@
+.footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.credits {
+  flex: 1;
+  min-width: 240px;
+  text-align: center;
+}
+
+.link {
+  color: var(--color-text-secondary);
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--color-teal);
+}

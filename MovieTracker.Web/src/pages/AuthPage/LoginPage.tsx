@@ -1,12 +1,12 @@
 import LoginForm from "@/features/auth/AuthForm/LoginForm";
-import styles from "./AuthPage.module.css";
+import AuthPageLayout from "./AuthPageLayout";
 
 function LoginPage() {
   return (
-    <main className={styles.page}>
+    <AuthPageLayout>
       <LoginForm />
-    </main>
+    </AuthPageLayout>
   );
 }
- 
+
 export default LoginPage;
