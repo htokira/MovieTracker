@@ -3,6 +3,7 @@ import Layout from './components/Layout/Layout';
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicOnlyRoute from "@/components/PublicOnlyRoute/PublicOnlyRoute";
 import CatalogPage from "./pages/CatalogPage/CatalogPage";
+import AllReviewsPage from "@/pages/AllReviewsPage/AllReviewsPage";
 import CollectionPage from "./pages/CollectionPage/CollectionPage";
 import LoginPage from "./pages/AuthPage/LoginPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage.tsx/MovieDetailsPage";
@@ -21,6 +22,7 @@ function App() {
       <Route element={<Layout />}>
         <Route index element={<CatalogPage />} />
         <Route path="movie/:id" element={<MovieDetailsPage />} />
+        <Route path="movie/:id/reviews" element={<AllReviewsPage />} />
  
         <Route element={<PrivateRoute />}>
           <Route path="profile" element={<ProfilePage />} />
