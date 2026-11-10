@@ -15,7 +15,7 @@ namespace MovieTracker.Data
         public DbSet<Person> Persons => Set<Person>();
         public DbSet<MoviePerson> MoviePersons => Set<MoviePerson>();
         public DbSet<Review> Reviews => Set<Review>();
-
+        public DbSet<UserMovieStatus> UserMovieStatuses => Set<UserMovieStatus>();
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -58,6 +58,24 @@ namespace MovieTracker.Data
 
                 e.ToTable(t => t.HasCheckConstraint("CK_Reviews_Rating", "Rating >= 1 AND Rating <= 10"));
             });
+             builder.Entity<UserMovieStatus>(e =>     // <- ТУТ починається твій новий блок
+            {
+                e.HasKey(s => s.Id);
+
+                e.HasIndex(s => new { s.UserId, s.MovieId }).IsUnique();
+                e.HasIndex(s => new { s.UserId, s.Status });
+
+                e.HasOne(s => s.Movie)
+                 .WithMany()
+                 .HasForeignKey(s => s.MovieId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(s => s.User)
+                 .WithMany()
+                 .HasForeignKey(s => s.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });                                      // <- ТУТ закінчується твій новий блок
+
 
             builder.Entity<Movie>(e =>
             {
