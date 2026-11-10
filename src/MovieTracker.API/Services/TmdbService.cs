@@ -146,6 +146,7 @@ namespace MovieTracker.API.Services
                 {
                     movie.MoviePersons.Add(new MoviePersonDto
                     {
+                        PersonId = castEl.GetProperty("id").GetInt32(),
                         FullName = castEl.GetProperty("name").GetString() ?? string.Empty,
                         PhotoUrl = castEl.TryGetProperty("profile_path", out var profile) && profile.ValueKind != JsonValueKind.Null
                             ? $"https://image.tmdb.org/t/p/w500{profile.GetString()}"
