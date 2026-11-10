@@ -65,6 +65,7 @@ builder.Services.AddHttpClient<ITmdbService, TmdbService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<TasteProfileService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
