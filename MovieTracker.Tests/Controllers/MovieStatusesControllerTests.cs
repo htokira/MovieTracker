@@ -57,7 +57,6 @@ namespace MovieTracker.Tests.Controllers
             new(json, Encoding.UTF8, "application/json");
 
         // Фільм із одним жанром і одним актором (для тестів спільних Genres/Persons).
-        // Якщо MovieDetailDto/GenreDto/MoviePersonDto відрізняються, підлаштуй типи під них.
         private static MovieDetailDto MakeMovie(int id, int genreId, int personId) => new()
         {
             Id = id,
@@ -79,13 +78,14 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task AllEndpoints_WithoutToken_ReturnUnauthorized()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = _factory.CreateClient();
 
-            (await client.GetAsync("/api/movies/550/status")).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-            (await client.PutAsJsonAsync("/api/movies/550/status", new SetWatchStatusRequest(WatchStatus.Watched)))
+            (await client.GetAsync("/api/movies/550/status", ct)).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            (await client.PutAsJsonAsync("/api/movies/550/status", new SetWatchStatusRequest(WatchStatus.Watched), ct))
                 .StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-            (await client.DeleteAsync("/api/movies/550/status")).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-            (await client.GetAsync("/api/users/me/movies")).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            (await client.DeleteAsync("/api/movies/550/status", ct)).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            (await client.GetAsync("/api/users/me/movies", ct)).StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
         // ---------- Створення і зміна ----------
@@ -93,33 +93,35 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task SetStatus_NewMovie_CreatesStatus()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
             var response = await client.PutAsJsonAsync("/api/movies/550/status",
-                new SetWatchStatusRequest(WatchStatus.Planned));
+                new SetWatchStatusRequest(WatchStatus.Planned), ct);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var body = await response.Content.ReadFromJsonAsync<WatchStatusResponse>();
+            var body = await response.Content.ReadFromJsonAsync<WatchStatusResponse>(ct);
             body!.MovieId.Should().Be(550);
             body.Status.Should().Be(WatchStatus.Planned);
 
-            var get = await client.GetAsync("/api/movies/550/status");
+            var get = await client.GetAsync("/api/movies/550/status", ct);
             get.StatusCode.Should().Be(HttpStatusCode.OK);
-            (await get.Content.ReadFromJsonAsync<WatchStatusResponse>())!.Status.Should().Be(WatchStatus.Planned);
+            (await get.Content.ReadFromJsonAsync<WatchStatusResponse>(ct))!.Status.Should().Be(WatchStatus.Planned);
         }
 
         [Fact]
         public async Task SetStatus_ExistingStatus_UpdatesInsteadOfDuplicating()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
-            await client.PutAsJsonAsync("/api/movies/551/status", new SetWatchStatusRequest(WatchStatus.Planned));
-            var response = await client.PutAsJsonAsync("/api/movies/551/status", new SetWatchStatusRequest(WatchStatus.Watched));
+            await client.PutAsJsonAsync("/api/movies/551/status", new SetWatchStatusRequest(WatchStatus.Planned), ct);
+            var response = await client.PutAsJsonAsync("/api/movies/551/status", new SetWatchStatusRequest(WatchStatus.Watched), ct);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            (await response.Content.ReadFromJsonAsync<WatchStatusResponse>())!.Status.Should().Be(WatchStatus.Watched);
+            (await response.Content.ReadFromJsonAsync<WatchStatusResponse>(ct))!.Status.Should().Be(WatchStatus.Watched);
 
-            var list = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies");
+            var list = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies", ct);
             list!.TotalCount.Should().Be(1);
             list.Items.Single().Status.Should().Be(WatchStatus.Watched);
         }
@@ -127,6 +129,7 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task SetStatus_TwoMoviesSharingGenreAndPerson_ReusesThemWithoutDuplicates()
         {
+            var ct = TestContext.Current.CancellationToken;
             const int genreId = 9001;
             const int personId = 9002;
 
@@ -142,10 +145,10 @@ namespace MovieTracker.Tests.Controllers
                 }));
             var client = await CreateAuthorizedClientAsync(factory);
 
-            var first = await client.PutAsJsonAsync("/api/movies/701/status", new SetWatchStatusRequest(WatchStatus.Planned));
-            var second = await client.PutAsJsonAsync("/api/movies/702/status", new SetWatchStatusRequest(WatchStatus.Planned));
+            var first = await client.PutAsJsonAsync("/api/movies/701/status", new SetWatchStatusRequest(WatchStatus.Planned), ct);
+            var second = await client.PutAsJsonAsync("/api/movies/702/status", new SetWatchStatusRequest(WatchStatus.Planned), ct);
             // Повторний запит на вже збережений фільм: TMDB вдруге не викликається
-            var repeat = await client.PutAsJsonAsync("/api/movies/701/status", new SetWatchStatusRequest(WatchStatus.Watched));
+            var repeat = await client.PutAsJsonAsync("/api/movies/701/status", new SetWatchStatusRequest(WatchStatus.Watched), ct);
 
             first.StatusCode.Should().Be(HttpStatusCode.OK);
             second.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -154,9 +157,9 @@ namespace MovieTracker.Tests.Controllers
             using var scope = factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<MovieTrackerContext>();
 
-            (await db.Genres.CountAsync(g => g.Id == genreId)).Should().Be(1);
-            (await db.Persons.CountAsync(p => p.Id == personId)).Should().Be(1);
-            (await db.Movies.CountAsync(m => m.Id == 701 || m.Id == 702)).Should().Be(2);
+            (await db.Genres.CountAsync(g => g.Id == genreId, ct)).Should().Be(1);
+            (await db.Persons.CountAsync(p => p.Id == personId, ct)).Should().Be(1);
+            (await db.Movies.CountAsync(m => m.Id == 701 || m.Id == 702, ct)).Should().Be(2);
 
             tmdb.Verify(s => s.GetMovieDetailsAsync(701), Times.Once);
             tmdb.Verify(s => s.GetMovieDetailsAsync(702), Times.Once);
@@ -171,21 +174,23 @@ namespace MovieTracker.Tests.Controllers
         [InlineData("{}")]
         public async Task SetStatus_InvalidStatus_ReturnsBadRequest(string json)
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
-            var response = await client.PutAsync("/api/movies/552/status", Json(json));
+            var response = await client.PutAsync("/api/movies/552/status", Json(json), ct);
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            (await client.GetAsync("/api/movies/552/status")).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await client.GetAsync("/api/movies/552/status", ct)).StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
         public async Task SetStatus_InvalidMovieId_ReturnsNotFound()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
             var response = await client.PutAsJsonAsync("/api/movies/0/status",
-                new SetWatchStatusRequest(WatchStatus.Watched));
+                new SetWatchStatusRequest(WatchStatus.Watched), ct);
 
             // Маршрут {movieId:int:min(1)} не збігається з 0
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -194,6 +199,7 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task SetStatus_MovieNotFoundInTmdb_ReturnsNotFound()
         {
+            var ct = TestContext.Current.CancellationToken;
             var factory = _factory.WithWebHostBuilder(builder =>
                 builder.ConfigureServices(services =>
                 {
@@ -206,7 +212,7 @@ namespace MovieTracker.Tests.Controllers
             var client = await CreateAuthorizedClientAsync(factory);
 
             var response = await client.PutAsJsonAsync("/api/movies/999999/status",
-                new SetWatchStatusRequest(WatchStatus.Watched));
+                new SetWatchStatusRequest(WatchStatus.Watched), ct);
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -216,29 +222,32 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task GetStatus_NoStatus_ReturnsNotFound()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
-            (await client.GetAsync("/api/movies/553/status")).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await client.GetAsync("/api/movies/553/status", ct)).StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
         public async Task DeleteStatus_ExistingStatus_RemovesIt()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
-            await client.PutAsJsonAsync("/api/movies/554/status", new SetWatchStatusRequest(WatchStatus.Dropped));
+            await client.PutAsJsonAsync("/api/movies/554/status", new SetWatchStatusRequest(WatchStatus.Dropped), ct);
 
-            var delete = await client.DeleteAsync("/api/movies/554/status");
+            var delete = await client.DeleteAsync("/api/movies/554/status", ct);
 
             delete.StatusCode.Should().Be(HttpStatusCode.NoContent);
-            (await client.GetAsync("/api/movies/554/status")).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await client.GetAsync("/api/movies/554/status", ct)).StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
         public async Task DeleteStatus_NoStatus_ReturnsNotFound()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
-            (await client.DeleteAsync("/api/movies/555/status")).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await client.DeleteAsync("/api/movies/555/status", ct)).StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         // ---------- Чужі записи ----------
@@ -246,15 +255,16 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task Status_IsVisibleAndDeletableOnlyByItsOwner()
         {
+            var ct = TestContext.Current.CancellationToken;
             var owner = await CreateAuthorizedClientAsync(_factory);
             var stranger = await CreateAuthorizedClientAsync(_factory);
-            await owner.PutAsJsonAsync("/api/movies/556/status", new SetWatchStatusRequest(WatchStatus.Watched));
+            await owner.PutAsJsonAsync("/api/movies/556/status", new SetWatchStatusRequest(WatchStatus.Watched), ct);
 
-            (await stranger.GetAsync("/api/movies/556/status")).StatusCode.Should().Be(HttpStatusCode.NotFound);
-            (await stranger.DeleteAsync("/api/movies/556/status")).StatusCode.Should().Be(HttpStatusCode.NotFound);
-            (await owner.GetAsync("/api/movies/556/status")).StatusCode.Should().Be(HttpStatusCode.OK);
+            (await stranger.GetAsync("/api/movies/556/status", ct)).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await stranger.DeleteAsync("/api/movies/556/status", ct)).StatusCode.Should().Be(HttpStatusCode.NotFound);
+            (await owner.GetAsync("/api/movies/556/status", ct)).StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var strangerList = await stranger.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies");
+            var strangerList = await stranger.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies", ct);
             strangerList!.TotalCount.Should().Be(0);
         }
 
@@ -263,13 +273,14 @@ namespace MovieTracker.Tests.Controllers
         [Fact]
         public async Task GetMyMovies_FiltersByStatus()
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
-            await client.PutAsJsonAsync("/api/movies/601/status", new SetWatchStatusRequest(WatchStatus.Watched));
-            await client.PutAsJsonAsync("/api/movies/602/status", new SetWatchStatusRequest(WatchStatus.Planned));
-            await client.PutAsJsonAsync("/api/movies/603/status", new SetWatchStatusRequest(WatchStatus.Watched));
+            await client.PutAsJsonAsync("/api/movies/601/status", new SetWatchStatusRequest(WatchStatus.Watched), ct);
+            await client.PutAsJsonAsync("/api/movies/602/status", new SetWatchStatusRequest(WatchStatus.Planned), ct);
+            await client.PutAsJsonAsync("/api/movies/603/status", new SetWatchStatusRequest(WatchStatus.Watched), ct);
 
-            var all = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies");
-            var watched = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies?status=Watched");
+            var all = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies", ct);
+            var watched = await client.GetFromJsonAsync<UserMoviesResponse>("/api/users/me/movies?status=Watched", ct);
 
             all!.TotalCount.Should().Be(3);
             watched!.TotalCount.Should().Be(2);
@@ -285,9 +296,10 @@ namespace MovieTracker.Tests.Controllers
         [InlineData("pageSize=100")]
         public async Task GetMyMovies_InvalidQuery_ReturnsBadRequest(string query)
         {
+            var ct = TestContext.Current.CancellationToken;
             var client = await CreateAuthorizedClientAsync(_factory);
 
-            (await client.GetAsync($"/api/users/me/movies?{query}")).StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            (await client.GetAsync($"/api/users/me/movies?{query}", ct)).StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }
