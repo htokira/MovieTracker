@@ -22,6 +22,23 @@ public class MovieStorageService : IMovieStorageService
 
     public async Task<bool> EnsureMovieExistsAsync(int movieId)
     {
+        try
+        {
+            return await TryStoreMovieAsync(movieId);
+        }
+        catch (DbUpdateException)
+        {
+            // Паралельний запит міг устигнути додати спільний жанр/актора (або сам фільм).
+            // Очищаємо відстежувані сутності, щоб "зламані" записи не потрапили в повтор,
+            // і виконуємо метод ще раз. Повтор лише один: якщо впаде вдруге,
+            // виняток піде далі, бо причина вже інша.
+            _db.ChangeTracker.Clear();
+            return await TryStoreMovieAsync(movieId);
+        }
+    }
+
+    private async Task<bool> TryStoreMovieAsync(int movieId)
+    {
         if (await _db.Movies.AnyAsync(m => m.Id == movieId))
             return true;
 
@@ -37,11 +54,14 @@ public class MovieStorageService : IMovieStorageService
         {
             var existing = existingGenres.FirstOrDefault(g => g.Id == genre.Id);
             if (existing != null)
+            {
                 genresList.Add(existing);
+            }
             else
             {
                 var newGenre = new Genre { Id = genre.Id, Name = genre.Name };
                 _db.Genres.Add(newGenre);
+                existingGenres.Add(newGenre);
                 genresList.Add(newGenre);
             }
         }
