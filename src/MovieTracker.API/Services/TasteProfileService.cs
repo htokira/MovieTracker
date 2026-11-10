@@ -156,15 +156,15 @@ public class TasteProfileService
             .ToList();
 
         var favoriteGenres = preferences
-            .Where(p => p.PreferenceScore > 0.15 &&
-                        p.Confidence >= 0.2)
+            .Where(p => p.PreferenceScore > 0.05 &&
+                        p.Confidence >= 0.1)
             .Take(5)
             .Select(p => p.GenreName)
             .ToList();
 
         var dislikedGenres = preferences
-            .Where(p => p.PreferenceScore < -0.15 &&
-                        p.Confidence >= 0.2)
+            .Where(p => p.PreferenceScore < -0.05 &&
+                        p.Confidence >= 0.1)
             .OrderBy(p => p.PreferenceScore)
             .Take(5)
             .Select(p => p.GenreName)
