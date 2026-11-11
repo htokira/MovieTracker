@@ -289,3 +289,83 @@ Authorization: Bearer {{login.response.body.$.accessToken}}
 GET {{host}}/api/recommendations/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Accept: application/json
+
+### 48. create public collection (201)
+# @name createCollection
+POST {{host}}/api/collections
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "name": "Мої улюблені", "description": "Тестова колекція", "isPublic": true }
+
+### 49. create collection with empty name (400)
+POST {{host}}/api/collections
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "name": "", "description": null, "isPublic": true }
+
+### 50. create collection without token (401)
+POST {{host}}/api/collections
+Content-Type: application/json
+
+{ "name": "x", "description": null, "isPublic": true }
+
+### 51. create private collection (201)
+# @name createPrivate
+POST {{host}}/api/collections
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "name": "Секретна", "description": null, "isPublic": false }
+
+### 52. my collections, public and private (200)
+GET {{host}}/api/collections/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 53. add movie to collection (204)
+POST {{host}}/api/collections/{{createCollection.response.body.$.id}}/movies/155
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 54. add same movie again (204, no duplicate)
+POST {{host}}/api/collections/{{createCollection.response.body.$.id}}/movies/155
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 55. add movie not found in TMDB (404)
+POST {{host}}/api/collections/{{createCollection.response.body.$.id}}/movies/99999999
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 56. get public collection without token (200)
+GET {{host}}/api/collections/{{createCollection.response.body.$.id}}
+
+### 57. get private collection without token (404)
+GET {{host}}/api/collections/{{createPrivate.response.body.$.id}}
+
+### 58. get private collection as owner (200)
+GET {{host}}/api/collections/{{createPrivate.response.body.$.id}}
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 59. update collection (200)
+PUT {{host}}/api/collections/{{createCollection.response.body.$.id}}
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "name": "Нова назва", "description": "Новий опис", "isPublic": true }
+
+### 60. public collections of a user, only public (200)
+GET {{host}}/api/users/{{createCollection.response.body.$.userId}}/collections
+
+### 61. remove movie from collection (204)
+DELETE {{host}}/api/collections/{{createCollection.response.body.$.id}}/movies/155
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 62. remove movie again (404)
+DELETE {{host}}/api/collections/{{createCollection.response.body.$.id}}/movies/155
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 63. delete collection (204)
+DELETE {{host}}/api/collections/{{createCollection.response.body.$.id}}
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 64. get deleted collection (404)
+GET {{host}}/api/collections/{{createCollection.response.body.$.id}}
