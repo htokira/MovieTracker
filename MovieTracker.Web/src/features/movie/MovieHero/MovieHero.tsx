@@ -1,25 +1,22 @@
-import { BookmarkPlus, Film, Star } from "lucide-react";
+import type { ReactNode } from "react";
+import { Film } from "lucide-react";
+import Poster from "@/components/Poster/Poster";
+import RatingBadge from "@/components/RatingBadge/RatingBadge";
 import type { MovieDetailDto } from "@/types/movie";
-import styles from "./MovieHero.module.css";
-import Button from "@/components/Button/Button";
+import styles from "./movieHero.module.css";
 
 interface MovieHeroProps {
   movie: MovieDetailDto;
+  children?: ReactNode; // додатковий блок під описом
 }
 
-function MovieHero({ movie }: MovieHeroProps) {
+function MovieHero({ movie, children }: MovieHeroProps) {
   const { title, posterUrl, releaseYear, rating, genres, description } = movie;
 
   return (
     <section className={styles.hero}>
       <div className={styles.posterWrapper}>
-        {posterUrl ? (
-          <img src={posterUrl} alt={title} className={styles.poster} />
-        ) : (
-          <div className={styles.posterPlaceholder}>
-            <Film size={48} />
-          </div>
-        )}
+        <Poster src={posterUrl} alt={title} fallbackIcon={<Film size={48} />} />
       </div>
 
       <div className={styles.info}>
@@ -27,10 +24,7 @@ function MovieHero({ movie }: MovieHeroProps) {
 
         <p className={styles.meta}>
           <span>{releaseYear || "—"}</span>
-          <span className={styles.rating}>
-            <Star size={16} fill="currentColor" />
-            {rating > 0 ? rating.toFixed(1) : "—"}
-          </span>
+          <RatingBadge>{rating > 0 ? rating.toFixed(1) : "—"}</RatingBadge>
         </p>
 
         {genres.length > 0 && (
@@ -49,14 +43,7 @@ function MovieHero({ movie }: MovieHeroProps) {
           <p className={styles.noDescription}>Опис відсутній</p>
         )}
 
-      <div className={styles.actions}>
-          <Button type="button">
-            <span className={styles.buttonContent}>
-              <BookmarkPlus size={18} />
-              Додати в колекцію
-            </span>
-          </Button>
-        </div>
+        {children && <div className={styles.actions}>{children}</div>}
       </div>
     </section>
   );

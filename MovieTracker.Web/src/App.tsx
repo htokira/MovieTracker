@@ -1,14 +1,15 @@
-import { Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout/Layout';
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import PublicOnlyRoute from "@/components/PublicOnlyRoute/PublicOnlyRoute";
-import CatalogPage from "./pages/CatalogPage/CatalogPage";
-import CollectionPage from "./pages/CollectionPage/CollectionPage";
-import LoginPage from "./pages/AuthPage/LoginPage";
-import MovieDetailsPage from "./pages/MovieDetailsPage.tsx/MovieDetailsPage";
+import { Route, Routes } from "react-router-dom";
+import PrivateRoute from "@/features/auth/PrivateRoute";
+import PublicOnlyRoute from "@/features/auth/PublicOnlyRoute";
+import Layout from "@/layouts/Layout/Layout";
+import AllReviewsPage from "@/pages/AllReviewsPage/AllReviewsPage";
+import LoginPage from "@/pages/AuthPage/LoginPage";
+import RegisterPage from "@/pages/AuthPage/RegisterPage";
+import CatalogPage from "@/pages/CatalogPage/CatalogPage";
+import CollectionPage from "@/pages/CollectionPage/CollectionPage";
+import MovieDetailsPage from "@/pages/MovieDetailsPage/MovieDetailsPage";
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage";
 import ProfilePage from "@/pages/ProfilePage/ProfilePage";
-import RegisterPage from "./pages/AuthPage/RegisterPage";
 
 function App() {
   return (
@@ -21,16 +22,17 @@ function App() {
       <Route element={<Layout />}>
         <Route index element={<CatalogPage />} />
         <Route path="movie/:id" element={<MovieDetailsPage />} />
+        <Route path="movie/:id/reviews" element={<AllReviewsPage />} />
  
         <Route element={<PrivateRoute />}>
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="collection" element={<CollectionPage />} />
+          <Route path="collections" element={<CollectionPage />} />
         </Route>
-
+ 
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );
 }
- 
+
 export default App;

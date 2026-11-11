@@ -1,6 +1,6 @@
-import MovieCard from "@/components/MovieCard/MovieCard";
+import MovieCard from "@/features/movie/MovieCard/MovieCard";
 import type { MovieListItemDto } from "@/types/movie";
-import styles from "./MovieGrid.module.css";
+import styles from "./movieGrid.module.css";
 
 interface MovieGridProps {
   movies: MovieListItemDto[];

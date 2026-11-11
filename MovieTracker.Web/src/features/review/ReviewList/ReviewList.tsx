@@ -1,6 +1,6 @@
-import { Star } from "lucide-react";
+import RatingBadge from "@/components/RatingBadge/RatingBadge";
 import type { ReviewResponse } from "@/types/review";
-import styles from "./ReviewList.module.css";
+import styles from "./reviewList.module.css";
 
 interface ReviewListProps {
   reviews: ReviewResponse[];
@@ -26,9 +26,10 @@ function ReviewList({ reviews }: ReviewListProps) {
                 <p className={styles.date}>{formatDate(review.createdAt)}</p>
               </div>
               <p className={styles.rating}>
-                <Star size={16} fill="currentColor" />
-                {review.rating}
-                <span className={styles.max}>/10</span>
+                <RatingBadge>
+                  {review.rating}
+                  <span className={styles.max}>/10</span>
+                </RatingBadge>
               </p>
             </header>
             {review.text && <p className={styles.text}>{review.text}</p>}

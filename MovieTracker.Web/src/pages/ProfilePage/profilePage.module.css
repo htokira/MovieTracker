@@ -3,25 +3,48 @@
   flex-direction: column;
   gap: var(--space-6);
   width: 100%;
-  max-width: 640px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
 }
 
 .title {
   margin: 0;
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-text-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
   padding: var(--space-6);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -29,15 +52,22 @@
   box-shadow: var(--shadow-sm);
 }
 
-.cardTitle {
-  margin: 0 0 var(--space-4);
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text-primary);
+.dangerCard {
+  border-color: var(--color-danger, #e07a85);
 }
 
-.divider {
-  margin: var(--space-6) 0;
-  border: 0;
-  border-top: 1px solid var(--color-border);
+.cardTitle {
+  margin: 0;
+}
+
+@media (min-width: 600px) {
+  .card {
+    padding: var(--space-8, 32px);
+  }
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

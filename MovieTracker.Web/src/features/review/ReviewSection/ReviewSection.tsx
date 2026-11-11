@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import Button from "@/components/Button/Button";
+import buttonStyles from "@/components/Button/button.module.css";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
-import { reviewService } from "@/services/reviewService";
-import type { MovieReviewsResponse, ReviewResponse } from "../../../types/review";
 import { useAuth } from "@/features/auth/useAuth";
+import { reviewService } from "@/services/reviewService";
+import type { MovieReviewsResponse, ReviewResponse } from "@/types/review";
 import ReviewForm from "@/features/review/ReviewForm/ReviewForm";
 import ReviewList from "@/features/review/ReviewList/ReviewList";
-import styles from "./ReviewSection.module.css";
+import ReviewSummary from "@/features/review/ReviewSummary/ReviewSummary";
+import styles from "./reviewSection.module.css";
 
 const PREVIEW_COUNT = 3;
 
@@ -26,7 +26,6 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
   const [myReview, setMyReview] = useState<ReviewResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [reloadKey, setReloadKey] = useState<number>(0);
 
   useEffect(() => {
@@ -57,7 +56,6 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
     };
   }, [movieId, reloadKey]);
 
-  // власний відгук
   const userId = user?.id;
   useEffect(() => {
     if (!userId) {
@@ -128,7 +126,7 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
           <Link to="/login" state={{ from: `/movie/${movieId}` }} className={styles.link}>
             Увійдіть
           </Link>
-            , щоб залишити відгук
+          , щоб залишити відгук
         </p>
       );
     }
@@ -149,21 +147,27 @@ function ReviewSection({ movieId }: ReviewSectionProps) {
         <p className={styles.empty}>Відгуків поки немає. Станьте першим!</p>
       );
     }
-    return <ReviewList reviews={reviewsData.items} />;
+
+    return (
+      <>
+        <ReviewList reviews={reviewsData.items.slice(0, PREVIEW_COUNT)} />
+        {reviewsData.totalReviews > PREVIEW_COUNT && (
+          <div className={styles.more}>
+            <Link to={`/movie/${movieId}/reviews`} className={`${buttonStyles.button} ${buttonStyles.secondary}`}>
+              Показати більше
+            </Link>
+          </div>
+        )}
+      </>
+    );
   }
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.title}>Відгуки</h2>
+      <h2>Відгуки</h2>
 
       {reviewsData && reviewsData.totalReviews > 0 && (
-        <p className={styles.summary}>
-          <Star size={24} fill="currentColor" />
-          {reviewsData.averageRating}
-          <span className={styles.count}>
-            · Відгуків: {reviewsData.totalReviews}
-          </span>
-        </p>
+        <ReviewSummary averageRating={reviewsData.averageRating} totalReviews={reviewsData.totalReviews}/>
       )}
 
       {renderForm()}

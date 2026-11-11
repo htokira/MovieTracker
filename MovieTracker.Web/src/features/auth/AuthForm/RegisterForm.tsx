@@ -6,7 +6,7 @@ import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Input from "@/components/Input/Input";
 import { getErrorMessage } from "@/services/getErrorMessage";
 import type { RegisterRequest } from "@/types/auth";
-import { PASSWORD_HINT, PASSWORD_PATTERN } from "./passwordRules";
+import { PASSWORD_HINT, PASSWORD_PATTERN } from "@/features/auth/passwordRules";
 import { useAuth } from "@/features/auth/useAuth";
 import styles from "./authForm.module.css";
 
@@ -56,6 +56,7 @@ function RegisterForm() {
   return (
     <section className={styles.card}>
       <h1 className={styles.title}>Реєстрація</h1>
+      <p className={styles.subtitle}>Створіть акаунт, щоб вести свою колекцію</p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <Input label="Ім’я" name="displayName" type="text" placeholder="Введіть ім'я" value={input.displayName}
@@ -69,8 +70,8 @@ function RegisterForm() {
 
         {error && <ErrorMessage message={error} />}
 
-        <Button type="submit" fullWidth disabled={isSubmitting}>
-          {isSubmitting ? "Створюємо акаунт…" : "Створити акаунт"}
+        <Button type="submit" fullWidth isLoading={isSubmitting}>
+          Створити акаунт
         </Button>
       </form>
 

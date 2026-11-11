@@ -19,6 +19,7 @@
 
   /* Помилки */
   --color-danger: #d98b8b;
+  --color-danger-hover: #e7a2a2;
   --color-danger-subtle: rgba(217, 139, 139, 0.12);
 
   /* Успіх */

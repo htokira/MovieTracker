@@ -1,15 +1,16 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
+import CatalogFilters from "@/features/catalog/CatalogFilters/CatalogFilters";
 import MovieCarousel from "@/features/catalog/MovieCarousel/MovieCarousel";
 import MovieGrid from "@/features/catalog/MovieGrid/MovieGrid";
-import CatalogFilters from "@/features/catalog/CatalogFilters/CatalogFilters";
 import SearchBar from "@/features/catalog/SearchBar/SearchBar";
 import { useDebounce } from "@/hooks/useDebounce";
 import { movieService } from "@/services/movieService";
 import type { MovieListItemDto } from "@/types/movie";
-import styles from "./CatalogPage.module.css";
+import { appendUniqueById } from "@/utils/appendUniqueById";
+import styles from "./catalogPage.module.css";
 
 const CATALOG_SORT = "vote_count.desc";
 const SEARCH_DELAY_MS = 400;
@@ -111,12 +112,7 @@ const requestVersion = useRef<number>(0);
       if (version !== requestVersion.current) {
         return;
       }
-      setMovies((prevMovies) => [
-        ...prevMovies,
-        ...nextMovies.filter(
-          (movie) => !prevMovies.some((prev) => prev.id === movie.id)
-        ),
-      ]);
+      setMovies((prevMovies) => appendUniqueById(prevMovies, nextMovies));
       setPage(nextPage);
       setHasMore(nextMovies.length > 0);
     } catch {
@@ -155,8 +151,8 @@ const requestVersion = useRef<number>(0);
  
         {hasMore && (
           <div className={styles.more}>
-            <Button type="button" onClick={handleShowMore} disabled={isLoadingMore}>
-              {isLoadingMore ? "Завантажуємо…" : "Показати ще"}
+            <Button type="button" variant="secondary" isLoading={isLoadingMore} onClick={handleShowMore}>
+              Показати ще
             </Button>
           </div>
         )}
@@ -167,13 +163,13 @@ const requestVersion = useRef<number>(0);
   return (
     <div className={styles.page}>
       {!isFiltering && topMovies.length > 0 && (
-        <section>
-          <h2 className={styles.sectionTitle}>Топ-20 фільмів</h2>
+        <section className={styles.section}>
+          <h2>Топ-20 фільмів</h2>
           <MovieCarousel movies={topMovies} />
         </section>
       )}
  
-      <section>
+      <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Каталог</h2>
         <div className={styles.catalog}>
           <CatalogFilters genreId={genreId} hasActiveFilters={hasActiveFilters} onGenreChange={setGenreId} onReset={handleReset}/>

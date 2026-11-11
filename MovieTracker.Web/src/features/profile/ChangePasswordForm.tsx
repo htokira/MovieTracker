@@ -5,7 +5,7 @@ import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Input from "@/components/Input/Input";
 import SuccessMessage from "@/components/SuccessMessage/SuccessMessage";
-import { PASSWORD_HINT, PASSWORD_PATTERN } from "@/features/auth/AuthForm/passwordRules";
+import { PASSWORD_HINT, PASSWORD_PATTERN } from "@/features/auth/passwordRules";
 import { getErrorMessage } from "@/services/getErrorMessage";
 import { profileService } from "@/services/profileService";
 import styles from "./profileForm.module.css";

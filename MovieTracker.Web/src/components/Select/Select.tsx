@@ -1,6 +1,6 @@
 import type { SelectHTMLAttributes } from "react";
-import styles from "./Select.module.css";
-import inputStyles from "@/components/Input/Input.module.css";
+import styles from "./select.module.css";
+import fieldStyles from "@/components/Input/input.module.css";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
@@ -9,11 +9,11 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 function Select({ label, name, children, ...rest }: SelectProps) {
   return (
-    <div className={inputStyles.field}>
-      <label htmlFor={name} className={inputStyles.label}>
+    <div className={fieldStyles.field}>
+      <label htmlFor={name} className={fieldStyles.label}>
         {label}
       </label>
-      <select id={name} name={name} className={`${inputStyles.input} ${styles.select}`} {...rest}>
+      <select id={name} name={name} className={`${fieldStyles.input} ${styles.select}`} {...rest}>
         {children}
       </select>
     </div>
