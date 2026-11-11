@@ -8,15 +8,63 @@
   transition: background-color 0.15s;
 }
 
-.button:hover:not(:disabled) {
-  background-color: var(--color-teal-hover);
-}
-
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
+.primary {
+  color: var(--color-bg);
+  background-color: var(--color-teal);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-teal-hover);
+}
+
+.secondary {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+}
+
+.secondary:hover:not(:disabled) {
+  color: var(--color-teal);
+  background-color: var(--color-surface-raised);
+}
+
+.danger {
+  color: var(--color-bg);
+  background-color: var(--color-danger);
+}
+
+.danger:hover:not(:disabled) {
+  color: var(--color-bg);
+  background-color: var(--color-danger-hover);
+}
+
+.ghost {
+  padding: var(--space-1, 4px) var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
+  font-weight: 500;
+  color: var(--color-text-muted, #9aa0a8);
+  background-color: transparent;
+}
+
+.ghost:hover:not(:disabled) {
+  color: var(--color-teal);
+  background-color: var(--color-surface);
+}
+
 .fullWidth {
   width: 100%;
+}
+
+.spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,0 +1,17 @@
+.image, .placeholder {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background-color: var(--color-surface-raised);
+}
+
+.image {
+  display: block;
+  object-fit: cover;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+}

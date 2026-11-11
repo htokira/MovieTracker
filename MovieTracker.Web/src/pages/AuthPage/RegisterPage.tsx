@@ -1,12 +1,12 @@
 import RegisterForm from "@/features/auth/AuthForm/RegisterForm";
-import styles from "./AuthPage.module.css";
+import AuthPageLayout from "./AuthPageLayout";
 
 function RegisterPage() {
   return (
-    <main className={styles.page}>
+    <AuthPageLayout>
       <RegisterForm />
-    </main>
+    </AuthPageLayout>
   );
 }
- 
+
 export default RegisterPage;

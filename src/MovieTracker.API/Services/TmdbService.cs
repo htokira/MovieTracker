@@ -55,6 +55,12 @@ namespace MovieTracker.API.Services
                 : movies;
         }
 
+        public async Task<IEnumerable<MovieListItemDto>> GetSimilarMoviesAsync(int movieId, int page = 1)
+        {
+            var url = $"{_settings.BaseUrl}movie/{movieId}/similar?api_key={_settings.ApiKey}&language=uk-UA&page={page}";
+            return await FetchMoviesAsync(url);
+        }
+
         private async Task<IEnumerable<MovieListItemDto>> FetchMoviesAsync(string url)
         {
             var response = await _httpClient.GetAsync(url);

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieTracker.API.Services;
@@ -66,7 +66,9 @@ builder.Services.AddHttpClient<ITmdbService, TmdbService>();
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMovieSyncService, MovieSyncService>();
+builder.Services.AddScoped<TasteProfileService>();
 builder.Services.AddScoped<IMovieStorageService, MovieStorageService>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 

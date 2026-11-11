@@ -1,13 +1,14 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react";
 import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import StarRating from "@/components/StarRating/StarRating";
 import TextArea from "@/components/TextArea/TextArea";
 import { reviewService } from "@/services/reviewService";
 import type { ReviewResponse } from "@/types/review";
-import styles from "./ReviewForm.module.css";
+import { emptyToNull } from "@/utils/emptyToNull";
+import styles from "./reviewForm.module.css";
 
 interface ReviewFormProps {
   movieId: number;
@@ -27,12 +28,12 @@ function ReviewForm({ movieId, initialReview, onSaved, onDeleted}: ReviewFormPro
     setRating(value);
     setError(null);
   }
-
+ 
   function handleTextChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setText(e.target.value);
   }
-
-   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+ 
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
  
@@ -43,10 +44,9 @@ function ReviewForm({ movieId, initialReview, onSaved, onDeleted}: ReviewFormPro
  
     setIsSubmitting(true);
     try {
-      const trimmedText = text.trim();
       const savedReview = await reviewService.saveMyReview(movieId, {
         rating,
-        text: trimmedText === "" ? null : trimmedText,
+        text: emptyToNull(text),
       });
       onSaved(savedReview);
     } catch {
@@ -74,9 +74,7 @@ function ReviewForm({ movieId, initialReview, onSaved, onDeleted}: ReviewFormPro
  
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h3 className={styles.title}>
-        {initialReview ? "Ваш відгук" : "Залишити відгук"}
-      </h3>
+      <h3>{initialReview ? "Ваш відгук" : "Залишити відгук"}</h3>
  
       <StarRating value={rating} onChange={handleRatingChange} />
  

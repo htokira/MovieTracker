@@ -1,5 +1,5 @@
-@MovieTracker.API_HostAddress = http://localhost:5153
-@host = http://localhost:5153
+@MovieTracker.API_HostAddress = http://localhost:7226
+@host = http://localhost:7226
 @email = test@example.com
 @password = Test1234
 
@@ -231,3 +231,61 @@ Authorization: Bearer {{login.response.body.$.accessToken}}
 ### 42. get watch status after delete (404)
 GET {{host}}/api/movies/550/status
 Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 43. Get my taste profile (404 if not analyzed yet, or 200 with profile)
+GET {{host}}/api/taste-profile/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+### 44. Trigger taste profile analysis (200)
+POST {{host}}/api/taste-profile/analyze
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+### 45. Reccomendations no token (401)
+GET {{host}}/api/recommendations/me
+Accept: application/json
+
+### 46. Reccomendations new account (isPersonalized: false)
+GET {{host}}/api/recommendations/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Accept: application/json
+
+### Personalize test account
+PUT {{host}}/api/movies/27205/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "rating": 10,
+  "text": "nice brah"
+}
+
+###
+PUT {{host}}/api/movies/157336/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "rating": 9,
+  "text": "потужно"
+}
+
+###
+PUT {{host}}/api/movies/603/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "rating": 9,
+  "text": null
+}
+
+### taste profile count
+POST {{host}}/api/taste-profile/analyze
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 47. Personalized reccomendations (isPersonalized: true, no ids of 27205, 157336, 603)
+GET {{host}}/api/recommendations/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Accept: application/json

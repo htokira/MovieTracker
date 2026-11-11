@@ -1,0 +1,9 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.rating svg {
+  color: var(--color-purple);
+}

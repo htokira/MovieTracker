@@ -1,0 +1,12 @@
+.summary {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.count {
+  margin-left: var(--space-1);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
