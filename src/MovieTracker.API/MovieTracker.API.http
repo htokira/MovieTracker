@@ -169,12 +169,75 @@ Content-Type: application/json
 GET {{host}}/api/movies/550
 Content-Type: application/json
 
-### 30. Get my taste profile (404 if not analyzed yet, or 200 with profile)
+### 30. set watch status - Planned (200)
+PUT {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "status": "Planned" }
+
+### 31. change watch status - Watched (200)
+PUT {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "status": "Watched" }
+
+### 32. get watch status (200)
+GET {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 33. get my movies (200)
+GET {{host}}/api/users/me/movies
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 34. get my movies filtered by status (200)
+GET {{host}}/api/users/me/movies?status=Watched
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 35. get my movies with pagination (200)
+GET {{host}}/api/users/me/movies?status=Planned&page=1&pageSize=20
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 36. set invalid watch status (400)
+PUT {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "status": "Unknown" }
+
+### 37. set watch status for movie not found in TMDB (404)
+PUT {{host}}/api/movies/99999999/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "status": "Watched" }
+
+### 38. get my movies with invalid query (400)
+GET {{host}}/api/users/me/movies?status=abc
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 39. get watch status without token (401)
+GET {{host}}/api/movies/550/status
+
+### 40. delete watch status (204)
+DELETE {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 41. delete watch status again (404)
+DELETE {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 42. get watch status after delete (404)
+GET {{host}}/api/movies/550/status
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 43. Get my taste profile (404 if not analyzed yet, or 200 with profile)
 GET {{host}}/api/taste-profile/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Content-Type: application/json
 
-### 31. Trigger taste profile analysis (200)
+### 44. Trigger taste profile analysis (200)
 POST {{host}}/api/taste-profile/analyze
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Content-Type: application/json

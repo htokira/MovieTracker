@@ -454,6 +454,39 @@ namespace MovieTracker.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.UserMovieStatus", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId", "MovieId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "Status");
+
+                    b.ToTable("UserMovieStatuses");
+                });
+
             modelBuilder.Entity("GenreMovie", b =>
                 {
                     b.HasOne("MovieTracker.Core.Models.Genre", null)
@@ -569,13 +602,21 @@ namespace MovieTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MovieTracker.Core.Models.TasteProfile", b =>
+            modelBuilder.Entity("MovieTracker.Core.Models.UserMovieStatus", b =>
                 {
+                    b.HasOne("MovieTracker.Core.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MovieTracker.Core.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Movie");
 
                     b.Navigation("User");
                 });
