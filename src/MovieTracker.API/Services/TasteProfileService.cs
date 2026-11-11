@@ -162,12 +162,33 @@ public class TasteProfileService
             .Select(p => p.GenreName)
             .ToList();
 
+        var favoriteGenresIds = preferences
+            .Where(p => p.PreferenceScore > 0.05 &&
+                        p.Confidence >= 0.1)
+            .Take(5)
+            .Select(p => p.GenreId)
+            .ToList();
+
+        var highlyRatedMovieIds = reviews
+            .Where(r => r.Rating >= 8)
+            .Select(r => r.MovieId)
+            .Distinct()
+            .ToList();
+
         var dislikedGenres = preferences
             .Where(p => p.PreferenceScore < -0.05 &&
                         p.Confidence >= 0.1)
             .OrderBy(p => p.PreferenceScore)
             .Take(5)
             .Select(p => p.GenreName)
+            .ToList();
+
+        var dislikedGenresIds = preferences
+            .Where(p => p.PreferenceScore < -0.05 &&
+                        p.Confidence >= 0.1)
+            .OrderBy(p => p.PreferenceScore)
+            .Take(5)
+            .Select(p => p.GenreId)
             .ToList();
 
         var genreWeights = genreCalculations.Values
@@ -231,6 +252,9 @@ public class TasteProfileService
             GenrePreferences = preferences,
             FavoriteGenres = favoriteGenres,
             DislikedGenres = dislikedGenres,
+            FavoriteGenreIds = favoriteGenresIds,
+            HighlyRatedMovieIds = highlyRatedMovieIds,
+            DislikedGenreIds = dislikedGenresIds,
             TasteDiversity = Math.Round(diversity, 4),
             TasteConsistency = Math.Round(consistency, 4),
             Confidence = Math.Round(confidence, 4),
@@ -268,6 +292,15 @@ public class TasteProfileService
 
         profile.DislikedGenresJson =
             JsonSerializer.Serialize(result.DislikedGenres);
+
+        profile.FavoriteGenreIdsJson = 
+            JsonSerializer.Serialize(result.FavoriteGenreIds);
+
+        profile.DislikedGenresIdsJson =
+            JsonSerializer.Serialize(result.DislikedGenreIds);
+
+        profile.HighlyRatedMovieIdsJson = 
+            JsonSerializer.Serialize(result.HighlyRatedMovieIds);
 
         profile.TasteDiversity = result.TasteDiversity;
         profile.TasteConsistency = result.TasteConsistency;
