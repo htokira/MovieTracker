@@ -16,6 +16,9 @@ namespace MovieTracker.Data
         public DbSet<MoviePerson> MoviePersons => Set<MoviePerson>();
         public DbSet<Review> Reviews => Set<Review>();
         public DbSet<UserMovieStatus> UserMovieStatuses => Set<UserMovieStatus>();
+        public DbSet<Collection> Collections => Set<Collection>();
+        public DbSet<CollectionMovie> CollectionMovies => Set<CollectionMovie>();
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -58,7 +61,8 @@ namespace MovieTracker.Data
 
                 e.ToTable(t => t.HasCheckConstraint("CK_Reviews_Rating", "Rating >= 1 AND Rating <= 10"));
             });
-             builder.Entity<UserMovieStatus>(e =>     // <- ТУТ починається твій новий блок
+
+            builder.Entity<UserMovieStatus>(e =>
             {
                 e.HasKey(s => s.Id);
 
@@ -74,8 +78,37 @@ namespace MovieTracker.Data
                  .WithMany()
                  .HasForeignKey(s => s.UserId)
                  .OnDelete(DeleteBehavior.Cascade);
-            });                                      // <- ТУТ закінчується твій новий блок
+            });
 
+            builder.Entity<Collection>(e =>
+            {
+                e.HasKey(c => c.Id);
+                e.Property(c => c.Name).IsRequired().HasMaxLength(100);
+                e.Property(c => c.Description).HasMaxLength(1000);
+
+                e.HasIndex(c => c.UserId);
+                e.HasIndex(c => c.IsPublic);
+
+                e.HasOne(c => c.User)
+                 .WithMany()
+                 .HasForeignKey(c => c.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<CollectionMovie>(e =>
+            {
+                e.HasKey(cm => new { cm.CollectionId, cm.MovieId });
+
+                e.HasOne(cm => cm.Collection)
+                 .WithMany(c => c.Movies)
+                 .HasForeignKey(cm => cm.CollectionId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(cm => cm.Movie)
+                 .WithMany()
+                 .HasForeignKey(cm => cm.MovieId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
 
             builder.Entity<Movie>(e =>
             {
