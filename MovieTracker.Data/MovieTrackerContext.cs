@@ -128,6 +128,15 @@ namespace MovieTracker.Data
                 e.Property(p => p.DislikedGenresJson)
                  .IsRequired();
 
+                e.Property(p => p.FavoriteGenreIdsJson)
+                 .IsRequired();
+
+                e.Property(p => p.DislikedGenresIdsJson)
+                 .IsRequired();
+
+                e.Property(p => p.HighlyRatedMovieIdsJson)
+                 .IsRequired();
+
                 e.HasOne(p => p.User)
                  .WithMany()
                  .HasForeignKey(p => p.UserId)

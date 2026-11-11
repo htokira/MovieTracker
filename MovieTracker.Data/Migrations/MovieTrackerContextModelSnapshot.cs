@@ -329,7 +329,15 @@ namespace MovieTracker.Data.Migrations
                     b.Property<double>("Confidence")
                         .HasColumnType("REAL");
 
+                    b.Property<string>("DislikedGenresIdsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DislikedGenresJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FavoriteGenreIdsJson")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -338,6 +346,10 @@ namespace MovieTracker.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GenrePreferencesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HighlyRatedMovieIdsJson")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
