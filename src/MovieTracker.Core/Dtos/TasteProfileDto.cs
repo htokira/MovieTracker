@@ -21,6 +21,10 @@ public class TasteProfileDto
     public List<string> FavoriteGenres { get; set; } = new();
     public List<string> DislikedGenres { get; set; } = new();
 
+    public List<int> FavoriteGenreIds { get; set; } = new();
+    public List<int> DislikedGenreIds {get; set; } = new();
+    public List<int> HighlyRatedMovieIds { get; set; } = new();
+
     public double TasteDiversity { get; set; }
     public double TasteConsistency { get; set; }
     public double Confidence { get; set; }
