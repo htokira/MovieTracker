@@ -10,7 +10,9 @@ function AuthPageLayout({ children }: AuthPageLayoutProps) {
   return (
     <main className={styles.page}>
       <div className={styles.content}>
-        <BackButton to="/" label="На головну" />
+        <nav className={styles.topBar} aria-label="Навігація">
+          <BackButton to="/" label="На головну" />
+        </nav>
         {children}
       </div>
     </main>

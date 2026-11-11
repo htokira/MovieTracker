@@ -20,7 +20,7 @@ function BackButton({ to, label = "Назад" }: BackButtonProps) {
   }
 
   return (
-    <Button type="button" variant="secondary" className={styles.back} onClick={handleClick}>
+    <Button type="button" variant="ghost" className={styles.back} onClick={handleClick}>
       <ArrowLeft size={16} />
       {label}
     </Button>

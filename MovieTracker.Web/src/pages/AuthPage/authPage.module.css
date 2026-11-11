@@ -13,3 +13,8 @@
   width: 100%;
   max-width: 400px;
 }
+
+.topBar {
+  display: flex;
+  margin-bottom: -8px;
+}
