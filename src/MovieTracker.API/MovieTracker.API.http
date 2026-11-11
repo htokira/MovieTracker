@@ -262,7 +262,7 @@ Content-Type: application/json
 }
 
 ###
-PUT {{MovieTracker.API_HostAddress}}/api/movies/157336/reviews/me
+PUT {{host}}/api/movies/157336/reviews/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Content-Type: application/json
 
@@ -272,7 +272,7 @@ Content-Type: application/json
 }
 
 ###
-PUT {{MovieTracker.API_HostAddress}}/api/movies/603/reviews/me
+PUT {{host}}/api/movies/603/reviews/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Content-Type: application/json
 
@@ -282,10 +282,10 @@ Content-Type: application/json
 }
 
 ### taste profile count
-POST {{MovieTracker.API_HostAddress}}/api/taste-profile/analyze
+POST {{host}}/api/taste-profile/analyze
 Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ### 47. Personalized reccomendations (isPersonalized: true, no ids of 27205, 157336, 603)
-GET {{MovieTracker.API_HostAddress}}/api/recommendations/me
+GET {{host}}/api/recommendations/me
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Accept: application/json
