@@ -158,6 +158,60 @@ namespace MovieTracker.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.Collection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsPublic");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Collections");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.CollectionMovie", b =>
+                {
+                    b.Property<Guid>("CollectionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CollectionId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("CollectionMovies");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -553,6 +607,36 @@ namespace MovieTracker.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.Collection", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.CollectionMovie", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.Collection", "Collection")
+                        .WithMany("Movies")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieTracker.Core.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collection");
+
+                    b.Navigation("Movie");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.MoviePerson", b =>
                 {
                     b.HasOne("MovieTracker.Core.Models.Movie", "Movie")
@@ -630,6 +714,11 @@ namespace MovieTracker.Data.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Collection", b =>
+                {
+                    b.Navigation("Movies");
                 });
 
             modelBuilder.Entity("MovieTracker.Core.Models.Movie", b =>
