@@ -13,51 +13,51 @@
 
         <!-- Верхня панель -->
         <Grid
-    Grid.Row="0"
-    Padding="20,15"
-    ColumnDefinitions="*,Auto"
-    BackgroundColor="#202331">
+            Grid.Row="0"
+            Padding="20,15"
+            ColumnDefinitions="*,Auto"
+            BackgroundColor="#202331">
 
             <Label
-        Text="Movie Tracker"
-        FontSize="24"
-        FontAttributes="Bold"
-        TextColor="White"
-        VerticalOptions="Center" />
+                Text="Movie Tracker"
+                FontSize="24"
+                FontAttributes="Bold"
+                TextColor="White"
+                VerticalOptions="Center" />
 
             <Grid
-        x:Name="AccountBar"
-        x:DataType="vm:AccountBarViewModel"
-        Grid.Column="1"
-        VerticalOptions="Center">
+                x:Name="AccountBar"
+                x:DataType="vm:AccountBarViewModel"
+                Grid.Column="1"
+                VerticalOptions="Center">
 
                 <!-- Гість: кнопка входу -->
                 <Button
-            Text="Увійти"
-            Style="{StaticResource PrimaryButton}"
-            HeightRequest="36"
-            Padding="18,0"
-            FontSize="13"
-            Command="{Binding LoginCommand}"
-            IsVisible="{Binding IsGuest}" />
+                    Text="Увійти"
+                    Style="{StaticResource PrimaryButton}"
+                    HeightRequest="36"
+                    Padding="18,0"
+                    FontSize="13"
+                    Command="{Binding LoginCommand}"
+                    IsVisible="{Binding IsGuest}" />
 
                 <!-- Авторизований: кружечок, що відкриває профіль -->
                 <Border
-            WidthRequest="36"
-            HeightRequest="36"
-            BackgroundColor="#6558D3"
-            StrokeThickness="0"
-            StrokeShape="RoundRectangle 18"
-            IsVisible="{Binding IsAuthenticated}">
+                    WidthRequest="36"
+                    HeightRequest="36"
+                    BackgroundColor="#6558D3"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 18"
+                    IsVisible="{Binding IsAuthenticated}">
 
                     <Grid>
                         <Label
-                    Text="{Binding AvatarInitial}"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    TextColor="White"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center" />
+                            Text="{Binding AvatarInitial}"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
 
                         <Image Source="{Binding AvatarImage}" Aspect="AspectFill" />
                     </Grid>
@@ -200,6 +200,146 @@
                             </CollectionView.ItemTemplate>
 
                         </CollectionView>
+
+                    </VerticalStackLayout>
+
+                    <!-- Рекомендовано для вас -->
+                    <VerticalStackLayout
+                        x:Name="RecommendationsSection"
+                        x:DataType="vm:RecommendationsViewModel"
+                        Spacing="12"
+                        IsVisible="{Binding IsSectionVisible}">
+
+                        <VerticalStackLayout Spacing="2">
+                            <Label
+                                Text="Рекомендовано для вас"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                            <Label
+                                Text="{Binding Subtitle}"
+                                FontSize="12"
+                                TextColor="#A0A5B5"
+                                IsVisible="{Binding HasMovies}" />
+                        </VerticalStackLayout>
+
+                        <Grid HeightRequest="300">
+
+                            <CollectionView
+                                ItemsSource="{Binding Movies}"
+                                HorizontalScrollBarVisibility="Never"
+                                SelectionMode="None"
+                                Margin="0">
+
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout
+                                        Orientation="Horizontal"
+                                        ItemSpacing="12" />
+                                </CollectionView.ItemsLayout>
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="dto:MovieListItemDto">
+
+                                        <VerticalStackLayout
+                                            WidthRequest="135"
+                                            Padding="15"
+                                            Spacing="8"
+                                            Margin="0,0,25,0">
+
+                                            <VerticalStackLayout.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={x:Reference MainPageRoot},
+                                                                Path=BindingContext.OpenMovieCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                            </VerticalStackLayout.GestureRecognizers>
+
+                                            <Border
+                                                StrokeThickness="0"
+                                                StrokeShape="RoundRectangle 10"
+                                                BackgroundColor="#292E3D"
+                                                HeightRequest="195"
+                                                WidthRequest="135">
+
+                                                <Image
+                                                    Source="{Binding PosterUrl}"
+                                                    Aspect="AspectFill"
+                                                    HeightRequest="195"
+                                                    WidthRequest="135" />
+
+                                            </Border>
+
+                                            <Label
+                                                Text="{Binding Title}"
+                                                TextColor="White"
+                                                FontSize="13"
+                                                FontAttributes="Bold"
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="3" />
+
+                                            <Grid ColumnDefinitions="*, Auto">
+
+                                                <Label
+                                                    Text="{Binding ReleaseYear}"
+                                                    TextColor="#A0A5B5"
+                                                    FontSize="11" />
+
+                                                <Label
+                                                    Grid.Column="1"
+                                                    Text="{Binding Rating, StringFormat='★ {0:F1}'}"
+                                                    TextColor="#FFC857"
+                                                    FontSize="11" />
+
+                                            </Grid>
+
+                                        </VerticalStackLayout>
+
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+
+                            </CollectionView>
+
+                            <!-- Перше завантаження -->
+                            <VerticalStackLayout
+                                Spacing="10"
+                                VerticalOptions="Center"
+                                IsVisible="{Binding ShowLoader}">
+
+                                <ActivityIndicator
+                                    IsRunning="{Binding ShowLoader}"
+                                    Color="#8B7CFF" />
+
+                                <Label
+                                    Text="Підбираємо фільми..."
+                                    TextColor="#A0A5B5"
+                                    HorizontalOptions="Center" />
+
+                            </VerticalStackLayout>
+
+                            <!-- Помилка -->
+                            <VerticalStackLayout
+                                Spacing="10"
+                                VerticalOptions="Center"
+                                IsVisible="{Binding HasError}">
+
+                                <Label
+                                    Text="{Binding ErrorMessage}"
+                                    TextColor="#FF7777"
+                                    FontSize="13"
+                                    HorizontalTextAlignment="Center" />
+
+                                <Button
+                                    Text="Спробувати ще раз"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HeightRequest="36"
+                                    Padding="18,0"
+                                    FontSize="13"
+                                    HorizontalOptions="Center"
+                                    Command="{Binding RetryCommand}" />
+
+                            </VerticalStackLayout>
+
+                        </Grid>
 
                     </VerticalStackLayout>
 
