@@ -106,6 +106,14 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <VerticalStackLayout Spacing="10">
+                    <Button
+                        Text="Вийти"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding LogoutCommand}"
+                        IsEnabled="{Binding IsNotBusy}" />
+                </VerticalStackLayout>
+
                 <!-- Редагування профілю -->
                 <Border
                     BackgroundColor="#202331"
@@ -218,14 +226,8 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Вихід і видалення -->
+                <!-- Видалення -->
                 <VerticalStackLayout Spacing="10">
-
-                    <Button
-                        Text="Вийти"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding LogoutCommand}"
-                        IsEnabled="{Binding IsNotBusy}" />
 
                     <Button
                         Text="Видалити акаунт"

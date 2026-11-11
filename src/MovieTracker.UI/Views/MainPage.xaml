@@ -203,7 +203,7 @@
 
                     </VerticalStackLayout>
 
-                    <!-- Рекомендовано для вас -->
+                    <!-- Рекомендації -->
                     <VerticalStackLayout
                         x:Name="RecommendationsSection"
                         x:DataType="vm:RecommendationsViewModel"
