@@ -115,4 +115,26 @@ public class ApiService
 
         return await AuthService.ReadErrorAsync(response);
     });
+
+    private const string MyRecommendationsUrl = "api/recommendations/me";
+    public async Task<(RecommendationsResponse? Response, string? Error)> GetMyRecommendationsAsync()
+    {
+        try
+        {
+            var response = await _auth.SendAuthorizedAsync(
+                () => new HttpRequestMessage(HttpMethod.Get, MyRecommendationsUrl));
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+                return (null, null);
+
+            if (!response.IsSuccessStatusCode)
+                return (null, await AuthService.ReadErrorAsync(response));
+
+            return (await response.Content.ReadFromJsonAsync<RecommendationsResponse>(), null);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            return (null, AuthService.NetworkError);
+        }
+    }
 }
