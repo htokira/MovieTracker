@@ -602,6 +602,17 @@ namespace MovieTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.TasteProfile", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.UserMovieStatus", b =>
                 {
                     b.HasOne("MovieTracker.Core.Models.Movie", "Movie")
