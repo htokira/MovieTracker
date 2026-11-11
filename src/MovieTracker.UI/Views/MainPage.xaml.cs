@@ -7,30 +7,40 @@ namespace MovieTracker.UI.Views;
 public partial class MainPage : ContentPage
 {
     private readonly MainViewModel _viewModel;
+    private readonly RecommendationsViewModel _recommendations;
     private readonly AuthService _auth;
     private bool _isInitialized;
 
-    public MainPage(MainViewModel viewModel, AccountBarViewModel accountBar, AuthService auth)
+    public MainPage(MainViewModel viewModel, AccountBarViewModel accountBar, RecommendationsViewModel recommendations, AuthService auth)
     {
         InitializeComponent();
 
         _viewModel = viewModel;
+        _recommendations = recommendations;
         _auth = auth;
+
         BindingContext = _viewModel;
         AccountBar.BindingContext = accountBar;
+        RecommendationsSection.BindingContext = _recommendations;
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
-        if (_isInitialized)
-            return;
+        if (!_isInitialized)
+        {
+            _isInitialized = true;
 
-        _isInitialized = true;
-        var restoreSession = _auth.RestoreSessionAsync();
-        await _viewModel.InitializeAsync();
-        await restoreSession;
+            var restoreSession = _auth.RestoreSessionAsync();
+            var loadCatalog = _viewModel.InitializeAsync();
+
+            await restoreSession;
+            await Task.WhenAll(loadCatalog, _recommendations.LoadAsync());
+            return;
+        }
+
+        await _recommendations.LoadAsync();
     }
 
     private void MoviesCollection_SizeChanged(object? sender, EventArgs e)
