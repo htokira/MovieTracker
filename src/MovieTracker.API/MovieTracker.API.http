@@ -241,3 +241,51 @@ Content-Type: application/json
 POST {{host}}/api/taste-profile/analyze
 Authorization: Bearer {{login.response.body.$.accessToken}}
 Content-Type: application/json
+
+### 45. Reccomendations no token (401)
+GET {{host}}/api/recommendations/me
+Accept: application/json
+
+### 46. Reccomendations new account (isPersonalized: false)
+GET {{host}}/api/recommendations/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Accept: application/json
+
+### Personalize test account
+PUT {{host}}/api/movies/27205/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "rating": 10,
+  "text": "nice brah"
+}
+
+###
+PUT {{MovieTracker.API_HostAddress}}/api/movies/157336/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "rating": 9,
+  "text": "потужно"
+}
+
+###
+PUT {{MovieTracker.API_HostAddress}}/api/movies/603/reviews/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "rating": 9,
+  "text": null
+}
+
+### taste profile count
+POST {{MovieTracker.API_HostAddress}}/api/taste-profile/analyze
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 47. Personalized reccomendations (isPersonalized: true, no ids of 27205, 157336, 603)
+GET {{MovieTracker.API_HostAddress}}/api/recommendations/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Accept: application/json
