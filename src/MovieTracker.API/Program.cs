@@ -67,6 +67,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<TasteProfileService>();
 builder.Services.AddScoped<IMovieStorageService, MovieStorageService>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
