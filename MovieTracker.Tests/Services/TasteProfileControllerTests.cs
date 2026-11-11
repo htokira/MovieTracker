@@ -84,7 +84,10 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
         profile.Should().NotBeNull();
         profile!.ReviewsCount.Should().Be(7);
         profile.FavoriteGenres.Should().Contain("Science Fiction");
+        profile.FavoriteGenreIds.Should().NotBeEmpty();
         profile.DislikedGenres.Should().Contain("Horror");
+        profile.DislikedGenreIds.Should().NotBeEmpty();
+        profile.HighlyRatedMovieIds.Should().NotBeEmpty();
         profile.TasteDiversity.Should().BeGreaterThan(0);
         profile.Confidence.Should().BeGreaterThan(0);
     }
