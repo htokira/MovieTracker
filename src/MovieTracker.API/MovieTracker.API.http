@@ -1,5 +1,5 @@
-@MovieTracker.API_HostAddress = http://localhost:5153
-@host = http://localhost:5153
+@MovieTracker.API_HostAddress = http://localhost:7226
+@host = http://localhost:7226
 @email = test@example.com
 @password = Test1234
 
@@ -231,3 +231,13 @@ Authorization: Bearer {{login.response.body.$.accessToken}}
 ### 42. get watch status after delete (404)
 GET {{host}}/api/movies/550/status
 Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 43. Get my taste profile (404 if not analyzed yet, or 200 with profile)
+GET {{host}}/api/taste-profile/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+### 44. Trigger taste profile analysis (200)
+POST {{host}}/api/taste-profile/analyze
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json

@@ -317,6 +317,62 @@ namespace MovieTracker.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.TasteProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CalculatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Confidence")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("DislikedGenresIdsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DislikedGenresJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FavoriteGenreIdsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FavoriteGenresJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GenrePreferencesJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HighlyRatedMovieIdsJson")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ReviewsCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("TasteConsistency")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("TasteDiversity")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("TasteProfiles");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.User", b =>
                 {
                     b.Property<Guid>("Id")

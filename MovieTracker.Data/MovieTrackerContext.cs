@@ -15,7 +15,9 @@ namespace MovieTracker.Data
         public DbSet<Person> Persons => Set<Person>();
         public DbSet<MoviePerson> MoviePersons => Set<MoviePerson>();
         public DbSet<Review> Reviews => Set<Review>();
+        public DbSet<TasteProfile> TasteProfiles => Set<TasteProfile>();
         public DbSet<UserMovieStatus> UserMovieStatuses => Set<UserMovieStatus>();
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -127,6 +129,37 @@ namespace MovieTracker.Data
                 e.HasKey(g => g.Id);
                 e.Property(g => g.Id).ValueGeneratedNever();
                 e.Property(g => g.Name).IsRequired().HasMaxLength(100);
+            });
+
+            builder.Entity<TasteProfile>(e =>
+            {
+                e.HasKey(p => p.Id);
+
+                e.HasIndex(p => p.UserId)
+                 .IsUnique();
+
+                e.Property(p => p.GenrePreferencesJson)
+                 .IsRequired();
+
+                e.Property(p => p.FavoriteGenresJson)
+                 .IsRequired();
+
+                e.Property(p => p.DislikedGenresJson)
+                 .IsRequired();
+
+                e.Property(p => p.FavoriteGenreIdsJson)
+                 .IsRequired();
+
+                e.Property(p => p.DislikedGenresIdsJson)
+                 .IsRequired();
+
+                e.Property(p => p.HighlyRatedMovieIdsJson)
+                 .IsRequired();
+
+                e.HasOne(p => p.User)
+                 .WithMany()
+                 .HasForeignKey(p => p.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
