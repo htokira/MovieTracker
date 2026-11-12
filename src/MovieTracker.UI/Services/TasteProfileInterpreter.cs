@@ -133,8 +133,8 @@ public class TasteProfileInterpreter
             Title = DetermineTitle(profile.ReviewsCount),
             TitleDescription = DetermineTitleDescription(profile.ReviewsCount),
 
-            DiversityLabel = DetermineDiversityLabel(profile.TasteDiversity),
-            DiversityDescription = DetermineDiversityDescription(profile.TasteDiversity)
+            DiversityLabel = DetermineDiversityLabel(profile),
+            DiversityDescription = DetermineDiversityDescription(profile)
         };
     }
 
@@ -206,9 +206,15 @@ public class TasteProfileInterpreter
         };
     }
 
-    private string DetermineDiversityLabel(double diversity)
+    private string DetermineDiversityLabel(TasteProfileDto profile)
     {
-        return diversity switch
+        if (profile.ReviewsCount == 0 ||
+            profile.GenrePreferences.Count == 0)
+        {
+            return "Ще не визначено";
+        }
+
+        return profile.TasteDiversity switch
         {
             < 0.3 => "Вузький фокус",
             < 0.6 => "Збалансований смак",
@@ -217,9 +223,15 @@ public class TasteProfileInterpreter
         };
     }
 
-    private string DetermineDiversityDescription(double diversity)
+    private string DetermineDiversityDescription(TasteProfileDto profile)
     {
-        return diversity switch
+        if (profile.ReviewsCount == 0 ||
+            profile.GenrePreferences.Count == 0)
+        {
+            return "Поки що недостатньо даних, щоб визначити різноманіття твого смаку. Оцінюй фільми, і ми поступово сформуємо твій профіль.";
+        }
+
+        return profile.TasteDiversity switch
         {
             < 0.3 => "Ти маєш чіткі жанрові вподобання та найчастіше обираєш знайомі й перевірені напрямки. Якість для тебе важливіша за різноманіття.",
             < 0.6 => "Твій смак поєднує кілька улюблених напрямків. Ти маєш свої вподобання, але водночас не проти спробувати щось інше.",
