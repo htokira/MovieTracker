@@ -137,4 +137,26 @@ public class ApiService
             return (null, AuthService.NetworkError);
         }
     }
+
+    public async Task<TasteProfileDto?> GetTasteProfileAsync()
+    {
+        try
+        {
+            var response = await _auth.SendAuthorizedAsync(
+                () => new HttpRequestMessage(HttpMethod.Get, "api/taste-profile/me"));
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<TasteProfileDto>();
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
 }
