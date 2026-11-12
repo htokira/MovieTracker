@@ -123,12 +123,20 @@ public class TasteProfileInterpreter
         }
     ];
 
+    private static readonly ArchetypeDefinition UniversalArchetype = new()
+    {
+        Name = "Кіноман-універсал",
+        Description = "Твій кінематографічний смак не обмежується одним напрямом. Ти відкритий до різних історій та жанрів."
+    };
+
     public TasteProfileInterpretation Interpret(TasteProfileDto profile)
     {
+        var archetype = DetermineArchetype(profile);
+
         return new TasteProfileInterpretation
         {
-            Archetype = DetermineArchetype(profile),
-            ArchetypeDescription = DetermineArchetypeDescription(profile),
+            Archetype = archetype.Name,
+            ArchetypeDescription = archetype.Description,
 
             Title = DetermineTitle(profile.ReviewsCount),
             TitleDescription = DetermineTitleDescription(profile.ReviewsCount),
@@ -138,14 +146,14 @@ public class TasteProfileInterpreter
         };
     }
 
-    private string DetermineArchetype(TasteProfileDto profile)
+    private ArchetypeDefinition DetermineArchetype(TasteProfileDto profile)
     {
         var positivePreferences = profile.GenrePreferences
             .Where(g => g.PreferenceScore > 0.15 && g.Confidence >= 0.2)
             .ToList();
 
         if (positivePreferences.Count == 0)
-            return "Кіноман-універсал";
+            return UniversalArchetype;
 
         var scores = Archetypes.Select(archetype =>
         {
@@ -166,18 +174,9 @@ public class TasteProfileInterpreter
         var best = scores.First();
 
         if (best.Score < 0.3 || best.MatchedGenres == 0)
-            return "Кіноман-універсал";
+            return UniversalArchetype;
 
-        return best.Archetype.Name;
-    }
-
-    private string DetermineArchetypeDescription(TasteProfileDto profile)
-    {
-        var archetypeName = DetermineArchetype(profile);
-
-        return Archetypes.FirstOrDefault(a => a.Name == archetypeName)
-            ?.Description
-            ?? "Твій кінематографічний смак не обмежується одним напрямом. Ти відкритий до різних історій та жанрів.";
+        return best.Archetype;
     }
 
     private string DetermineTitle(int reviewsCount)
