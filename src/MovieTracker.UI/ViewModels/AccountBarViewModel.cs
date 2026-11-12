@@ -27,12 +27,14 @@ namespace MovieTracker.UI.ViewModels
 
         public ICommand LoginCommand { get; }
         public ICommand OpenProfileCommand { get; }
+        public ICommand OpenTasteProfileCommand { get; }
 
         public AccountBarViewModel(AuthService auth)
         {
             _auth = auth;
 
             LoginCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(LoginPage)));
+            OpenTasteProfileCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(TasteProfilePage)));
             OpenProfileCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(ProfilePage)));
 
             _auth.AuthStateChanged += OnAuthStateChanged;
