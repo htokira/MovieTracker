@@ -32,7 +32,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<MovieDetailsViewModel>();
 		builder.Services.AddTransient<MovieDetailsPage>();
 		builder.Services.AddSingleton<AppShell>();
-
+		builder.Services.AddSingleton<TasteProfileInterpreter>();
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<LoginPage>();
