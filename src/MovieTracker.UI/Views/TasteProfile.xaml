@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    x:Class="MovieTracker.UI.Views.TasteProfilePage"
+    Title="Мій смаковий профіль"
+    BackgroundColor="#101014"
+    Shell.NavBarIsVisible="False">
+    
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Верхня панель -->
+        <Grid
+            Grid.Row="0"
+            Padding="15"
+            ColumnDefinitions="Auto,*,Auto"
+            BackgroundColor="#202331">
+
+            <Button
+                Text="‹ Назад"
+                Clicked="OnBackClicked"
+                BackgroundColor="Transparent"
+                TextColor="White"
+                FontSize="14"
+                Padding="5,0"
+                VerticalOptions="Center" />
+
+            <Label
+                Grid.Column="1"
+                Text="Movie Tracker"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="White"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <Grid
+                x:Name="AccountBar"
+                x:DataType="vm:AccountBarViewModel"
+                Grid.Column="2"
+                VerticalOptions="Center">
+
+                <Button
+                    Text="Увійти"
+                    Style="{StaticResource PrimaryButton}"
+                    HeightRequest="36"
+                    Padding="18,0"
+                    FontSize="13"
+                    Command="{Binding LoginCommand}"
+                    IsVisible="{Binding IsGuest}" />
+
+                <Border
+                    WidthRequest="36"
+                    HeightRequest="36"
+                    BackgroundColor="#6558D3"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 18"
+                    IsVisible="{Binding IsAuthenticated}">
+
+                    <Grid>
+                        <Label
+                            Text="{Binding AvatarInitial}"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
+
+                        <Image Source="{Binding AvatarImage}" Aspect="AspectFill" />
+                    </Grid>
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenProfileCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+
+        </Grid>
+
+        <!-- Основний вміст сторінки -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- Заголовок сторінки -->
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                        Text="Твій кінематографічний профіль"
+                        FontSize="26"
+                        FontAttributes="Bold"
+                        TextColor="White"/>
+
+                    <Label
+                        Text="Дізнайся більше про власні кінематографічні вподобання"
+                        FontSize="14"
+                        TextColor="#A5A5B0"/>
+                </VerticalStackLayout>
+
+                <!-- Завантаження -->
+                <ActivityIndicator
+                    IsRunning="{Binding IsLoading}"
+                    IsVisible="{Binding IsLoading}"
+                    Color="#8B5CF6"/>
+
+                <!-- Помилка або відсутність профілю -->
+                <Label
+                    Text="{Binding ErrorMessage}"
+                    IsVisible="{Binding HasError}"
+                    TextColor="#D1D1D8"
+                    FontSize="15"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,20"/>
+
+                <!-- Основний вміст -->
+                <VerticalStackLayout
+                    IsVisible="{Binding HasProfile}"
+                    Spacing="16">
+
+                    <!-- Архетип -->
+                    <Border
+                        BackgroundColor="#1C1B26"
+                        Stroke="#393348"
+                        StrokeThickness="1"
+                        Padding="18"
+                        StrokeShape="RoundRectangle 16">
+
+                        <VerticalStackLayout Spacing="10">
+
+                            <Label
+                                Text="✦  АРХЕТИП КОРИСТУВАЧА"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#B69CFF"/>
+
+                            <Label
+                                Text="{Binding Interpretation.Archetype}"
+                                FontSize="23"
+                                FontAttributes="Bold"
+                                TextColor="White"/>
+
+                            <Label
+                                Text="{Binding Interpretation.ArchetypeDescription}"
+                                FontSize="14"
+                                TextColor="#C2C0CC"
+                                LineBreakMode="WordWrap"/>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Титул -->
+                    <Border
+                        BackgroundColor="#1C1B26"
+                        Stroke="#393348"
+                        StrokeThickness="1"
+                        Padding="18"
+                        StrokeShape="RoundRectangle 16">
+
+                        <VerticalStackLayout Spacing="10">
+
+                            <Label
+                                Text="♛  ТИТУЛ ГЛЯДАЧА"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#F5C76B"/>
+
+                            <Label
+                                Text="{Binding Interpretation.Title}"
+                                FontSize="23"
+                                FontAttributes="Bold"
+                                TextColor="White"/>
+
+                            <Label
+                                Text="{Binding Interpretation.TitleDescription}"
+                                FontSize="14"
+                                TextColor="#C2C0CC"
+                                LineBreakMode="WordWrap"/>
+
+                            <Label
+                                Text="{Binding Profile.ReviewsCount, StringFormat='Кількість оцінених фільмів: {0}'}"
+                                FontSize="12"
+                                TextColor="#92909D"/>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Різноманіття -->
+                    <Border
+                        BackgroundColor="#1C1B26"
+                        Stroke="#393348"
+                        StrokeThickness="1"
+                        Padding="18"
+                        StrokeShape="RoundRectangle 16">
+
+                        <VerticalStackLayout Spacing="10">
+
+                            <Label
+                                Text="✧  РІЗНОМАНІТТЯ СМАКУ"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#70D6B3"/>
+
+                            <Label
+                                Text="{Binding Interpretation.DiversityLabel}"
+                                FontSize="23"
+                                FontAttributes="Bold"
+                                TextColor="White"/>
+
+                            <Label
+                                Text="{Binding Interpretation.DiversityDescription}"
+                                FontSize="14"
+                                TextColor="#C2C0CC"
+                                LineBreakMode="WordWrap"/>
+
+                            <Label
+                                Text="{Binding Profile.TasteDiversity, StringFormat='Різноманіття: {0:P0}'}"
+                                FontSize="12"
+                                TextColor="#92909D"/>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

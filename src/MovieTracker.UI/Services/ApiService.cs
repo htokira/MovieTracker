@@ -102,7 +102,13 @@ public class ApiService
             Content = JsonContent.Create(new UpsertReviewRequest(rating, text))
         });
 
-        return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+        if (!response.IsSuccessStatusCode)
+        {
+            return await AuthService.ReadErrorAsync(response);
+        }
+
+        await AnalyzeTasteProfileAsync();
+        return null;
     });
 
     public Task<string?> DeleteMyReviewAsync(int movieId) => AuthService.GuardAsync(async () =>
@@ -110,10 +116,18 @@ public class ApiService
         var response = await _auth.SendAuthorizedAsync(
             () => new HttpRequestMessage(HttpMethod.Delete, MyReviewUrl(movieId)));
 
-        if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotFound)
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
             return null;
+        }
 
-        return await AuthService.ReadErrorAsync(response);
+        if (!response.IsSuccessStatusCode)
+        {
+            return await AuthService.ReadErrorAsync(response);
+        }
+
+        await AnalyzeTasteProfileAsync();
+        return null;
     });
 
     private const string MyRecommendationsUrl = "api/recommendations/me";
@@ -144,6 +158,28 @@ public class ApiService
         {
             var response = await _auth.SendAuthorizedAsync(
                 () => new HttpRequestMessage(HttpMethod.Get, "api/taste-profile/me"));
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<TasteProfileDto>();
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<TasteProfileDto?> AnalyzeTasteProfileAsync()
+    {
+        try
+        {
+            var response = await _auth.SendAuthorizedAsync(
+                () => new HttpRequestMessage(HttpMethod.Post, "api/taste-profile/analyze"));
 
             if (!response.IsSuccessStatusCode)
                 return null;
