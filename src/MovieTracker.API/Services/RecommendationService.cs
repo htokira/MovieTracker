@@ -118,14 +118,14 @@ namespace MovieTracker.API.Services
 
             var candidates = new Dictionary<int, Candidate>();
 
-            foreach (var movie in similarResults.SelectMany(r => r))
+            foreach (var movie in similarResults.SelectMany(r => r.Items))
             {
                 var candidate = GetOrAddCandidate(candidates, movie, excludedIds);
                 if (candidate != null)
                     candidate.SimilarHits++;
             }
 
-            foreach (var movie in discoverResults.SelectMany(r => r))
+            foreach (var movie in discoverResults.SelectMany(r => r.Items))
                 GetOrAddCandidate(candidates, movie, excludedIds);
 
             var genreScores = preferences.ToDictionary(p => p.GenreId, p => p.PreferenceScore);
@@ -189,7 +189,8 @@ namespace MovieTracker.API.Services
 
             for (var page = 1; page <= MaxPopularPages && result.Count < count; page++)
             {
-                var movies = (await _tmdbService.GetPopularMoviesAsync(page)).ToList();
+                var pagedResult = await _tmdbService.GetPopularMoviesAsync(page);
+                var movies = pagedResult.Items.ToList();
                 if (movies.Count == 0)
                     break;
 
