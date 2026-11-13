@@ -190,6 +190,10 @@ namespace MovieTracker.API.Services
             for (var page = 1; page <= MaxPopularPages && result.Count < count; page++)
             {
                 var pagedResult = await _tmdbService.GetPopularMoviesAsync(page);
+
+                if (pagedResult?.Items == null)
+                    break;
+
                 var movies = pagedResult.Items.ToList();
                 if (movies.Count == 0)
                     break;
