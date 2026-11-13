@@ -6,6 +6,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import ChangePasswordForm from "@/features/profile/ChangePasswordForm";
 import DeleteAccount from "@/features/profile/DeleteAccount";
 import PersonalInfoForm from "@/features/profile/PersonalInfoForm";
+import TasteProfile from "@/features/profile/TasteProfile/TasteProfile";
 import styles from "./profilePage.module.css";
 
 function ProfilePage() {
@@ -35,6 +36,8 @@ function ProfilePage() {
           Вийти
         </Button>
       </header>
+
+      <TasteProfile />
 
       <div className={styles.grid}>
         <section className={styles.card} aria-labelledby="personal-title">

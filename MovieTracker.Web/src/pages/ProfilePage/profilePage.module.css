@@ -56,10 +56,6 @@
   border-color: var(--color-danger, #e07a85);
 }
 
-.cardTitle {
-  margin: 0;
-}
-
 @media (min-width: 600px) {
   .card {
     padding: var(--space-8, 32px);
@@ -69,5 +65,9 @@
 @media (min-width: 900px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tasteGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
