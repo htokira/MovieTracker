@@ -17,6 +17,8 @@ public class MainViewModel : INotifyPropertyChanged
     private string _selectedGenre = "Усі жанри";
     private string _selectedSort = "За популярністю";
     private bool _isEmpty;
+    private int _currentPage = 1;
+    private int _totalPages = 1;
 
     private readonly Dictionary<string, int?> _genreIds = new()
     {
@@ -86,6 +88,7 @@ public class MainViewModel : INotifyPropertyChanged
             {
                 _errorMessage = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(HasError));
             }
         }
     }
@@ -133,15 +136,17 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand SearchCommand { get; }
     public ICommand ApplyFiltersCommand { get; }
+    public ICommand LoadMoreCommand { get; }
     public ICommand OpenMovieCommand { get; }
 
     public MainViewModel(ApiService apiService)
     {
         _apiService = apiService;
-        SearchCommand = new Command(async () => await LoadMoviesAsync());
-        ApplyFiltersCommand = new Command(async () => await LoadMoviesAsync());
+        SearchCommand = new Command(async () => await ResetAndLoadMoviesAsync());
+        ApplyFiltersCommand = new Command(async () => await ResetAndLoadMoviesAsync());
         GenreOptions = new ObservableCollection<string>(_genreIds.Keys);
         SortOptions = new ObservableCollection<string>(_sortOptions.Keys);
+        LoadMoreCommand = new Command(async () => await LoadMoreMoviesAsync());
         OpenMovieCommand = new Command<MovieListItemDto>(async movie =>
         {
             if (movie == null)
@@ -155,7 +160,7 @@ public class MainViewModel : INotifyPropertyChanged
     public async Task InitializeAsync()
     {
         await LoadPopularMoviesAsync();
-        await LoadMoviesAsync();
+        await ResetAndLoadMoviesAsync();
     }
 
     public async Task LoadPopularMoviesAsync()
@@ -166,9 +171,9 @@ public class MainViewModel : INotifyPropertyChanged
 
         try
         {
-            var popularMovies = await _apiService.GetPopularMoviesAsync();
+            var pagedResult = await _apiService.GetPopularMoviesAsync(page: 1);
             PopularMovies.Clear();
-            foreach (var movie in popularMovies)
+            foreach (var movie in pagedResult.Items)
             {
                 PopularMovies.Add(movie);
             }
@@ -183,7 +188,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public async Task LoadMoviesAsync()
+    public async Task ResetAndLoadMoviesAsync()
     {
         if (IsLoading) return;
         IsLoading = true;
@@ -191,30 +196,22 @@ public class MainViewModel : INotifyPropertyChanged
 
         try
         {
-            int? genreId = null;
-            if (!string.IsNullOrEmpty(SelectedGenre) && _genreIds.TryGetValue(SelectedGenre, out var foundGenreId))
-            {
-                genreId = foundGenreId;
-            }
+            var (genreId, sortBy) = GetCurrentFilters();
 
-            string sortBy = "popularity.desc";
-            if (!string.IsNullOrEmpty(SelectedSort) && _sortOptions.TryGetValue(SelectedSort, out var foundSort))
-            {
-                sortBy = foundSort;
-            }
-
-            var movies = await _apiService.GetMoviesAsync(
-                query: SearchQuery, 
-                genreId: genreId, 
+            var pagedResult = await _apiService.GetMoviesAsync(
+                query: SearchQuery,
+                page: _currentPage,
+                genreId: genreId,
                 sortBy: sortBy
             );
 
             Movies.Clear();
-            foreach (var movie in movies)
+            foreach (var movie in pagedResult.Items)
             {
                 Movies.Add(movie);
             }
 
+            _totalPages = pagedResult.TotalPages;
             IsEmpty = Movies.Count == 0;
         }
         catch (Exception ex)
@@ -225,6 +222,59 @@ public class MainViewModel : INotifyPropertyChanged
         {
             IsLoading = false;
         }
+    }
+
+    private async Task LoadMoreMoviesAsync()
+    {
+        if (IsLoading || _currentPage >= _totalPages) return;
+
+        IsLoading = true;
+
+        try
+        {
+            _currentPage++;
+            var (genreId, sortBy) = GetCurrentFilters();
+
+            var pagedResult = await _apiService.GetMoviesAsync(
+                query: SearchQuery,
+                page: _currentPage,
+                genreId: genreId,
+                sortBy: sortBy
+            );
+
+            foreach (var movie in pagedResult.Items)
+            {
+                Movies.Add(movie);
+            }
+
+            _totalPages = pagedResult.TotalPages;
+        }
+        catch (Exception ex)
+        {
+            _currentPage--;
+            ErrorMessage = $"Error loading more movies: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private (int? GenreId, string SortBy) GetCurrentFilters()
+    {
+        int? genreId = null;
+        if (!string.IsNullOrEmpty(SelectedGenre) && _genreIds.TryGetValue(SelectedGenre, out var foundGenreId))
+        {
+            genreId = foundGenreId;
+        }
+
+        string sortBy = "popularity.desc";
+        if (!string.IsNullOrEmpty(SelectedSort) && _sortOptions.TryGetValue(SelectedSort, out var foundSort))
+        {
+            sortBy = foundSort;
+        }
+
+        return (genreId, sortBy);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
