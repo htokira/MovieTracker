@@ -18,3 +18,10 @@
   display: flex;
   margin-bottom: -8px;
 }
+
+/* Телефони */
+@media (max-width: 480px) {
+  .page {
+    padding: var(--space-4);
+  }
+}

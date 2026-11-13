@@ -37,3 +37,10 @@
 .footerLink:hover {
   color: var(--color-teal-hover);
 }
+
+/* Телефони */
+@media (max-width: 480px) {
+  .card {
+    padding: var(--space-6);
+  }
+}

@@ -30,3 +30,23 @@
 .link:hover {
   color: var(--color-teal);
 }
+
+/* Планшети */
+@media (max-width: 768px) {
+  .inner {
+    padding: var(--space-4);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .inner {
+    justify-content: center;
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .credits {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+}

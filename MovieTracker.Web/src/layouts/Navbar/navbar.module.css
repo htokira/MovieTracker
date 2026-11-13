@@ -114,3 +114,52 @@
 .loginLink:hover {
   background-color: var(--color-teal-hover);
 }
+
+/* Планшети */
+@media (max-width: 768px) {
+  .inner {
+    padding: 0 var(--space-4);
+  }
+
+  .left {
+    gap: var(--space-4);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .inner {
+    gap: var(--space-2);
+    padding: 0 var(--space-3);
+  }
+
+  .left {
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .logo {
+    gap: var(--space-1);
+    font-size: var(--font-size-md);
+    white-space: nowrap;
+  }
+
+  .link {
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+  }
+
+  .active::after {
+    left: var(--space-2);
+    right: var(--space-2);
+  }
+
+  .avatarLink {
+    margin-left: 0;
+  }
+
+  .logoText {
+    display: none;
+  }
+}

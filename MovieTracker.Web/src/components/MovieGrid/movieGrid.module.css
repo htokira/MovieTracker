@@ -6,3 +6,18 @@
   padding: 0;
   list-style: none;
 }
+
+/* Планшети */
+@media (max-width: 768px) {
+  .grid {
+    gap: var(--space-4);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-3);
+  }
+}

@@ -1,12 +1,13 @@
 .hero {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: start;
-  gap: var(--space-6);
+  gap: var(--space-8);
 }
 
 .posterWrapper {
-  width: min(100%, 260px);
+  flex: 0 0 300px;
+  width: 300px;
   overflow: hidden;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
@@ -60,14 +61,27 @@
   margin-top: var(--space-2);
 }
 
-@media (min-width: 700px) {
+/* Планшети */
+@media (max-width: 768px) {
   .hero {
-    flex-direction: row;
-    gap: var(--space-8);
+    flex-direction: column;
+    gap: var(--space-6);
   }
 
   .posterWrapper {
-    flex: 0 0 300px;
-    width: 300px;
+    flex: none;
+    width: min(100%, 260px);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .hero {
+    gap: var(--space-4);
+  }
+
+  .meta {
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
   }
 }

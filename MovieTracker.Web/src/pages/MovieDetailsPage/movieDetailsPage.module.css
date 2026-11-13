@@ -18,3 +18,21 @@
   align-items: flex-start;
   gap: var(--space-2);
 }
+
+/* Планшети */
+@media (max-width: 768px) {
+  .page {
+    gap: var(--space-6);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .page {
+    gap: var(--space-4);
+  }
+
+  .tracking {
+    max-width: none;
+  }
+}

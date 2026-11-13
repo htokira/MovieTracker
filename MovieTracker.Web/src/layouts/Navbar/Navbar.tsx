@@ -42,7 +42,7 @@ function Navbar() {
         <div className={styles.left}>
           <Link to="/" className={styles.logo}>
             <Clapperboard size={24} className={styles.logoIcon} />
-            <span>MovieTracker</span>
+            <span className={styles.logoText}>MovieTracker</span>
           </Link>
           <NavLink to="/" end className={getLinkClassName}>
             Каталог

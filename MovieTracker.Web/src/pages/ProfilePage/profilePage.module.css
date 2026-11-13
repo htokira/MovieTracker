@@ -22,30 +22,37 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .title {
-  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-6);
   align-items: start;
+}
+
+.tasteGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .column {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
+  min-width: 0;
 }
 
 .card {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: var(--space-6);
+  min-width: 0;
+  padding: var(--space-8);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -56,18 +63,32 @@
   border-color: var(--color-danger, #e07a85);
 }
 
-@media (min-width: 600px) {
+/* Планшети */
+@media (max-width: 768px) {
+  .page,
+  .column {
+    gap: var(--space-4);
+  }
+
+  .grid,
+  .tasteGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
   .card {
-    padding: var(--space-8, 32px);
+    padding: var(--space-6);
   }
 }
 
-@media (min-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Телефони */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .tasteGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .card {
+    padding: var(--space-4);
   }
 }

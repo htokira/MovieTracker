@@ -12,8 +12,8 @@
 
 .catalog {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-6);
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-8);
 }
 
 .content {
@@ -23,9 +23,25 @@
   min-width: 0;
 }
 
-@media (min-width: 900px) {
+/* Планшети */
+@media (max-width: 768px) {
+  .page {
+    gap: var(--space-6);
+  }
+
   .catalog {
-    grid-template-columns: 220px 1fr;
-    gap: var(--space-8);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .page {
+    gap: var(--space-4);
+  }
+
+  .content {
+    gap: var(--space-4);
   }
 }
