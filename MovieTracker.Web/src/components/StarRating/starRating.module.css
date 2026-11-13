@@ -15,17 +15,28 @@
 
 .stars {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-1);
 }
 
 .star {
   display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 40px;
   padding: 2px;
   color: var(--color-text-muted);
   background: none;
   border-radius: var(--radius-sm);
   transition: color 0.1s, transform 0.1s;
+}
+
+.star svg {
+  width: 100%;
+  height: auto;
+  max-width: 28px;
 }
 
 .star:hover {
@@ -40,4 +51,15 @@
   margin: var(--space-2) 0 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .stars {
+    gap: 2px;
+  }
+
+  .star {
+    padding: 1px;
+  }
 }

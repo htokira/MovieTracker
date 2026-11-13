@@ -46,3 +46,39 @@
 .arrowRight {
   right: calc(var(--space-4) * -1);
 }
+
+/* Планшети */
+@media (max-width: 768px) {
+  .list {
+    gap: var(--space-3);
+    scroll-snap-type: x proximity;
+  }
+
+  .list > * {
+    scroll-snap-align: start;
+  }
+
+  .arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .arrowLeft {
+    left: var(--space-1);
+  }
+
+  .arrowRight {
+    right: var(--space-1);
+  }
+}
+
+/* Телефони */
+@media (max-width: 480px) {
+  .list {
+    gap: var(--space-2);
+  }
+
+  .arrow {
+    display: none;
+  }
+}

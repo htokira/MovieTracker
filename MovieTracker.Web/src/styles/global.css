@@ -60,3 +60,18 @@ img {
   outline: 2px solid var(--color-teal);
   outline-offset: 2px;
 }
+
+:root {
+  color-scheme: dark; /* темні скролбари та випад select */
+}
+
+html {
+  -webkit-text-size-adjust: 100%; /* iOS у горизонтальній орієнтації не збільшує шрифт */
+  text-size-adjust: 100%;
+}
+
+/* Chrome підсвічує автозаповнені поля світлим фоном */
+input:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-text-primary);
+  box-shadow: 0 0 0 1000px var(--color-bg) inset;
+}

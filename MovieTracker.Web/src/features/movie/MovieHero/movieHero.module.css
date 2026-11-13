@@ -64,20 +64,34 @@
 /* Планшети */
 @media (max-width: 768px) {
   .hero {
-    flex-direction: column;
     gap: var(--space-6);
   }
 
   .posterWrapper {
-    flex: none;
-    width: min(100%, 260px);
+    flex-basis: 200px;
+    width: 200px;
   }
 }
 
 /* Телефони */
 @media (max-width: 480px) {
   .hero {
+    flex-direction: column;
     gap: var(--space-4);
+  }
+
+  .posterWrapper {
+    flex: none;
+    align-self: center;
+    width: min(100%, 240px);
+  }
+
+  .info {
+    align-self: stretch;
+  }
+
+  .title {
+    text-align: left;
   }
 
   .meta {

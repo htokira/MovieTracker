@@ -16,6 +16,13 @@
   text-align: center;
 }
 
+.subtitle {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -41,6 +48,18 @@
 /* Телефони */
 @media (max-width: 480px) {
   .card {
-    padding: var(--space-6);
+    padding: var(--space-4);
+  }
+
+  .title {
+    font-size: var(--font-size-lg);
+  }
+
+  .form {
+    gap: var(--space-3);
+  }
+
+  .footer {
+    margin-top: var(--space-4);
   }
 }

@@ -1,4 +1,8 @@
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   padding: 10px var(--space-6);
   font-size: var(--font-size-md);
   font-weight: 600;
@@ -66,5 +70,16 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Планшети і телефони*/
+@media (max-width: 768px) {
+  .button:not(.ghost) {
+    width: 100%;
+  }
+
+  .ghost {
+    min-height: 44px;
   }
 }
