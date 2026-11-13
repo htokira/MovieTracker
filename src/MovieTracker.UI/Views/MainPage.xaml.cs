@@ -65,4 +65,19 @@ public partial class MainPage : ContentPage
             layout.Span = columns;
         }
     }
+
+    private async void ScrollView_Scrolled(object sender, ScrolledEventArgs e)
+    {
+        var scrollingSpace = MainScrollView.Content.Bounds.Height - MainScrollView.Height;
+        if (scrollingSpace > 0 && e.ScrollY >= scrollingSpace - 200)
+        {
+            if (BindingContext is MainViewModel viewModel)
+            {
+                if (viewModel.LoadMoreCommand.CanExecute(null))
+                {
+                    viewModel.LoadMoreCommand.Execute(null);
+                }
+            }
+        }
+    }
 }
