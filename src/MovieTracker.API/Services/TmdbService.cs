@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MovieTracker.API.Settings;
 using MovieTracker.Core.Dtos;
@@ -25,13 +26,13 @@ namespace MovieTracker.API.Services
             _settings = options.Value;
         }
 
-        public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
+        public async Task<PagedResultDto<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
         {
             var url = $"{_settings.BaseUrl}movie/popular?api_key={_settings.ApiKey}&language=uk-UA&page={page}";
             return await FetchMoviesAsync(url);
         }
 
-        public async Task<IEnumerable<MovieListItemDto>> GetDiscoverMoviesAsync(int page = 1, int? genreId = null, string? sortBy = null)
+        public async Task<PagedResultDto<MovieListItemDto>> GetDiscoverMoviesAsync(int page = 1, int? genreId = null, string? sortBy = null)
         {
             var sort = string.IsNullOrEmpty(sortBy) ? "popularity.desc" : sortBy;
 
@@ -45,31 +46,40 @@ namespace MovieTracker.API.Services
             return await FetchMoviesAsync(url);
         }
 
-        public async Task<IEnumerable<MovieListItemDto>> SearchMoviesAsync(string query, int page = 1, int? genreId = null)
+        public async Task<PagedResultDto<MovieListItemDto>> SearchMoviesAsync(string query, int page = 1, int? genreId = null)
         {
             var url = $"{_settings.BaseUrl}search/movie?api_key={_settings.ApiKey}&language=uk-UA&query={Uri.EscapeDataString(query)}&page={page}";
-            var movies = await FetchMoviesAsync(url);
+            var pagedResult = await FetchMoviesAsync(url);
 
-            return genreId.HasValue 
-                ? movies.Where(m => m.Genres.Any(g => g.Id == genreId.Value)) 
-                : movies;
+            if (genreId.HasValue)
+            {
+                pagedResult.Items = pagedResult.Items.Where(m => m.Genres.Any(g => g.Id == genreId.Value)).ToList();
+            }
+
+            return pagedResult;
         }
 
-        public async Task<IEnumerable<MovieListItemDto>> GetSimilarMoviesAsync(int movieId, int page = 1)
+        public async Task<PagedResultDto<MovieListItemDto>> GetSimilarMoviesAsync(int movieId, int page = 1)
         {
             var url = $"{_settings.BaseUrl}movie/{movieId}/similar?api_key={_settings.ApiKey}&language=uk-UA&page={page}";
             return await FetchMoviesAsync(url);
         }
 
-        private async Task<IEnumerable<MovieListItemDto>> FetchMoviesAsync(string url)
+        private async Task<PagedResultDto<MovieListItemDto>> FetchMoviesAsync(string url)
         {
             var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return Enumerable.Empty<MovieListItemDto>();
+            if (!response.IsSuccessStatusCode) 
+                return new PagedResultDto<MovieListItemDto>();
 
             var content = await response.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(content);
+            var root = doc.RootElement;
             
-            var results = doc.RootElement.GetProperty("results");
+            int page = root.TryGetProperty("page", out var pageProp) ? pageProp.GetInt32() : 1;
+            int totalPages = root.TryGetProperty("total_pages", out var tpProp) ? tpProp.GetInt32() : 0;
+            int totalResults = root.TryGetProperty("total_results", out var trProp) ? trProp.GetInt32() : 0;
+
+            var results = root.GetProperty("results");
             var movies = new List<MovieListItemDto>();
 
             foreach (var item in results.EnumerateArray())
@@ -103,7 +113,13 @@ namespace MovieTracker.API.Services
                 movies.Add(movieDto);
             }
 
-            return movies;
+            return new PagedResultDto<MovieListItemDto>
+            {
+                Page = page,
+                TotalPages = totalPages > 500 ? 500 : totalPages,
+                TotalResults = totalResults,
+                Items = movies
+            };
         }
 
         public async Task<MovieDetailDto?> GetMovieDetailsAsync(int id)

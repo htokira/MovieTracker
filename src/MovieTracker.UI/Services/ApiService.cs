@@ -15,15 +15,15 @@ public class ApiService
         _auth = auth;
     }
 
-    public async Task<IEnumerable<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
+    public async Task<PagedResultDto<MovieListItemDto>> GetPopularMoviesAsync(int page = 1)
     {
-        var movies = await _httpClient.GetFromJsonAsync<IEnumerable<MovieListItemDto>>(
+        var movies = await _httpClient.GetFromJsonAsync<PagedResultDto<MovieListItemDto>>(
             $"api/movies/popular?page={page}");
 
-        return movies ?? Enumerable.Empty<MovieListItemDto>();
+        return movies ?? new PagedResultDto<MovieListItemDto>();
     }
 
-    public async Task<IEnumerable<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1, 
+    public async Task<PagedResultDto<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1, 
     int? genreId = null, string? sortBy = null)
     {
         var parameters = new List<string>
@@ -47,8 +47,8 @@ public class ApiService
         }
 
         var url = $"api/movies?{string.Join("&", parameters)}";
-        var movies = await _httpClient.GetFromJsonAsync<IEnumerable<MovieListItemDto>>(url);
-        return movies ?? Enumerable.Empty<MovieListItemDto>();
+        var result = await _httpClient.GetFromJsonAsync<PagedResultDto<MovieListItemDto>>(url);
+        return result ?? new PagedResultDto<MovieListItemDto>();
     }
 
     public async Task<MovieDetailDto?> GetMovieDetailsAsync(int id)

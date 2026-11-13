@@ -44,17 +44,32 @@ public class RecommendationServiceTests : IDisposable
     private void SetupPopular(List<MovieListItemDto> movies) =>
         _tmdbMock
             .Setup(s => s.GetPopularMoviesAsync(It.IsAny<int>()))
-            .ReturnsAsync((int page) => movies.Skip((page - 1) * TmdbPageSize).Take(TmdbPageSize).ToList());
+            .ReturnsAsync((int page) => new PagedResultDto<MovieListItemDto>
+            {
+                Page = page,
+                TotalPages = (int)Math.Ceiling(movies.Count / (double)TmdbPageSize),
+                Items = movies.Skip((page - 1) * TmdbPageSize).Take(TmdbPageSize).ToList()
+            });
 
     private void SetupSimilar(int movieId, List<MovieListItemDto> movies) =>
         _tmdbMock
             .Setup(s => s.GetSimilarMoviesAsync(movieId, It.IsAny<int>()))
-            .ReturnsAsync(movies);
+            .ReturnsAsync(new PagedResultDto<MovieListItemDto>
+            {
+                Page = 1,
+                TotalPages = 1,
+                Items = movies
+            });
 
     private void SetupDiscover(int genreId, List<MovieListItemDto> movies) =>
         _tmdbMock
             .Setup(s => s.GetDiscoverMoviesAsync(It.IsAny<int>(), genreId, It.IsAny<string?>()))
-            .ReturnsAsync(movies);
+            .ReturnsAsync(new PagedResultDto<MovieListItemDto>
+            {
+                Page = 1,
+                TotalPages = 1,
+                Items = movies
+            });
 
     private async Task AddProfileAsync(List<int>? highlyRatedMovieIds = null, List<int>? favoriteGenreIds = null)
     {
