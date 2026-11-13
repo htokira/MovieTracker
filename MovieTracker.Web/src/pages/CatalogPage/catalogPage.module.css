@@ -23,15 +23,6 @@
   min-width: 0;
 }
 
-.empty {
-  color: var(--color-text-secondary);
-}
-
-.more {
-  display: flex;
-  justify-content: center;
-}
-
 @media (min-width: 900px) {
   .catalog {
     grid-template-columns: 220px 1fr;

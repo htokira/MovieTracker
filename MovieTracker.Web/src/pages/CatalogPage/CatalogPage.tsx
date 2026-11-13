@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
+import PaginatedMovieGrid from "@/components/PaginatedMovieGrid/PaginatedMovieGrid";
 import CatalogFilters from "@/features/catalog/CatalogFilters/CatalogFilters";
 import MovieCarousel from "@/features/catalog/MovieCarousel/MovieCarousel";
-import MovieGrid from "@/features/catalog/MovieGrid/MovieGrid";
 import SearchBar from "@/features/catalog/SearchBar/SearchBar";
 import { useDebounce } from "@/hooks/useDebounce";
 import { movieService } from "@/services/movieService";
@@ -39,14 +38,14 @@ function CatalogPage() {
   const [error, setError] = useState<string | null>(null);
   const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
 
-const requestVersion = useRef<number>(0);
- 
+  const requestVersion = useRef<number>(0);
+
   const isFiltering = debouncedQuery !== "" || genreId !== null;
   const hasActiveFilters = searchText !== "" || genreId !== null;
- 
+
   useEffect(() => {
     let isIgnored = false;
- 
+
     async function loadTopMovies() {
       try {
         const top = await movieService.getPopularMovies();
@@ -56,9 +55,9 @@ const requestVersion = useRef<number>(0);
       } catch {
       }
     }
- 
+
     loadTopMovies();
- 
+
     return () => {
       isIgnored = true;
     };
@@ -67,7 +66,7 @@ const requestVersion = useRef<number>(0);
   useEffect(() => {
     let isIgnored = false;
     requestVersion.current += 1;
- 
+
     async function loadFirstPage() {
       setIsLoading(true);
       setError(null);
@@ -92,14 +91,14 @@ const requestVersion = useRef<number>(0);
         }
       }
     }
- 
+
     loadFirstPage();
- 
+
     return () => {
       isIgnored = true;
     };
   }, [debouncedQuery, genreId]);
- 
+
   async function handleShowMore() {
     const version = requestVersion.current;
     const nextPage = page + 1;
@@ -123,12 +122,12 @@ const requestVersion = useRef<number>(0);
       setIsLoadingMore(false);
     }
   }
- 
+
   function handleReset() {
     setSearchText("");
     setGenreId(null);
   }
- 
+
   function renderResults() {
     if (isLoading) {
       return <Spinner />;
@@ -136,30 +135,17 @@ const requestVersion = useRef<number>(0);
     if (error) {
       return <ErrorMessage message={error} />;
     }
-    if (movies.length === 0) {
-      return (
-        <p className={styles.empty}>
-          {isFiltering ? "Нічого не знайдено. Спробуйте змінити пошук або жанр." : "Фільмів поки немає"}
-        </p>
-      );
-    }
     return (
-      <>
-        <MovieGrid movies={movies} />
- 
-        {loadMoreError && <ErrorMessage message={loadMoreError} />}
- 
-        {hasMore && (
-          <div className={styles.more}>
-            <Button type="button" variant="secondary" isLoading={isLoadingMore} onClick={handleShowMore}>
-              Показати ще
-            </Button>
-          </div>
-        )}
-      </>
+      <PaginatedMovieGrid movies={movies} hasMore={hasMore} isLoadingMore={isLoadingMore} onLoadMore={handleShowMore} loadMoreError={loadMoreError}
+        emptyMessage={
+          isFiltering
+            ? "Нічого не знайдено. Спробуйте змінити пошук або жанр."
+            : "Фільмів поки немає"
+        }
+      />
     );
   }
- 
+
   return (
     <div className={styles.page}>
       {!isFiltering && topMovies.length > 0 && (
@@ -168,13 +154,13 @@ const requestVersion = useRef<number>(0);
           <MovieCarousel movies={topMovies} />
         </section>
       )}
- 
+
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Каталог</h2>
         <div className={styles.catalog}>
           <CatalogFilters genreId={genreId} hasActiveFilters={hasActiveFilters} onGenreChange={setGenreId} onReset={handleReset}/>
           <div className={styles.content}>
-            <SearchBar value={searchText} onChange={setSearchText}/>
+            <SearchBar value={searchText} onChange={setSearchText} />
             {renderResults()}
           </div>
         </div>
@@ -182,5 +168,5 @@ const requestVersion = useRef<number>(0);
     </div>
   );
 }
- 
+
 export default CatalogPage;

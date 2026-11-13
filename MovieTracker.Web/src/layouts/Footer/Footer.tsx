@@ -11,7 +11,7 @@ function Footer() {
           <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" className={styles.link}>
             TMDB
           </a>{" "}
-          API (лише для навчання, бо ми бідні студенти).
+          API
         </p>
         <a href="https://github.com/htokira/MovieTracker" target="_blank" rel="noopener noreferrer" className={styles.link}>
           GitHub

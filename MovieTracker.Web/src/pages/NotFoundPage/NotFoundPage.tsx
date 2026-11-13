@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import BackButton from "@/components/BackButton/BackButton";
 import Button from "@/components/Button/Button";
 import styles from "./notFoundPage.module.css";
 
@@ -14,7 +13,6 @@ function NotFoundPage() {
         Можливо, адресу введено з помилкою або сторінку більше не існує.
       </p>
       <div className={styles.actions}>
-        <BackButton />
         <Button type="button" onClick={() => navigate("/")}>
           На головну
         </Button>

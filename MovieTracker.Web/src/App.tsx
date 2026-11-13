@@ -6,7 +6,7 @@ import AllReviewsPage from "@/pages/AllReviewsPage/AllReviewsPage";
 import LoginPage from "@/pages/AuthPage/LoginPage";
 import RegisterPage from "@/pages/AuthPage/RegisterPage";
 import CatalogPage from "@/pages/CatalogPage/CatalogPage";
-import CollectionPage from "@/pages/CollectionPage/CollectionPage";
+import MyMoviesPage from "@/pages/MyMoviesPage/MyMoviesPage";
 import MovieDetailsPage from "@/pages/MovieDetailsPage/MovieDetailsPage";
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage";
 import ProfilePage from "@/pages/ProfilePage/ProfilePage";
@@ -26,7 +26,7 @@ function App() {
  
         <Route element={<PrivateRoute />}>
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="collections" element={<CollectionPage />} />
+          <Route path="my-movies" element={<MyMoviesPage />} />
         </Route>
  
         <Route path="*" element={<NotFoundPage />} />

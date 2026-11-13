@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { Bell, Clapperboard } from "lucide-react";
+import { Clapperboard } from "lucide-react";
 import Avatar from "@/components/Avatar/Avatar";
 import { useAuth } from "@/features/auth/useAuth";
 import styles from "./Navbar.module.css";
@@ -26,12 +26,9 @@ function Navbar() {
 
     return (
       <>
-        <NavLink to="/collections" className={getLinkClassName}>
-          Колекція
+        <NavLink to="/my-movies" className={getLinkClassName}>
+          Мої фільми
         </NavLink>
-        <button type="button" className={styles.iconButton} aria-label="Сповіщення">
-          <Bell size={20} />
-        </button>
         <Link to="/profile" className={styles.avatarLink} aria-label="Мій профіль">
           <Avatar src={user.avatarUrl} name={user.displayName} />
         </Link>
