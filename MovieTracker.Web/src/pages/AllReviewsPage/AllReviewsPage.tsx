@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import BackButton from "@/components/BackButton/BackButton";
+import PageHeader from "@/components/PageHeader/PageHeader";
 import Button from "@/components/Button/Button";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import Spinner from "@/components/Spinner/Spinner";
@@ -114,8 +114,7 @@ function AllReviewsPage() {
 
   return (
     <section className={styles.page}>
-      <BackButton to={isIdValid ? `/movie/${movieId}` : "/"} label={isIdValid ? "Назад до фільму" : "Назад до каталогу"}/>
-      <h1>Усі відгуки</h1>
+      <PageHeader title="Усі відгуки" showBackButton />
       {renderContent()}
     </section>
   );
