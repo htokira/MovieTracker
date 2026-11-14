@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MovieTracker.API.Settings;
 using MovieTracker.Core.Dtos;
+using System.Globalization;
 
 namespace MovieTracker.API.Services
 {
@@ -37,12 +38,12 @@ namespace MovieTracker.API.Services
             var sort = string.IsNullOrEmpty(sortBy) ? "popularity.desc" : sortBy;
 
             var url = $"{_settings.BaseUrl}discover/movie?api_key={_settings.ApiKey}&language=uk-UA&sort_by={sort}&page={page}";
-            
+
             if (genreId.HasValue)
             {
                 url += $"&with_genres={genreId.Value}";
             }
-            
+
             return await FetchMoviesAsync(url);
         }
 
@@ -68,13 +69,13 @@ namespace MovieTracker.API.Services
         private async Task<PagedResultDto<MovieListItemDto>> FetchMoviesAsync(string url)
         {
             var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode) 
+            if (!response.IsSuccessStatusCode)
                 return new PagedResultDto<MovieListItemDto>();
 
             var content = await response.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(content);
             var root = doc.RootElement;
-            
+
             int page = root.TryGetProperty("page", out var pageProp) ? pageProp.GetInt32() : 1;
             int totalPages = root.TryGetProperty("total_pages", out var tpProp) ? tpProp.GetInt32() : 0;
             int totalResults = root.TryGetProperty("total_results", out var trProp) ? trProp.GetInt32() : 0;
@@ -89,11 +90,11 @@ namespace MovieTracker.API.Services
                     Id = item.GetProperty("id").GetInt32(),
                     Title = item.GetProperty("title").GetString() ?? string.Empty,
                     Description = item.GetProperty("overview").GetString() ?? string.Empty,
-                    ReleaseYear = DateTime.TryParse(item.GetProperty("release_date").GetString(), out var date) ? date.Year : 0,
+                    ReleaseYear = DateTime.TryParse(item.GetProperty("release_date").GetString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date.Year : 0,
                     Rating = item.GetProperty("vote_average").GetDouble(),
                     MediaType = "Movie",
-                    PosterUrl = item.TryGetProperty("poster_path", out var poster) && poster.ValueKind != JsonValueKind.Null 
-                        ? $"https://image.tmdb.org/t/p/w500{poster.GetString()}" 
+                    PosterUrl = item.TryGetProperty("poster_path", out var poster) && poster.ValueKind != JsonValueKind.Null
+                        ? $"https://image.tmdb.org/t/p/w500{poster.GetString()}"
                         : null
                 };
 
@@ -137,12 +138,12 @@ namespace MovieTracker.API.Services
                 Id = item.TryGetProperty("id", out var movieId) ? movieId.GetInt32() : 0,
                 Title = item.GetProperty("title").GetString() ?? string.Empty,
                 Description = item.TryGetProperty("overview", out var overview) ? overview.GetString() ?? string.Empty : string.Empty,
-                ReleaseYear = item.TryGetProperty("release_date", out var releaseDate) 
-                && DateTime.TryParse(releaseDate.GetString(), out var date) ? date.Year : null,
+                ReleaseYear = item.TryGetProperty("release_date", out var releaseDate)
+                && DateTime.TryParse(releaseDate.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date.Year : null,
                 Rating = item.GetProperty("vote_average").GetDouble(),
                 MediaType = "Movie",
-                PosterUrl = item.TryGetProperty("poster_path", out var poster) && poster.ValueKind != JsonValueKind.Null 
-                    ? $"https://image.tmdb.org/t/p/w500{poster.GetString()}" 
+                PosterUrl = item.TryGetProperty("poster_path", out var poster) && poster.ValueKind != JsonValueKind.Null
+                    ? $"https://image.tmdb.org/t/p/w500{poster.GetString()}"
                     : null
             };
 
@@ -160,8 +161,8 @@ namespace MovieTracker.API.Services
             }
 
             // Парсимо акторів (каст)
-            if (item.TryGetProperty("credits", out var creditsProp) && 
-                creditsProp.TryGetProperty("cast", out var castProp) && 
+            if (item.TryGetProperty("credits", out var creditsProp) &&
+                creditsProp.TryGetProperty("cast", out var castProp) &&
                 castProp.ValueKind == JsonValueKind.Array)
             {
                 foreach (var castEl in castProp.EnumerateArray().Take(10))

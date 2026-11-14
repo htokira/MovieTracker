@@ -27,12 +27,12 @@ namespace MovieTracker.Tests.Services
         {
             var request = new RegisterRequest("newuser@example.com", "StrongPassword123!", "John");
 
-            var response = await _client.PostAsJsonAsync("/api/auth/register", request);
+            var response = await _client.PostAsJsonAsync("/api/auth/register", request, cancellationToken: TestContext.Current.CancellationToken);
             response.IsSuccessStatusCode.Should().BeTrue();
 
-            var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            var result = await response.Content.ReadFromJsonAsync<AuthResponse>(cancellationToken: TestContext.Current.CancellationToken);
             result.Should().NotBeNull();
-            result!.AccessToken.Should().NotBeNullOrEmpty();
+            result.AccessToken.Should().NotBeNullOrEmpty();
             result.RefreshToken.Should().NotBeNullOrEmpty();
         }
 
@@ -40,51 +40,51 @@ namespace MovieTracker.Tests.Services
         public async Task Login_WithValidData_ReturnsOkAndTokens()
         {
             var registerReq = new RegisterRequest("loginuser@example.com", "StrongPassword123!", "Jane");
-            var registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerReq);
+            var registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerReq, cancellationToken: TestContext.Current.CancellationToken);
 
-            var registerBody = await registerResponse.Content.ReadAsStringAsync();
+            var registerBody = await registerResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             registerResponse.IsSuccessStatusCode.Should().BeTrue(
                 $"registration failed: {(int)registerResponse.StatusCode} {registerBody}");
 
             var loginReq = new LoginRequest("loginuser@example.com", "StrongPassword123!");
 
-            var response = await _client.PostAsJsonAsync("/api/auth/login", loginReq);
+            var response = await _client.PostAsJsonAsync("/api/auth/login", loginReq, cancellationToken: TestContext.Current.CancellationToken);
 
-            var body = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             response.IsSuccessStatusCode.Should().BeTrue($"Login returned {(int)response.StatusCode} {response.StatusCode}. Body: {body}");
 
-            var result = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            var result = await response.Content.ReadFromJsonAsync<AuthResponse>(cancellationToken: TestContext.Current.CancellationToken);
             result.Should().NotBeNull();
-            result!.AccessToken.Should().NotBeNullOrEmpty();
+            result.AccessToken.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
         public async Task Refresh_WithValidToken_ReturnsNewTokens()
         {
             var registerReq = new RegisterRequest("refreshuser@example.com", "StrongPassword123!", "Refresh User");
-            var regRes = await _client.PostAsJsonAsync( "/api/auth/register", registerReq);
+            var regRes = await _client.PostAsJsonAsync("/api/auth/register", registerReq, cancellationToken: TestContext.Current.CancellationToken);
 
-            var regBody = await regRes.Content.ReadAsStringAsync();
+            var regBody = await regRes.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             regRes.IsSuccessStatusCode.Should().BeTrue(
                 $"registration failed: {(int)regRes.StatusCode} {regBody}");
 
-            var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>();
+            var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>(cancellationToken: TestContext.Current.CancellationToken);
 
             tokens.Should().NotBeNull();
 
-            var refreshReq = new RefreshRequest(tokens!.RefreshToken);
+            var refreshReq = new RefreshRequest(tokens.RefreshToken);
 
-            var response = await _client.PostAsJsonAsync("/api/auth/refresh", refreshReq);
+            var response = await _client.PostAsJsonAsync("/api/auth/refresh", refreshReq, cancellationToken: TestContext.Current.CancellationToken);
 
-            var body = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
             response.IsSuccessStatusCode.Should().BeTrue($"Refresh returned {(int)response.StatusCode} {response.StatusCode}. Body: {body}");
-            var newTokens = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            var newTokens = await response.Content.ReadFromJsonAsync<AuthResponse>(cancellationToken: TestContext.Current.CancellationToken);
             newTokens.Should().NotBeNull();
-            newTokens!.AccessToken.Should().NotBeNullOrEmpty();
+            newTokens.AccessToken.Should().NotBeNullOrEmpty();
             newTokens.RefreshToken.Should().NotBeNullOrEmpty();
         }
 
@@ -92,12 +92,12 @@ namespace MovieTracker.Tests.Services
         public async Task Logout_WithValidToken_ReturnsNoContent()
         {
             var registerReq = new RegisterRequest("logoutuser@example.com", "StrongPassword123!", "Logout User");
-            var regRes = await _client.PostAsJsonAsync("/api/auth/register", registerReq);
-            var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>();
+            var regRes = await _client.PostAsJsonAsync("/api/auth/register", registerReq, cancellationToken: TestContext.Current.CancellationToken);
+            var tokens = await regRes.Content.ReadFromJsonAsync<AuthResponse>(cancellationToken: TestContext.Current.CancellationToken);
 
             var refreshReq = new RefreshRequest(tokens!.RefreshToken);
 
-            var response = await _client.PostAsJsonAsync("/api/auth/logout", refreshReq);
+            var response = await _client.PostAsJsonAsync("/api/auth/logout", refreshReq, cancellationToken: TestContext.Current.CancellationToken);
 
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
         }

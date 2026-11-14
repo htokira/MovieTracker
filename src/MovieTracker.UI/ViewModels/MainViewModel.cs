@@ -178,7 +178,7 @@ public class MainViewModel : INotifyPropertyChanged
                 PopularMovies.Add(movie);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             ErrorMessage = $"Error loading popular movies: {ex.Message}";
         }

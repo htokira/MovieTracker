@@ -20,14 +20,14 @@ public class TasteProfileService
         _db = db;
     }
 
-    private class WeightedReview
+    private sealed class WeightedReview
     {
         public double Score { get; set; }
         public double Weight { get; set; }
         public List<(int Id, string Name)> Genres { get; set; } = new();
     }
 
-    private class GenreCalculation
+    private sealed class GenreCalculation
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -293,13 +293,13 @@ public class TasteProfileService
         profile.DislikedGenresJson =
             JsonSerializer.Serialize(result.DislikedGenres);
 
-        profile.FavoriteGenreIdsJson = 
+        profile.FavoriteGenreIdsJson =
             JsonSerializer.Serialize(result.FavoriteGenreIds);
 
         profile.DislikedGenresIdsJson =
             JsonSerializer.Serialize(result.DislikedGenreIds);
 
-        profile.HighlyRatedMovieIdsJson = 
+        profile.HighlyRatedMovieIdsJson =
             JsonSerializer.Serialize(result.HighlyRatedMovieIds);
 
         profile.TasteDiversity = result.TasteDiversity;

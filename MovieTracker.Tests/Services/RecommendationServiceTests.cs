@@ -28,7 +28,25 @@ public class RecommendationServiceTests : IDisposable
         _service = new RecommendationService(_db, _tmdbMock.Object);
     }
 
-    public void Dispose() => _db.Dispose();
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _db.Dispose();
+            }
+            _disposed = true;
+        }
+    }
 
     private static MovieListItemDto Movie(int id, double rating = 7.0) => new()
     {

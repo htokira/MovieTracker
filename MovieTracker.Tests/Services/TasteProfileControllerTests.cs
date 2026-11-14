@@ -65,7 +65,7 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
                 new Movie { Id = 107, Title = "Terrifying Movie", MediaType = "Movie", Genres = new List<Genre> { horrorGenre } }
             );
 
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
 
         await client.PutAsJsonAsync("/api/movies/101/reviews/me", new UpsertReviewRequest(10, "Masterpiece"), TestContext.Current.CancellationToken);
@@ -79,10 +79,10 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
         var analyzeResponse = await client.PostAsync("/api/taste-profile/analyze", null, TestContext.Current.CancellationToken);
         analyzeResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var profile = await analyzeResponse.Content.ReadFromJsonAsync<TasteProfileDto>();
+        var profile = await analyzeResponse.Content.ReadFromJsonAsync<TasteProfileDto>(cancellationToken: TestContext.Current.CancellationToken);
 
         profile.Should().NotBeNull();
-        profile!.ReviewsCount.Should().Be(7);
+        profile.ReviewsCount.Should().Be(7);
         profile.FavoriteGenres.Should().Contain("Science Fiction");
         profile.FavoriteGenreIds.Should().NotBeEmpty();
         profile.DislikedGenres.Should().Contain("Horror");

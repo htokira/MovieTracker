@@ -25,7 +25,7 @@ public partial class MovieDetailsPage : ContentPage, IQueryAttributable
         }
     }
 
-    private async void OnBackClicked(object sender, EventArgs e)
+    private async void OnBackClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
     }

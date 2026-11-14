@@ -136,6 +136,7 @@ namespace MovieTracker.UI.Services
                 }
                 catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
                 {
+                    // server unavaliable
                 }
             }
 
@@ -279,6 +280,7 @@ namespace MovieTracker.UI.Services
             }
             catch (JsonException)
             {
+                // server unavaliable
             }
 
             return response.StatusCode == HttpStatusCode.Unauthorized

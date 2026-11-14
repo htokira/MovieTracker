@@ -106,7 +106,7 @@ namespace MovieTracker.Tests.Services
             var mine = await owner.GetFromJsonAsync<List<CollectionSummaryResponse>>(
                 "/api/collections/me", TestContext.Current.CancellationToken);
 
-            mine!.Select(c => c.Name).Should().BeEquivalentTo(new[] { "Public", "Private" });
+            mine!.Select(c => c.Name).Should().BeEquivalentTo("Public", "Private");
         }
 
         // ---------- Приватність ----------

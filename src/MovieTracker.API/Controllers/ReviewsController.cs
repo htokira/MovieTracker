@@ -152,7 +152,7 @@ namespace MovieTracker.API.Controllers
                 };
 
                 _db.Movies.Add(movie);
-                await _db.SaveChangesAsync(); 
+                await _db.SaveChangesAsync();
             }
 
             var now = DateTime.UtcNow;

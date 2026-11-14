@@ -79,7 +79,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); 
+              .AllowCredentials();
     });
 });
 
@@ -91,11 +91,11 @@ using (var scope = app.Services.CreateScope())
 
     if (app.Environment.EnvironmentName == "Testing")
     {
-        db.Database.EnsureCreated();
+        await db.Database.EnsureCreatedAsync();
     }
     else
     {
-        db.Database.Migrate();
+        await db.Database.MigrateAsync();
     }
 }
 
@@ -110,6 +110,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
 
-public partial class Program { }
+public partial class Program
+{
+    protected Program() { }
+}

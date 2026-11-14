@@ -82,7 +82,7 @@ namespace MovieTracker.API.Controllers
         private async Task<User?> GetCurrentUserAsync()
         {
             var sub = User.FindFirst("sub")?.Value;
-            return Guid.TryParse(sub, out _) ? await _users.FindByIdAsync(sub!) : null;
+            return Guid.TryParse(sub, out _) ? await _users.FindByIdAsync(sub) : null;
         }
 
         private static UserProfileResponse ToResponse(User u) =>

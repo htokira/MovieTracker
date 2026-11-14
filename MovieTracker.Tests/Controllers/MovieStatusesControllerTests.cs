@@ -286,7 +286,7 @@ namespace MovieTracker.Tests.Controllers
             watched!.TotalCount.Should().Be(2);
             watched.Items.Should().OnlyContain(i => i.Status == WatchStatus.Watched);
             watched.Items.Select(i => i.MovieId).Should().BeEquivalentTo(new[] { 601, 603 });
-            watched.Items.First().Title.Should().StartWith("Test Movie");
+            watched.Items[0].Title.Should().StartWith("Test Movie");
         }
 
         [Theory]

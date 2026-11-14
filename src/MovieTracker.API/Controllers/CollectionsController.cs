@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 namespace MovieTracker.API.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class CollectionsController : ControllerBase
     {
         private readonly MovieTrackerContext _db;
@@ -27,7 +28,7 @@ namespace MovieTracker.API.Controllers
 
         // ---------- CRUD колекцій ----------
 
-        [HttpPost("api/collections")]
+        [HttpPost]
         [Authorize]
         public async Task<ActionResult<CollectionSummaryResponse>> Create(CreateCollectionRequest request)
         {
@@ -54,7 +55,7 @@ namespace MovieTracker.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = collection.Id }, response);
         }
 
-        [HttpGet("api/collections/me")]
+        [HttpGet("me")]
         [Authorize]
         public async Task<ActionResult<List<CollectionSummaryResponse>>> GetMine()
         {
@@ -71,7 +72,7 @@ namespace MovieTracker.API.Controllers
 
         // Публічну колекцію бачать усі, приватну тільки власник.
         // Авторизація необов'язкова: якщо токен є, ми знаємо, хто питає.
-        [HttpGet("api/collections/{id:guid}")]
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<CollectionDetailResponse>> GetById(Guid id)
         {
             TryGetUserId(out var currentUserId); // для анонімного буде Guid.Empty
@@ -92,7 +93,7 @@ namespace MovieTracker.API.Controllers
             return result is null ? NotFound() : Ok(result);
         }
 
-        [HttpPut("api/collections/{id:guid}")]
+        [HttpPut("{id:guid}")]
         [Authorize]
         public async Task<ActionResult<CollectionSummaryResponse>> Update(Guid id, UpdateCollectionRequest request)
         {
@@ -112,7 +113,7 @@ namespace MovieTracker.API.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("api/collections/{id:guid}")]
+        [HttpDelete("{id:guid}")]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -128,7 +129,7 @@ namespace MovieTracker.API.Controllers
 
         // ---------- Фільми в колекції ----------
 
-        [HttpPost("api/collections/{id:guid}/movies/{movieId:int:min(1)}")]
+        [HttpPost("{id:guid}/movies/{movieId:int:min(1)}")]
         [Authorize]
         public async Task<IActionResult> AddMovie(Guid id, int movieId)
         {
@@ -156,7 +157,7 @@ namespace MovieTracker.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("api/collections/{id:guid}/movies/{movieId:int:min(1)}")]
+        [HttpDelete("{id:guid}/movies/{movieId:int:min(1)}")]
         [Authorize]
         public async Task<IActionResult> RemoveMovie(Guid id, int movieId)
         {
@@ -178,7 +179,7 @@ namespace MovieTracker.API.Controllers
         // ---------- Колекції інших користувачів ----------
 
         // Тут тільки публічні, навіть якщо питає сам власник (свої бери через /me)
-        [HttpGet("api/users/{userId:guid}/collections")]
+        [HttpGet("/api/users/{userId:guid}/collections")]
         public async Task<ActionResult<List<CollectionSummaryResponse>>> GetUserPublicCollections(Guid userId)
         {
             var items = await _db.Collections.AsNoTracking()

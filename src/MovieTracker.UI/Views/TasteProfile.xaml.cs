@@ -23,7 +23,7 @@ public partial class TasteProfilePage : ContentPage
         await _viewModel.LoadProfileAsync();
     }
 
-    private async void OnBackClicked(object sender, EventArgs e)
+    private async void OnBackClicked(object? sender, EventArgs e)
     {
         await Shell.Current.GoToAsync("..");
     }
