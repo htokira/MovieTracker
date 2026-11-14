@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 namespace MovieTracker.API.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class CollectionsController : ControllerBase
     {
         private readonly MovieTrackerContext _db;

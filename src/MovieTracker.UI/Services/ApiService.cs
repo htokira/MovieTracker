@@ -23,7 +23,7 @@ public class ApiService
         return movies ?? new PagedResultDto<MovieListItemDto>();
     }
 
-    public async Task<PagedResultDto<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1, 
+    public async Task<PagedResultDto<MovieListItemDto>> GetMoviesAsync(string? query = null, int page = 1,
     int? genreId = null, string? sortBy = null)
     {
         var parameters = new List<string>

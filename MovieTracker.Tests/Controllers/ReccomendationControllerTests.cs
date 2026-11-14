@@ -50,7 +50,7 @@ public class RecommendationsControllerTests : IClassFixture<TestWebApplicationFa
         var result = await response.Content.ReadFromJsonAsync<RecommendationsResponse>(
             cancellationToken: TestContext.Current.CancellationToken);
         result.Should().NotBeNull();
-        result!.IsPersonalized.Should().BeFalse();
+        result.IsPersonalized.Should().BeFalse();
         result.Items.Count.Should().BeLessThanOrEqualTo(20);
     }
 }

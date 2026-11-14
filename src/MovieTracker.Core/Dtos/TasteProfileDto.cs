@@ -22,7 +22,7 @@ public class TasteProfileDto
     public List<string> DislikedGenres { get; set; } = new();
 
     public List<int> FavoriteGenreIds { get; set; } = new();
-    public List<int> DislikedGenreIds {get; set; } = new();
+    public List<int> DislikedGenreIds { get; set; } = new();
     public List<int> HighlyRatedMovieIds { get; set; } = new();
 
     public double TasteDiversity { get; set; }

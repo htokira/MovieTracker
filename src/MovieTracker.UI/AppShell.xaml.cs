@@ -4,7 +4,7 @@ namespace MovieTracker.UI;
 
 public partial class AppShell : Shell
 {
-	public AppShell(MainPage mainPage)
+    public AppShell(MainPage mainPage)
     {
         InitializeComponent();
 

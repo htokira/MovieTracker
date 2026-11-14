@@ -27,11 +27,11 @@ public class TasteProfileInterpreter
         public const int Western = 37;
     }
 
-    private class ArchetypeDefinition
+    private sealed class ArchetypeDefinition
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public HashSet<int> GenreIds { get; set; } = new();
+        public HashSet<int> Genre_Ids { get; set; } = new();
     }
 
     private static readonly List<ArchetypeDefinition> Archetypes =
@@ -40,7 +40,7 @@ public class TasteProfileInterpreter
         {
             Name = "Майстер інтриг",
             Description = "Тебе захоплюють загадки, несподівані повороти та складні історії. Ти любиш фільми, які змушують будувати теорії до самого фіналу.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Mystery,
                 GenreIds.Thriller,
@@ -52,7 +52,7 @@ public class TasteProfileInterpreter
         {
             Name = "Мрійник",
             Description = "Ти любиш виходити за межі реальності. Фантастичні світи, неймовірні пригоди та незвичайні історії — саме те, що робить перегляд особливим.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Fantasy,
                 GenreIds.ScienceFiction,
@@ -65,7 +65,7 @@ public class TasteProfileInterpreter
         {
             Name = "Шукач емоцій",
             Description = "Для тебе кіно — це передусім почуття та переживання. Ти цінуєш сильні історії, глибоких персонажів і романтичні сюжети.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Drama,
                 GenreIds.Romance,
@@ -77,7 +77,7 @@ public class TasteProfileInterpreter
         {
             Name = "Адреналіновий глядач",
             Description = "Ти не любиш нудьгувати перед екраном. Динаміка, напружені протистояння та захопливі пригоди — твоя стихія.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Action,
                 GenreIds.Adventure,
@@ -89,7 +89,7 @@ public class TasteProfileInterpreter
         {
             Name = "Поціновувач сміху",
             Description = "Ти знаєш, що хороший фільм здатен покращити будь-який день. Легкі сюжети, гумор і тепла атмосфера займають особливе місце у твоїй колекції.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Comedy,
                 GenreIds.Family,
@@ -101,7 +101,7 @@ public class TasteProfileInterpreter
         {
             Name = "Допитливий дослідник",
             Description = "Тобі цікаво відкривати нові сторони світу через кіно. Реальні події, історичні сюжети та незвичайні теми не залишають тебе байдужим.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Documentary,
                 GenreIds.History,
@@ -114,7 +114,7 @@ public class TasteProfileInterpreter
         {
             Name = "Шукач темряви",
             Description = "Ти не боїшся похмурих історій і сильних вражень. Атмосфера напруги, страху та невідомості робить перегляд для тебе особливо цікавим.",
-            GenreIds =
+            Genre_Ids =
             [
                 GenreIds.Horror,
                 GenreIds.Thriller,
@@ -158,7 +158,7 @@ public class TasteProfileInterpreter
         var scores = Archetypes.Select(archetype =>
         {
             var matchingGenres = positivePreferences
-                .Where(g => archetype.GenreIds.Contains(g.GenreId))
+                .Where(g => archetype.Genre_Ids.Contains(g.GenreId))
                 .ToList();
 
             return new
@@ -171,7 +171,7 @@ public class TasteProfileInterpreter
         .OrderByDescending(x => x.Score)
         .ToList();
 
-        var best = scores.First();
+        var best = scores[0];
 
         if (best.Score < 0.3 || best.MatchedGenres == 0)
             return UniversalArchetype;
@@ -179,7 +179,7 @@ public class TasteProfileInterpreter
         return best.Archetype;
     }
 
-    private string DetermineTitle(int reviewsCount)
+    private static string DetermineTitle(int reviewsCount)
     {
         return reviewsCount switch
         {
@@ -192,7 +192,7 @@ public class TasteProfileInterpreter
         };
     }
 
-    private string DetermineTitleDescription(int reviewsCount)
+    private static string DetermineTitleDescription(int reviewsCount)
     {
         return reviewsCount switch
         {
@@ -205,7 +205,7 @@ public class TasteProfileInterpreter
         };
     }
 
-    private string DetermineDiversityLabel(TasteProfileDto profile)
+    private static string DetermineDiversityLabel(TasteProfileDto profile)
     {
         if (profile.ReviewsCount == 0 ||
             profile.GenrePreferences.Count == 0)
@@ -222,7 +222,7 @@ public class TasteProfileInterpreter
         };
     }
 
-    private string DetermineDiversityDescription(TasteProfileDto profile)
+    private static string DetermineDiversityDescription(TasteProfileDto profile)
     {
         if (profile.ReviewsCount == 0 ||
             profile.GenrePreferences.Count == 0)

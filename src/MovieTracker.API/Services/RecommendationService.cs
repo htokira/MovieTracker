@@ -35,7 +35,7 @@ namespace MovieTracker.API.Services
             _tmdbService = tmdbService;
         }
 
-        private class Candidate
+        private sealed class Candidate
         {
             public MovieListItemDto Movie { get; init; } = null!;
             public int SimilarHits { get; set; }
