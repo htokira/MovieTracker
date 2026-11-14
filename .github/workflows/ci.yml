@@ -20,6 +20,10 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
+      - name: Install .NET MAUI Workloads
+        if: matrix.os == 'windows-latest'
+        run: dotnet workload install maui
+
       - name: Restore
         run: dotnet restore MovieTracker.Tests/MovieTracker.Tests.csproj
 
