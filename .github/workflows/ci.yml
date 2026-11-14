@@ -24,7 +24,8 @@ jobs:
         run: dotnet restore MovieTracker.Tests/MovieTracker.Tests.csproj
 
       - name: Check Code Style (dotnet format)
-        run: dotnet format --verify-no-changes
+        if: matrix.os == 'windows-latest'
+        run: dotnet format --no-restore --verify-no-changes
 
       - name: Build
         run: dotnet build MovieTracker.Tests/MovieTracker.Tests.csproj --configuration Release --no-restore
