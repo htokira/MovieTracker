@@ -28,7 +28,7 @@ jobs:
         run: dotnet format --no-restore --verify-no-changes
 
       - name: Build
-        run: dotnet build /p:ReportAnalyzer=true --configuration Release
+        run: dotnet build /p:ReportAnalyzer=true --configuration Release --no-restore
 
       - name: Run Tests
         run: dotnet test --project MovieTracker.Tests/MovieTracker.Tests.csproj --configuration Release --no-build
