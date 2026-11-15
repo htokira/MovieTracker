@@ -31,9 +31,45 @@ jobs:
         run: dotnet build MovieTracker.Tests/MovieTracker.Tests.csproj --configuration Release --no-restore
 
       - name: Run Tests
+        if: matrix.os != 'ubuntu-latest'
         run: dotnet test --project MovieTracker.Tests/MovieTracker.Tests.csproj --configuration Release --no-build
         env:
           ASPNETCORE_ENVIRONMENT: Testing
           Jwt__Key: "IfthisworkworkIwillgencry6767yayhappyhappy"
           Jwt__Issuer: "TestIssuer"
           Jwt__Audience: "TestAudience"
+
+      - name: Run Tests with Coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: >
+          dotnet test --project MovieTracker.Tests/MovieTracker.Tests.csproj
+          --configuration Release --no-build
+          --coverage
+          --coverage-output-format cobertura
+          --coverage-output coverage.cobertura.xml
+          --coverage-settings coverage.config
+          --results-directory ./TestResults
+        env:
+          ASPNETCORE_ENVIRONMENT: Testing
+          Jwt__Key: "IfthisworkworkIwillgencry6767yayhappyhappy"
+          Jwt__Issuer: "TestIssuer"
+          Jwt__Audience: "TestAudience"
+
+      - name: Generate Coverage Report
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          reportgenerator \
+            -reports:"TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"coverage-report" \
+            -assemblyfilters:"+MovieTracker.*;-MovieTracker.Tests" \
+            -reporttypes:"Html;MarkdownSummaryGithub;TextSummary"
+          cat coverage-report/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+          cat coverage-report/Summary.txt
+
+      - name: Upload Coverage Report
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report/

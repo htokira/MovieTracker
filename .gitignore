@@ -3,6 +3,12 @@
 bin/
 obj/
 
+# Test & coverage output
+TestResults/
+coverage-report/
+*.cobertura.xml
+*.coverage
+
 # Common node modules locations
 /node_modules
 /wwwroot/node_modules
