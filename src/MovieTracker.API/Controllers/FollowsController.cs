@@ -11,6 +11,10 @@ namespace MovieTracker.API.Controllers
     [Route("api/users")]
     public class FollowsController : ControllerBase
     {
+        private const int MaxPage = 100;
+        private const int MaxPageSize = 50;
+        private const int DefaultPageSize = 20;
+
         private readonly MovieTrackerContext _db;
 
         public FollowsController(MovieTrackerContext db)
@@ -41,7 +45,15 @@ namespace MovieTracker.API.Controllers
                 FollowingId = userId,
                 CreatedAt = DateTime.UtcNow
             });
-            await _db.SaveChangesAsync();
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                // Паралельний запит уже створив цю підписку (порушення PK), це не помилка.
+            }
 
             return NoContent();
         }
@@ -110,17 +122,17 @@ namespace MovieTracker.API.Controllers
 
             return Ok(new FollowStatsResponse(followers, following, isFollowedByMe));
         }
-                // Стрічка активності: відгуки і зміни статусів людей, на яких я підписаний
+
+        // Стрічка активності: відгуки і зміни статусів людей, на яких я підписаний
         [HttpGet("me/feed")]
         [Authorize]
         public async Task<ActionResult<PagedResultDto<FeedItemResponse>>> GetFeed(
-            int page = 1, int pageSize = 20)
+            int page = 1, int pageSize = DefaultPageSize)
         {
             if (!TryGetUserId(out var currentUserId)) return Unauthorized();
 
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 20;
-            if (pageSize > 50) pageSize = 50;
+            page = Math.Clamp(page, 1, MaxPage);
+            pageSize = pageSize < 1 ? DefaultPageSize : Math.Min(pageSize, MaxPageSize);
 
             var followedIds = _db.UserFollows
                 .Where(f => f.FollowerId == currentUserId)
@@ -169,6 +181,7 @@ namespace MovieTracker.API.Controllers
                 Items = items
             });
         }
+
         private bool TryGetUserId(out Guid userId) =>
             Guid.TryParse(User.FindFirst("sub")?.Value, out userId);
     }
