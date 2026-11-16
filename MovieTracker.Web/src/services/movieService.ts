@@ -11,17 +11,10 @@ interface GetMoviesParams {
 }
 
 function ensureMovieList(data: unknown): MovieListItemDto[] {
-  if (Array.isArray(data)) {
-    return data as MovieListItemDto[];
+  if (!Array.isArray(data)) {
+    throw new Error("Бекенд повернув неочікувану відповідь.");
   }
-  if (
-    data &&
-    typeof data === "object" &&
-    Array.isArray((data as { items?: unknown }).items)
-  ) {
-    return (data as { items: MovieListItemDto[] }).items;
-  }
-  throw new Error("Бекенд повернув неочікувану відповідь.");
+  return data as MovieListItemDto[];
 }
 
 export const movieService = {

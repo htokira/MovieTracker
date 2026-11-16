@@ -26,9 +26,6 @@ function Navbar() {
 
     return (
       <>
-        <NavLink to="/feed" className={getLinkClassName}>
-          Стрічка
-        </NavLink>
         <NavLink to="/collections" className={getLinkClassName}>
           Колекція
         </NavLink>
