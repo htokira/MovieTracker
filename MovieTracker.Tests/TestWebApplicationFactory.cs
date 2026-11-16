@@ -60,6 +60,45 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                     };
                 });
 
+            tmdbServiceMock
+                .Setup(s => s.GetPopularMoviesAsync(It.IsAny<int>()))
+                .ReturnsAsync(new PagedResultDto<MovieListItemDto>
+                {
+                    Page = 1,
+                    TotalPages = 1,
+                    TotalResults = 1,
+                    Items = new List<MovieListItemDto>
+                    {
+                        new() { Id = 1, Title = "Popular Movie", Description = "Desc", MediaType = "Movie" }
+                    }
+                });
+
+            tmdbServiceMock
+                .Setup(s => s.GetDiscoverMoviesAsync(It.IsAny<int>(), It.IsAny<int?>(), It.IsAny<string?>()))
+                .ReturnsAsync(new PagedResultDto<MovieListItemDto>
+                {
+                    Page = 1,
+                    TotalPages = 1,
+                    TotalResults = 1,
+                    Items = new List<MovieListItemDto>
+                    {
+                        new() { Id = 2, Title = "Discovered Movie", Description = "Desc", MediaType = "Movie" }
+                    }
+                });
+
+            tmdbServiceMock
+                .Setup(s => s.SearchMoviesAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int?>()))
+                .ReturnsAsync(new PagedResultDto<MovieListItemDto>
+                {
+                    Page = 1,
+                    TotalPages = 1,
+                    TotalResults = 1,
+                    Items = new List<MovieListItemDto>
+                    {
+                        new() { Id = 3, Title = "Searched Movie", Description = "Desc", MediaType = "Movie" }
+                    }
+                });
+
             services.AddSingleton(tmdbServiceMock.Object);
         });
     }
