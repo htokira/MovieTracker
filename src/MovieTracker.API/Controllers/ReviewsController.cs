@@ -54,6 +54,41 @@ namespace MovieTracker.API.Controllers
                 items));
         }
 
+        [HttpGet("/api/users/{userId:guid}/reviews")]
+        public async Task<ActionResult<UserReviewsResponse>> GetUserReviews(
+            Guid userId,
+            [FromQuery, Range(1, 10000)] int page = 1,
+            [FromQuery, Range(1, 50)] int pageSize = 20)
+        {
+            if (!await _db.Users.AnyAsync(u => u.Id == userId))
+                return NotFound();
+
+            var query = _db.Reviews
+                .AsNoTracking()
+                .Where(r => r.UserId == userId);
+
+            var count = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .ThenBy(r => r.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => new UserReviewItemResponse(
+                    r.Id,
+                    r.MovieId,
+                    r.Movie.Title,
+                    r.Movie.PosterUrl,
+                    r.Movie.ReleaseYear,
+                    r.Rating,
+                    r.Text,
+                    r.CreatedAt,
+                    r.UpdatedAt))
+                .ToListAsync();
+
+            return Ok(new UserReviewsResponse(userId, count, page, pageSize, items));
+        }
+
         [HttpGet("me")]
         [Authorize]
         public async Task<ActionResult<ReviewResponse>> GetMyReview(int movieId)

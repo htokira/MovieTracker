@@ -369,3 +369,15 @@ Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ### 64. get deleted collection (404)
 GET {{host}}/api/collections/{{createCollection.response.body.$.id}}
+
+### 65. get public user profile (200)
+GET {{host}}/api/users/{{login.response.body.$.user.id}}
+
+### 66. get public user profile not found (404)
+GET {{host}}/api/users/00000000-0000-0000-0000-000000000000
+
+### 67. get user reviews (200)
+GET {{host}}/api/users/{{login.response.body.$.user.id}}/reviews?page=1&pageSize=10
+
+### 68. get user taste profile (200 or 404 if not analyzed)
+GET {{host}}/api/users/{{login.response.body.$.user.id}}/taste-profile
