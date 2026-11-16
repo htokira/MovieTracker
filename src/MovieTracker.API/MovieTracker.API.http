@@ -369,3 +369,112 @@ Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ### 64. get deleted collection (404)
 GET {{host}}/api/collections/{{createCollection.response.body.$.id}}
+
+### 65. follows: register A (200, or 400 if it already exists)
+# @name regA
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "follow-a@example.com", "password": "Test1234", "displayName": "Follow A" }
+
+### 66. follows: register B (200, or 400 if it already exists)
+# @name regB
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "follow-b@example.com", "password": "Test1234", "displayName": "Follow B" }
+
+### 67. follows: login A (200)
+# @name loginA
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "follow-a@example.com", "password": "Test1234" }
+
+### 68. follows: login B (200)
+# @name loginB
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "follow-b@example.com", "password": "Test1234" }
+
+### 69. follows: profile A, here we take A's id (200)
+# @name meA
+GET {{host}}/api/users/me
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 70. follows: profile B, here we take B's id (200)
+# @name meB
+GET {{host}}/api/users/me
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+
+### 71. A follows B (204)
+POST {{host}}/api/users/{{meB.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 72. A follows B again (204, no error)
+POST {{host}}/api/users/{{meB.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 73. B stats as A (200, followersCount 1, isFollowedByMe true)
+GET {{host}}/api/users/{{meB.response.body.$.id}}/follow-stats
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 74. B followers (200, list contains A)
+GET {{host}}/api/users/{{meB.response.body.$.id}}/followers
+
+### 75. A following (200, list contains B)
+GET {{host}}/api/users/{{meA.response.body.$.id}}/following
+
+### 76. follow yourself (400)
+POST {{host}}/api/users/{{meA.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 77. follow without token (401)
+POST {{host}}/api/users/{{meB.response.body.$.id}}/follow
+
+### 78. follow non-existent user (404)
+POST {{host}}/api/users/00000000-0000-0000-0000-000000000001/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 79. A unfollows B (204)
+DELETE {{host}}/api/users/{{meB.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 80. unfollow again (404)
+DELETE {{host}}/api/users/{{meB.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 81. B stats after unfollow (200, followersCount 0, isFollowedByMe false)
+GET {{host}}/api/users/{{meB.response.body.$.id}}/follow-stats
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+
+### 82. feed: B leaves a review (200)
+PUT {{host}}/api/movies/603/reviews/me
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "rating": 9, "text": "feed test" }
+
+### 83. feed: B sets a watch status (200)
+PUT {{host}}/api/movies/550/status
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "status": "Watched" }
+
+### 84. feed: A follows B (204)
+POST {{host}}/api/users/{{meB.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 85. feed: A's feed (200, items from B: status and review)
+GET {{host}}/api/users/me/feed?page=1&pageSize=20
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 86. feed: pagination, one item per page (200, totalPages 2)
+GET {{host}}/api/users/me/feed?page=1&pageSize=1
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 87. feed without token (401)
+GET {{host}}/api/users/me/feed

@@ -1,0 +1,101 @@
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.title {
+  margin: 0 0 24px;
+  font-size: 1.75rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.posterLink {
+  flex-shrink: 0;
+}
+
+.poster,
+.posterPlaceholder {
+  width: 72px;
+  height: 108px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.text {
+  margin: 0;
+}
+
+.movieLink {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.date {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.review {
+  margin: 0;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  opacity: 0.7;
+}
+
+.error {
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #f08a8a;
+  background: rgba(240, 138, 138, 0.1);
+}
+
+.moreButton {
+  display: block;
+  margin: 24px auto 0;
+  padding: 10px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.moreButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
