@@ -58,40 +58,42 @@ public class TasteProfileController : ControllerBase
                 message = "Смаковий профіль ще не створено. Виконайте аналіз."
             });
 
-        var result = new TasteProfileDto
-        {
-            ReviewsCount = profile.ReviewsCount,
-
-            GenrePreferences =
-                JsonSerializer.Deserialize<List<GenrePreferenceDto>>(
-                    profile.GenrePreferencesJson) ?? new(),
-
-            FavoriteGenres =
-                JsonSerializer.Deserialize<List<string>>(
-                    profile.FavoriteGenresJson) ?? new(),
-
-            DislikedGenres =
-                JsonSerializer.Deserialize<List<string>>(
-                    profile.DislikedGenresJson) ?? new(),
-
-            FavoriteGenreIds =
-                JsonSerializer.Deserialize<List<int>>(
-                    profile.FavoriteGenreIdsJson) ?? new(),
-
-            DislikedGenreIds =
-                JsonSerializer.Deserialize<List<int>>(
-                    profile.DislikedGenresIdsJson) ?? new(),
-
-            HighlyRatedMovieIds =
-                JsonSerializer.Deserialize<List<int>>(
-                    profile.HighlyRatedMovieIdsJson) ?? new(),
-
-            TasteDiversity = profile.TasteDiversity,
-            TasteConsistency = profile.TasteConsistency,
-            Confidence = profile.Confidence,
-            CalculatedAt = profile.CalculatedAt
-        };
-
-        return Ok(result);
+        return Ok(MapToDto(profile));
     }
+
+    [HttpGet("{userId:guid}")]
+    [HttpGet("/api/users/{userId:guid}/taste-profile")]
+    [AllowAnonymous]
+    public async Task<ActionResult<TasteProfileDto>> GetUserProfile(Guid userId)
+    {
+        if (!await _db.Users.AnyAsync(u => u.Id == userId))
+            return NotFound();
+
+        var profile = await _db.Set<TasteProfile>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.UserId == userId);
+
+        if (profile == null)
+            return NotFound(new
+            {
+                message = "Смаковий профіль цього користувача ще не створено."
+            });
+
+        return Ok(MapToDto(profile));
+    }
+
+    private static TasteProfileDto MapToDto(TasteProfile profile) => new()
+    {
+        ReviewsCount = profile.ReviewsCount,
+        GenrePreferences = JsonSerializer.Deserialize<List<GenrePreferenceDto>>(profile.GenrePreferencesJson) ?? new(),
+        FavoriteGenres = JsonSerializer.Deserialize<List<string>>(profile.FavoriteGenresJson) ?? new(),
+        DislikedGenres = JsonSerializer.Deserialize<List<string>>(profile.DislikedGenresJson) ?? new(),
+        FavoriteGenreIds = JsonSerializer.Deserialize<List<int>>(profile.FavoriteGenreIdsJson) ?? new(),
+        DislikedGenreIds = JsonSerializer.Deserialize<List<int>>(profile.DislikedGenresIdsJson) ?? new(),
+        HighlyRatedMovieIds = JsonSerializer.Deserialize<List<int>>(profile.HighlyRatedMovieIdsJson) ?? new(),
+        TasteDiversity = profile.TasteDiversity,
+        TasteConsistency = profile.TasteConsistency,
+        Confidence = profile.Confidence,
+        CalculatedAt = profile.CalculatedAt
+    };
 }

@@ -22,6 +22,24 @@ namespace MovieTracker.API.Controllers
             _db = db;
         }
 
+        [HttpGet("/api/users/{id:guid}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<PublicUserProfileResponse>> GetUserById(Guid id)
+        {
+            var user = await _db.Users
+                .AsNoTracking()
+                .Where(u => u.Id == id)
+                .Select(u => new PublicUserProfileResponse(
+                    u.Id,
+                    u.DisplayName,
+                    u.AvatarUrl,
+                    u.Bio,
+                    u.CreatedAt))
+                .FirstOrDefaultAsync();
+
+            return user is null ? NotFound() : Ok(user);
+        }
+
         [HttpGet]
         public async Task<ActionResult<UserProfileResponse>> GetProfile()
         {
