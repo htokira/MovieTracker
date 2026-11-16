@@ -91,4 +91,73 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
         profile.TasteDiversity.Should().BeGreaterThan(0);
         profile.Confidence.Should().BeGreaterThan(0);
     }
+
+    [Fact]
+    public async Task GetMyProfile_AfterAnalysis_ReturnsCreatedProfile()
+    {
+        var client = await CreateAuthenticatedClientAsync();
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<MovieTrackerContext>();
+            var genre = new Genre { Id = 35, Name = "Comedy" };
+            db.Genres.Add(genre);
+            db.Movies.AddRange(
+                new Movie { Id = 201, Title = "Super Comedy 1", MediaType = "Movie", Genres = new List<Genre> { genre } },
+                new Movie { Id = 202, Title = "Super Comedy 2", MediaType = "Movie", Genres = new List<Genre> { genre } },
+                new Movie { Id = 203, Title = "Super Comedy 3", MediaType = "Movie", Genres = new List<Genre> { genre } }
+            );
+            await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        }
+
+        await client.PutAsJsonAsync("/api/movies/201/reviews/me", new UpsertReviewRequest(10, "Funny"), TestContext.Current.CancellationToken);
+        await client.PutAsJsonAsync("/api/movies/202/reviews/me", new UpsertReviewRequest(9, "Very funny"), TestContext.Current.CancellationToken);
+        await client.PutAsJsonAsync("/api/movies/203/reviews/me", new UpsertReviewRequest(10, "Hysterical"), TestContext.Current.CancellationToken);
+
+        var analyzeResponse = await client.PostAsync("/api/taste-profile/analyze", null, TestContext.Current.CancellationToken);
+        analyzeResponse.EnsureSuccessStatusCode();
+
+        var response = await client.GetAsync("/api/taste-profile/me", TestContext.Current.CancellationToken);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var profile = await response.Content.ReadFromJsonAsync<TasteProfileDto>(cancellationToken: TestContext.Current.CancellationToken);
+
+        profile.Should().NotBeNull();
+        profile.ReviewsCount.Should().Be(3);
+        profile.FavoriteGenres.Should().Contain("Comedy");
+    }
+
+    [Fact]
+    public async Task Analyze_WithoutToken_ReturnsUnauthorized()
+    {
+        var anonymousClient = _factory.CreateClient();
+
+        var response = await anonymousClient.PostAsync("/api/taste-profile/analyze", null, TestContext.Current.CancellationToken);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetMyProfile_WithoutToken_ReturnsUnauthorized()
+    {
+        var anonymousClient = _factory.CreateClient();
+
+        var response = await anonymousClient.GetAsync("/api/taste-profile/me", TestContext.Current.CancellationToken);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Analyze_WithNoReviews_HandlesGracefullyOrReturnsProfile()
+    {
+        var client = await CreateAuthenticatedClientAsync();
+
+        var response = await client.PostAsync("/api/taste-profile/analyze", null, TestContext.Current.CancellationToken);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var profile = await response.Content.ReadFromJsonAsync<TasteProfileDto>(cancellationToken: TestContext.Current.CancellationToken);
+        profile.Should().NotBeNull();
+        profile.ReviewsCount.Should().Be(0);
+    }
 }
