@@ -110,7 +110,65 @@ namespace MovieTracker.API.Controllers
 
             return Ok(new FollowStatsResponse(followers, following, isFollowedByMe));
         }
+                // Стрічка активності: відгуки і зміни статусів людей, на яких я підписаний
+        [HttpGet("me/feed")]
+        [Authorize]
+        public async Task<ActionResult<PagedResultDto<FeedItemResponse>>> GetFeed(
+            int page = 1, int pageSize = 20)
+        {
+            if (!TryGetUserId(out var currentUserId)) return Unauthorized();
 
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 20;
+            if (pageSize > 50) pageSize = 50;
+
+            var followedIds = _db.UserFollows
+                .Where(f => f.FollowerId == currentUserId)
+                .Select(f => f.FollowingId);
+
+            var reviewsQuery = _db.Set<Review>().AsNoTracking()
+                .Where(r => followedIds.Contains(r.UserId));
+            var statusesQuery = _db.Set<UserMovieStatus>().AsNoTracking()
+                .Where(s => followedIds.Contains(s.UserId));
+
+            var totalResults = await reviewsQuery.CountAsync() + await statusesQuery.CountAsync();
+
+            // З кожного джерела беремо стільки, скільки може знадобитись для цієї сторінки,
+            // потім зливаємо в пам'яті, сортуємо і вирізаємо сторінку.
+            var take = page * pageSize;
+
+            var reviews = await reviewsQuery
+                .OrderByDescending(r => r.UpdatedAt)
+                .Take(take)
+                .Select(r => new FeedItemResponse(
+                    "review", r.UserId, r.User.DisplayName, r.User.AvatarUrl,
+                    r.MovieId, r.Movie.Title, r.Movie.PosterUrl,
+                    r.Rating, r.Text, null, r.UpdatedAt))
+                .ToListAsync();
+
+            var statuses = await statusesQuery
+                .OrderByDescending(s => s.UpdatedAt)
+                .Take(take)
+                .Select(s => new FeedItemResponse(
+                    "status", s.UserId, s.User.DisplayName, s.User.AvatarUrl,
+                    s.MovieId, s.Movie.Title, s.Movie.PosterUrl,
+                    null, null, s.Status, s.UpdatedAt))
+                .ToListAsync();
+
+            var items = reviews.Concat(statuses)
+                .OrderByDescending(i => i.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return Ok(new PagedResultDto<FeedItemResponse>
+            {
+                Page = page,
+                TotalResults = totalResults,
+                TotalPages = (int)Math.Ceiling(totalResults / (double)pageSize),
+                Items = items
+            });
+        }
         private bool TryGetUserId(out Guid userId) =>
             Guid.TryParse(User.FindFirst("sub")?.Value, out userId);
     }
