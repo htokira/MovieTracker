@@ -10,13 +10,21 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
 #if ANDROID
-				var apiBaseUrl = "http://10.0.2.2:7226/";
+        var apiBaseUrl = "https://10.0.2.2:7226/";
 #else
-        var apiBaseUrl = "http://localhost:7226/";
+        var apiBaseUrl = "https://localhost:7226/";
 #endif
 
         var builder = MauiApp.CreateBuilder();
+#if DEBUG
+        var insecureHandler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        builder.Services.AddSingleton(new HttpClient(insecureHandler) { BaseAddress = new Uri(apiBaseUrl) });
+#else
         builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
+#endif
 
         builder
             .UseMauiApp<App>()
