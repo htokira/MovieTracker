@@ -28,7 +28,7 @@ namespace MovieTracker.Tests.Services
             var optionsMock = Options.Create(_settings);
 
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-            
+
             _httpClient = new HttpClient(_httpMessageHandlerMock.Object)
             {
                 BaseAddress = new Uri(_settings.BaseUrl)

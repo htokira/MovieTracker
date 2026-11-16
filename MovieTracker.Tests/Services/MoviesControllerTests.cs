@@ -82,7 +82,7 @@ namespace MovieTracker.Tests.Controllers
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var movieDto = await response.Content.ReadFromJsonAsync<MovieDetailDto>(cancellationToken: TestContext.Current.CancellationToken);
-            
+
             movieDto.Should().NotBeNull();
             movieDto.Id.Should().Be(localMovieId);
             movieDto.Title.Should().Be("Inception");
@@ -99,7 +99,7 @@ namespace MovieTracker.Tests.Controllers
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var movieDto = await response.Content.ReadFromJsonAsync<MovieDetailDto>(cancellationToken: TestContext.Current.CancellationToken);
-            
+
             movieDto.Should().NotBeNull();
             movieDto.Id.Should().Be(nonLocalId);
             movieDto.Title.Should().Be($"Test Movie {nonLocalId}");

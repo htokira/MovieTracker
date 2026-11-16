@@ -121,7 +121,7 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var profile = await response.Content.ReadFromJsonAsync<TasteProfileDto>(cancellationToken: TestContext.Current.CancellationToken);
-        
+
         profile.Should().NotBeNull();
         profile.ReviewsCount.Should().Be(3);
         profile.FavoriteGenres.Should().Contain("Comedy");
@@ -155,7 +155,7 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
         var response = await client.PostAsync("/api/taste-profile/analyze", null, TestContext.Current.CancellationToken);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var profile = await response.Content.ReadFromJsonAsync<TasteProfileDto>(cancellationToken: TestContext.Current.CancellationToken);
         profile.Should().NotBeNull();
         profile.ReviewsCount.Should().Be(0);
