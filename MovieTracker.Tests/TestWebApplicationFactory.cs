@@ -44,15 +44,20 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             var tmdbServiceMock = new Mock<ITmdbService>();
             tmdbServiceMock
                 .Setup(s => s.GetMovieDetailsAsync(It.IsAny<int>()))
-                .ReturnsAsync((int id) => new MovieDetailDto
+                .ReturnsAsync((int id) =>
                 {
-                    Id = id,
-                    Title = $"Test Movie {id}",
-                    Description = "Test Description",
-                    ReleaseYear = 2024,
-                    Rating = 8.5,
-                    MediaType = "Movie",
-                    PosterUrl = "https://example.com/poster.jpg"
+                    if (id == 404404) return null!;
+
+                    return new MovieDetailDto
+                    {
+                        Id = id,
+                        Title = $"Test Movie {id}",
+                        Description = "Test Description",
+                        ReleaseYear = 2024,
+                        Rating = 8.5,
+                        MediaType = "Movie",
+                        PosterUrl = "https://example.com/poster.jpg"
+                    };
                 });
 
             services.AddSingleton(tmdbServiceMock.Object);
