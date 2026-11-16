@@ -195,4 +195,84 @@ public class ApiService
             return null;
         }
     }
+        // ===== Профіль іншого користувача =====
+
+    public async Task<PublicUserProfileResponse?> GetUserProfileAsync(Guid userId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<PublicUserProfileResponse>(
+                $"api/users/{userId}");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException
+                                       or System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<FollowStatsResponse?> GetFollowStatsAsync(Guid userId)
+    {
+        try
+        {
+            var response = await _auth.SendAuthorizedAsync(
+                () => new HttpRequestMessage(HttpMethod.Get, $"api/users/{userId}/follow-stats"));
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<FollowStatsResponse>();
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException
+                                       or System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
+
+    public Task<string?> FollowUserAsync(Guid userId) => AuthService.GuardAsync(async () =>
+    {
+        var response = await _auth.SendAuthorizedAsync(
+            () => new HttpRequestMessage(HttpMethod.Post, $"api/users/{userId}/follow"));
+
+        return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+    });
+
+    public Task<string?> UnfollowUserAsync(Guid userId) => AuthService.GuardAsync(async () =>
+    {
+        var response = await _auth.SendAuthorizedAsync(
+            () => new HttpRequestMessage(HttpMethod.Delete, $"api/users/{userId}/follow"));
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return null; // вже не підписана, це не помилка
+
+        return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+    });
+        public async Task<UserReviewsResponse?> GetUserReviewsAsync(Guid userId, int page = 1, int pageSize = 10)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<UserReviewsResponse>(
+                $"api/users/{userId}/reviews?page={page}&pageSize={pageSize}");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException
+                                       or System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<List<CollectionSummaryResponse>?> GetUserCollectionsAsync(Guid userId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<CollectionSummaryResponse>>(
+                $"api/users/{userId}/collections");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException
+                                       or System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
 }

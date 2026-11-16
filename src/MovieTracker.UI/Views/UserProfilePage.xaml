@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.UserProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
+    x:DataType="vm:UserProfileViewModel"
+    Title="Профіль користувача"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <VerticalStackLayout Grid.Row="0">
+            <Label
+                Text="{Binding ErrorMessage}"
+                Style="{StaticResource ErrorLabel}"
+                IsVisible="{Binding HasError}"
+                HorizontalOptions="Center"
+                Margin="20,10,20,0" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#8B7CFF"
+                Margin="0,10,0,0" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout
+                x:Name="FormStack"
+                Padding="0,20"
+                Spacing="16"
+                HorizontalOptions="Center">
+
+                <Label
+                    Text="← Назад"
+                    TextColor="#A0A5B5"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <!-- Шапка профілю -->
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+
+                        <Border
+                            WidthRequest="96"
+                            HeightRequest="96"
+                            BackgroundColor="#6558D3"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 48">
+
+                            <Grid>
+                                <Label
+                                    Text="{Binding AvatarInitial}"
+                                    FontSize="40"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+
+                                <Image Source="{Binding AvatarImage}" Aspect="AspectFill" />
+                            </Grid>
+                        </Border>
+
+                        <Label
+                            Text="{Binding DisplayName}"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center" />
+
+                        <Label
+                            Text="{Binding Bio}"
+                            IsVisible="{Binding HasBio}"
+                            TextColor="#C5C9D6"
+                            FontSize="14"
+                            HorizontalTextAlignment="Center" />
+
+                        <Label
+                            Text="{Binding CreatedText}"
+                            TextColor="#A0A5B5"
+                            FontSize="12"
+                            HorizontalOptions="Center" />
+
+                        <HorizontalStackLayout Spacing="24" HorizontalOptions="Center" Margin="0,8,0,0">
+                            <VerticalStackLayout>
+                                <Label
+                                    Text="{Binding FollowersCount}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    HorizontalOptions="Center" />
+                                <Label Text="підписників" TextColor="#A0A5B5" FontSize="12" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout>
+                                <Label
+                                    Text="{Binding FollowingCount}"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    HorizontalOptions="Center" />
+                                <Label Text="підписок" TextColor="#A0A5B5" FontSize="12" />
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+
+                        <Button
+                            Text="{Binding FollowButtonText}"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding ToggleFollowCommand}"
+                            IsVisible="{Binding CanFollow}"
+                            IsEnabled="{Binding IsNotBusy}"
+                            Margin="0,8,0,0" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Відгуки -->
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label
+                            Text="{Binding ReviewsTitle}"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="Користувач ще не залишав відгуків."
+                            TextColor="#A0A5B5"
+                            FontSize="13"
+                            IsVisible="False">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HasReviews}" Value="False">
+                                    <Setter Property="IsVisible" Value="True" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+
+                        <VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding Reviews}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="dto:UserReviewItemResponse">
+                                    <Grid ColumnDefinitions="60,*" ColumnSpacing="12">
+                                        <Image
+                                            Grid.Column="0"
+                                            Source="{Binding PosterUrl}"
+                                            WidthRequest="60"
+                                            HeightRequest="90"
+                                            Aspect="AspectFill" />
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                            <Label
+                                                Text="{Binding MovieTitle}"
+                                                FontAttributes="Bold"
+                                                TextColor="White"
+                                                FontSize="15">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnReviewMovieTapped" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                            <Label
+                                                Text="{Binding Rating, StringFormat='★ {0}/10'}"
+                                                TextColor="#F5C518"
+                                                FontSize="13" />
+                                            <Label
+                                                Text="{Binding Text}"
+                                                TextColor="#C5C9D6"
+                                                FontSize="13" />
+                                            <Label
+                                                Text="{Binding UpdatedAt, StringFormat='{0:dd.MM.yyyy}'}"
+                                                TextColor="#A0A5B5"
+                                                FontSize="11" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Публічні колекції -->
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label
+                            Text="Публічні колекції"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            Text="Публічних колекцій немає."
+                            TextColor="#A0A5B5"
+                            FontSize="13"
+                            IsVisible="False">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HasCollections}" Value="False">
+                                    <Setter Property="IsVisible" Value="True" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+
+                        <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Collections}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="dto:CollectionSummaryResponse">
+                                    <Border
+                                        BackgroundColor="#171923"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="14">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label
+                                                Text="{Binding Name}"
+                                                FontAttributes="Bold"
+                                                TextColor="White"
+                                                FontSize="15" />
+                                            <Label
+                                                Text="{Binding Description}"
+                                                TextColor="#C5C9D6"
+                                                FontSize="13" />
+                                            <Label
+                                                Text="{Binding MoviesCount, StringFormat='Фільмів: {0}'}"
+                                                TextColor="#A0A5B5"
+                                                FontSize="12" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

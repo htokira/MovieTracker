@@ -12,6 +12,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
         Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
         Routing.RegisterRoute(nameof(TasteProfilePage), typeof(TasteProfilePage));
+        Routing.RegisterRoute(nameof(Views.UserProfilePage), typeof(Views.UserProfilePage));
 
         Items.Add(new ShellContent
         {
