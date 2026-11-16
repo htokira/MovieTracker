@@ -19,6 +19,7 @@ namespace MovieTracker.Data
         public DbSet<UserMovieStatus> UserMovieStatuses => Set<UserMovieStatus>();
         public DbSet<Collection> Collections => Set<Collection>();
         public DbSet<CollectionMovie> CollectionMovies => Set<CollectionMovie>();
+        public DbSet<UserFollow> UserFollows => Set<UserFollow>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -108,6 +109,22 @@ namespace MovieTracker.Data
                 e.HasOne(cm => cm.Movie)
                  .WithMany()
                  .HasForeignKey(cm => cm.MovieId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+                        builder.Entity<UserFollow>(e =>
+            {
+                e.HasKey(f => new { f.FollowerId, f.FollowingId });
+
+                e.HasIndex(f => f.FollowingId);
+
+                e.HasOne(f => f.Follower)
+                 .WithMany()
+                 .HasForeignKey(f => f.FollowerId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(f => f.Following)
+                 .WithMany()
+                 .HasForeignKey(f => f.FollowingId)
                  .OnDelete(DeleteBehavior.Cascade);
             });
 
