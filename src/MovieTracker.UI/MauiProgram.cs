@@ -50,6 +50,8 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<UserProfileViewModel>();
+        builder.Services.AddTransient<UserProfilePage>();
         builder.Services.AddSingleton<AccountBarViewModel>();
         builder.Services.AddTransient<RecommendationsViewModel>();
 

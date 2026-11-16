@@ -402,9 +402,14 @@
 
                                             <Label
                                                 Text="{Binding AuthorName}"
-                                                TextColor="White"
+                                                TextColor="#B8B1FF"
                                                 FontSize="14"
-                                                FontAttributes="Bold" />
+                                                FontAttributes="Bold"
+                                                TextDecorations="Underline">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OnAuthorTapped" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
 
                                             <Label
                                                 Grid.Column="1"

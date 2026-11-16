@@ -1,4 +1,5 @@
 using MovieTracker.UI.ViewModels;
+using MovieTracker.Core.Dtos;
 
 namespace MovieTracker.UI.Views;
 
@@ -23,6 +24,11 @@ public partial class MovieDetailsPage : ContentPage, IQueryAttributable
         {
             _ = _viewModel.LoadMovieAsync(movieId);
         }
+    }
+        private async void OnAuthorTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is BindableObject { BindingContext: ReviewResponse review })
+            await Shell.Current.GoToAsync($"{nameof(UserProfilePage)}?userId={review.UserId}");
     }
 
     private async void OnBackClicked(object? sender, EventArgs e)
