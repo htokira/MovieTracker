@@ -448,3 +448,33 @@ Authorization: Bearer {{loginA.response.body.$.accessToken}}
 ### 81. B stats after unfollow (200, followersCount 0, isFollowedByMe false)
 GET {{host}}/api/users/{{meB.response.body.$.id}}/follow-stats
 Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+
+### 82. feed: B leaves a review (200)
+PUT {{host}}/api/movies/603/reviews/me
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "rating": 9, "text": "feed test" }
+
+### 83. feed: B sets a watch status (200)
+PUT {{host}}/api/movies/550/status
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "status": "Watched" }
+
+### 84. feed: A follows B (204)
+POST {{host}}/api/users/{{meB.response.body.$.id}}/follow
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 85. feed: A's feed (200, items from B: status and review)
+GET {{host}}/api/users/me/feed?page=1&pageSize=20
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 86. feed: pagination, one item per page (200, totalPages 2)
+GET {{host}}/api/users/me/feed?page=1&pageSize=1
+Authorization: Bearer {{loginA.response.body.$.accessToken}}
+
+### 87. feed without token (401)
+GET {{host}}/api/users/me/feed
