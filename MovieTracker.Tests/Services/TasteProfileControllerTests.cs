@@ -161,4 +161,6 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
         profile.Should().NotBeNull();
         profile.ReviewsCount.Should().Be(0);
     }
+
+
 }

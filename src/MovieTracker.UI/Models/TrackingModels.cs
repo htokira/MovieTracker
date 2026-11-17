@@ -60,7 +60,7 @@ public class NotificationItem : INotifyPropertyChanged
     {
         get
         {
-            var diff = DateTime.Now - CreatedAt;
+            var diff = DateTime.UtcNow - CreatedAt;
             if (diff.TotalMinutes < 1) return "щойно";
             if (diff.TotalHours < 1) return $"{(int)diff.TotalMinutes} хв тому";
             if (diff.TotalDays < 1) return $"{(int)diff.TotalHours} год тому";

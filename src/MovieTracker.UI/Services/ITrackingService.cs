@@ -17,4 +17,5 @@ public interface ITrackingService
     Task<string?> AddMovieToCollectionAsync(Guid collectionId, int movieId);
     Task<string?> RemoveMovieFromCollectionAsync(Guid collectionId, int movieId);
     Task<string?> DeleteCollectionAsync(Guid collectionId);
+    Task RecalculateTasteProfileAsync();
 }

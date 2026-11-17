@@ -98,7 +98,12 @@ public class TrackingService : ITrackingService
                 Content = JsonContent.Create(new SetWatchStatusRequest(status))
             });
 
-            return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+            if (!response.IsSuccessStatusCode)
+                return await AuthService.ReadErrorAsync(response);
+
+            await RecalculateTasteProfileAsync();
+
+            return null;
         });
 
     public Task<string?> RemoveMovieStatusAsync(int movieId) =>
@@ -110,7 +115,12 @@ public class TrackingService : ITrackingService
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
 
-            return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+            if (!response.IsSuccessStatusCode)
+                return await AuthService.ReadErrorAsync(response);
+
+            await RecalculateTasteProfileAsync();
+
+            return null;
         });
 
     // ===== Колекції =====
@@ -176,7 +186,12 @@ public class TrackingService : ITrackingService
             var response = await _auth.SendAuthorizedAsync(() => new HttpRequestMessage(
                 HttpMethod.Post, $"api/collections/{collectionId}/movies/{movieId}"));
 
-            return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+            if (!response.IsSuccessStatusCode)
+                return await AuthService.ReadErrorAsync(response);
+
+            await RecalculateTasteProfileAsync();
+
+            return null;
         });
 
     public Task<string?> RemoveMovieFromCollectionAsync(Guid collectionId, int movieId) =>
@@ -188,7 +203,12 @@ public class TrackingService : ITrackingService
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
 
-            return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+            if (!response.IsSuccessStatusCode)
+                return await AuthService.ReadErrorAsync(response);
+
+            await RecalculateTasteProfileAsync();
+
+            return null;
         });
 
     public Task<string?> DeleteCollectionAsync(Guid collectionId) =>
@@ -197,6 +217,34 @@ public class TrackingService : ITrackingService
             var response = await _auth.SendAuthorizedAsync(() => new HttpRequestMessage(
                 HttpMethod.Delete, $"api/collections/{collectionId}"));
 
-            return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
+            if (!response.IsSuccessStatusCode)
+                return await AuthService.ReadErrorAsync(response);
+
+            await RecalculateTasteProfileAsync();
+
+            return null;
         });
+
+    public async Task RecalculateTasteProfileAsync()
+    {
+        try
+        {
+            using var response = await _auth.SendAuthorizedAsync(() =>
+                new HttpRequestMessage(
+                    HttpMethod.Post,
+                    "api/taste-profile/analyze"));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"Taste profile recalculation failed: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex) when (
+            ex is HttpRequestException or TaskCanceledException)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                $"Taste profile recalculation error: {ex.Message}");
+        }
+    }
 }

@@ -111,22 +111,22 @@ namespace MovieTracker.Data
                  .HasForeignKey(cm => cm.MovieId)
                  .OnDelete(DeleteBehavior.Cascade);
             });
-                        builder.Entity<UserFollow>(e =>
-            {
-                e.HasKey(f => new { f.FollowerId, f.FollowingId });
+            builder.Entity<UserFollow>(e =>
+{
+    e.HasKey(f => new { f.FollowerId, f.FollowingId });
 
-                e.HasIndex(f => f.FollowingId);
+    e.HasIndex(f => f.FollowingId);
 
-                e.HasOne(f => f.Follower)
-                 .WithMany()
-                 .HasForeignKey(f => f.FollowerId)
-                 .OnDelete(DeleteBehavior.Cascade);
+    e.HasOne(f => f.Follower)
+     .WithMany()
+     .HasForeignKey(f => f.FollowerId)
+     .OnDelete(DeleteBehavior.Cascade);
 
-                e.HasOne(f => f.Following)
-                 .WithMany()
-                 .HasForeignKey(f => f.FollowingId)
-                 .OnDelete(DeleteBehavior.Cascade);
-            });
+    e.HasOne(f => f.Following)
+     .WithMany()
+     .HasForeignKey(f => f.FollowingId)
+     .OnDelete(DeleteBehavior.Cascade);
+});
 
             builder.Entity<Movie>(e =>
             {

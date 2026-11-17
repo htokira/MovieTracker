@@ -60,7 +60,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CollectionDetailsPage>();
         builder.Services.AddTransient<CollectionViewModel>();
         builder.Services.AddTransient<CollectionPage>();
-        #if DEBUG
+#if DEBUG
         builder.Logging.AddDebug();
 #endif
 

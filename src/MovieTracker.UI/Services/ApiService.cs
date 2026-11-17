@@ -195,7 +195,7 @@ public class ApiService
             return null;
         }
     }
-        // ===== Профіль іншого користувача =====
+    // ===== Профіль іншого користувача =====
 
     public async Task<PublicUserProfileResponse?> GetUserProfileAsync(Guid userId)
     {
@@ -248,7 +248,7 @@ public class ApiService
 
         return response.IsSuccessStatusCode ? null : await AuthService.ReadErrorAsync(response);
     });
-        public async Task<UserReviewsResponse?> GetUserReviewsAsync(Guid userId, int page = 1, int pageSize = 10)
+    public async Task<UserReviewsResponse?> GetUserReviewsAsync(Guid userId, int page = 1, int pageSize = 10)
     {
         try
         {
@@ -275,7 +275,7 @@ public class ApiService
             return null;
         }
     }
-        public async Task<CollectionDetailResponse?> GetCollectionAsync(Guid collectionId)
+    public async Task<CollectionDetailResponse?> GetCollectionAsync(Guid collectionId)
     {
         try
         {
