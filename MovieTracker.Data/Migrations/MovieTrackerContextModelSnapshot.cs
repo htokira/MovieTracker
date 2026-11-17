@@ -281,6 +281,39 @@ namespace MovieTracker.Data.Migrations
                     b.ToTable("MoviePersons");
                 });
 
+            modelBuilder.Entity("MovieTracker.Core.Models.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ActorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "IsRead", "CreatedAt");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("MovieTracker.Core.Models.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -672,6 +705,17 @@ namespace MovieTracker.Data.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("MovieTracker.Core.Models.Notification", b =>
+                {
+                    b.HasOne("MovieTracker.Core.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieTracker.Core.Models.RefreshToken", b =>

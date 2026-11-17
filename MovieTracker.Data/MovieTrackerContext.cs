@@ -19,11 +19,25 @@ namespace MovieTracker.Data
         public DbSet<UserMovieStatus> UserMovieStatuses => Set<UserMovieStatus>();
         public DbSet<Collection> Collections => Set<Collection>();
         public DbSet<CollectionMovie> CollectionMovies => Set<CollectionMovie>();
+        public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<UserFollow> UserFollows => Set<UserFollow>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            
+                        builder.Entity<Notification>(e =>
+            {
+                e.HasKey(n => n.Id);
+                e.Property(n => n.Text).IsRequired().HasMaxLength(500);
+
+                e.HasIndex(n => new { n.UserId, n.IsRead, n.CreatedAt });
+
+                e.HasOne(n => n.User)
+                 .WithMany()
+                 .HasForeignKey(n => n.UserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
 
             builder.Entity<User>(e =>
             {

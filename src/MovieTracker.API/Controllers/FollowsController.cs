@@ -46,6 +46,20 @@ namespace MovieTracker.API.Controllers
                 CreatedAt = DateTime.UtcNow
             });
 
+            var actorName = await _db.Users
+                .Where(u => u.Id == currentUserId)
+                .Select(u => u.DisplayName)
+                .FirstOrDefaultAsync();
+
+            _db.Notifications.Add(new Notification
+            {
+                UserId = userId,
+                ActorId = currentUserId,
+                Type = NotificationType.NewFollower,
+                Text = $"Новий підписник: {actorName}",
+                CreatedAt = DateTime.UtcNow
+            });
+
             try
             {
                 await _db.SaveChangesAsync();
