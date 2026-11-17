@@ -123,7 +123,24 @@
                     </VerticalStackLayout>
 
                 </Grid>
-
+                                <!-- Мій список і колекція -->
+                <VerticalStackLayout Spacing="10" IsVisible="{Binding IsAuthenticated}">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Text="{Binding PlannedButtonText}"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding SetPlannedCommand}" />
+                        <Button
+                            Grid.Column="1"
+                            Text="{Binding WatchedButtonText}"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding SetWatchedCommand}" />
+                    </Grid>
+                    <Button
+                        Text="+ Додати в колекцію"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding AddToCollectionCommand}" />
+                </VerticalStackLayout>
                 <!-- Жанри -->
                 <VerticalStackLayout Spacing="10">
 
