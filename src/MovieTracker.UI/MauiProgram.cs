@@ -16,7 +16,17 @@ public static class MauiProgram
 #endif
 
         var builder = MauiApp.CreateBuilder();
+#if DEBUG
+#pragma warning disable S4830
+        var insecureHandler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+#pragma warning restore S4830
+        builder.Services.AddSingleton(new HttpClient(insecureHandler) { BaseAddress = new Uri(apiBaseUrl) });
+#else
         builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
+#endif
 
         builder
             .UseMauiApp<App>()
@@ -47,7 +57,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<AccountBarViewModel>();
         builder.Services.AddTransient<RecommendationsViewModel>();
         builder.Services.AddSingleton<ITrackingService, TrackingService>();
-       builder.Services.AddSingleton<INotificationService, NotificationService>();
+        builder.Services.AddSingleton<INotificationService, NotificationService>();
         builder.Services.AddTransient<TrackingListsViewModel>();
         builder.Services.AddTransient<TrackingListsPage>();
         builder.Services.AddTransient<CreateCollectionViewModel>();
@@ -60,7 +70,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CollectionDetailsPage>();
         builder.Services.AddTransient<CollectionViewModel>();
         builder.Services.AddTransient<CollectionPage>();
-        #if DEBUG
+#if DEBUG
         builder.Logging.AddDebug();
 #endif
 

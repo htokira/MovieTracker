@@ -51,7 +51,7 @@ namespace MovieTracker.UI.ViewModels
         }
 
         public string FollowButtonText => IsFollowedByMe ? "Відписатися" : "Підписатися";
-                public ObservableCollection<UserReviewItemResponse> Reviews { get; } = new();
+        public ObservableCollection<UserReviewItemResponse> Reviews { get; } = new();
         public ObservableCollection<CollectionSummaryResponse> Collections { get; } = new();
 
         private int _reviewsTotal;
@@ -133,7 +133,7 @@ namespace MovieTracker.UI.ViewModels
             FollowingCount = stats.FollowingCount;
             IsFollowedByMe = stats.IsFollowedByMe;
         }
-                private async Task LoadReviewsAsync()
+        private async Task LoadReviewsAsync()
         {
             var result = await _api.GetUserReviewsAsync(_userId);
 
