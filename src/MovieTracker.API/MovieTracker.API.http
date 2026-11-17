@@ -490,3 +490,27 @@ Authorization: Bearer {{loginA.response.body.$.accessToken}}
 
 ### 87. feed without token (401)
 GET {{host}}/api/users/me/feed
+
+### 88. notifications: B's notifications, contains "new follower" (200)
+# @name notifB
+GET {{host}}/api/notifications/me
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+
+### 89. notifications: only unread (200)
+GET {{host}}/api/notifications/me?unreadOnly=true
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+
+### 90. notifications: one notification by id (200)
+GET {{host}}/api/notifications/{{notifB.response.body.$.items[0].id}}
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+
+### 91. notifications: mark as read (204)
+POST {{host}}/api/notifications/{{notifB.response.body.$.items[0].id}}/read
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+
+### 92. notifications: mark all as read (204)
+POST {{host}}/api/notifications/read-all
+Authorization: Bearer {{loginB.response.body.$.accessToken}}
+
+### 93. notifications without token (401)
+GET {{host}}/api/notifications/me
