@@ -83,10 +83,10 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
 
         profile.Should().NotBeNull();
         profile.ReviewsCount.Should().Be(7);
-        profile.FavoriteGenres.Should().Contain("Science Fiction");
-        profile.FavoriteGenreIds.Should().NotBeEmpty();
-        profile.DislikedGenres.Should().Contain("Horror");
-        profile.DislikedGenreIds.Should().NotBeEmpty();
+        profile.FavoriteGenreIds.Should().Contain(12);
+        profile.DislikedGenreIds.Should().Contain(27);
+        profile.GenrePreferences.Should().Contain(g => g.GenreId == 12 && g.GenreName == "Science Fiction");
+        profile.GenrePreferences.Should().Contain(g => g.GenreId == 27 && g.GenreName == "Horror");
         profile.HighlyRatedMovieIds.Should().NotBeEmpty();
         profile.TasteDiversity.Should().BeGreaterThan(0);
         profile.Confidence.Should().BeGreaterThan(0);
@@ -124,7 +124,8 @@ public class TasteProfileControllerTests : IClassFixture<TestWebApplicationFacto
 
         profile.Should().NotBeNull();
         profile.ReviewsCount.Should().Be(3);
-        profile.FavoriteGenres.Should().Contain("Comedy");
+        profile.FavoriteGenreIds.Should().Contain(35);
+        profile.GenrePreferences.Should().ContainSingle(g => g.GenreId == 35 && g.GenreName == "Comedy");
     }
 
     [Fact]
