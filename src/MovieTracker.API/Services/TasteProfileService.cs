@@ -155,13 +155,6 @@ public class TasteProfileService
             .OrderByDescending(p => p.PreferenceScore)
             .ToList();
 
-        var favoriteGenres = preferences
-            .Where(p => p.PreferenceScore > 0.05 &&
-                        p.Confidence >= 0.1)
-            .Take(5)
-            .Select(p => p.GenreName)
-            .ToList();
-
         var favoriteGenresIds = preferences
             .Where(p => p.PreferenceScore > 0.05 &&
                         p.Confidence >= 0.1)
@@ -173,14 +166,6 @@ public class TasteProfileService
             .Where(r => r.Rating >= 8)
             .Select(r => r.MovieId)
             .Distinct()
-            .ToList();
-
-        var dislikedGenres = preferences
-            .Where(p => p.PreferenceScore < -0.05 &&
-                        p.Confidence >= 0.1)
-            .OrderBy(p => p.PreferenceScore)
-            .Take(5)
-            .Select(p => p.GenreName)
             .ToList();
 
         var dislikedGenresIds = preferences
@@ -250,8 +235,6 @@ public class TasteProfileService
         {
             ReviewsCount = reviews.Count,
             GenrePreferences = preferences,
-            FavoriteGenres = favoriteGenres,
-            DislikedGenres = dislikedGenres,
             FavoriteGenreIds = favoriteGenresIds,
             HighlyRatedMovieIds = highlyRatedMovieIds,
             DislikedGenreIds = dislikedGenresIds,
@@ -286,12 +269,6 @@ public class TasteProfileService
 
         profile.GenrePreferencesJson =
             JsonSerializer.Serialize(result.GenrePreferences);
-
-        profile.FavoriteGenresJson =
-            JsonSerializer.Serialize(result.FavoriteGenres);
-
-        profile.DislikedGenresJson =
-            JsonSerializer.Serialize(result.DislikedGenres);
 
         profile.FavoriteGenreIdsJson =
             JsonSerializer.Serialize(result.FavoriteGenreIds);

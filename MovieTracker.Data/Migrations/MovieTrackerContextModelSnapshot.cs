@@ -387,15 +387,7 @@ namespace MovieTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DislikedGenresJson")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("FavoriteGenreIdsJson")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FavoriteGenresJson")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
