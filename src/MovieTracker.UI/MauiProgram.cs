@@ -16,7 +16,15 @@ public static class MauiProgram
 #endif
 
         var builder = MauiApp.CreateBuilder();
+#if DEBUG
+        var insecureHandler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        builder.Services.AddSingleton(new HttpClient(insecureHandler) { BaseAddress = new Uri(apiBaseUrl) });
+#else
         builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
+#endif
 
         builder
             .UseMauiApp<App>()
