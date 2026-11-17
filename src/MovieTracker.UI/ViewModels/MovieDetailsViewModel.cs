@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using MovieTracker.Core.Dtos;
+using MovieTracker.Core.Models;
 using MovieTracker.UI.Services;
 using MovieTracker.UI.Views;
 
@@ -12,6 +13,7 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
 {
     private readonly ApiService _apiService;
     private readonly AuthService _auth;
+    private readonly ITrackingService _tracking;
 
     private MovieDetailDto? _movie;
     private bool _isLoading;
@@ -27,6 +29,7 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
     private bool _isReviewBusy;
     private string? _reviewFormError;
     private string? _reviewFormStatus;
+    private WatchStatus? _myStatus;
 
     public MovieDetailDto? Movie
     {
@@ -174,20 +177,46 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
 
     public bool HasReviewFormStatus => !string.IsNullOrWhiteSpace(ReviewFormStatus);
 
+    // Статус фільму і колекції
+
+    public WatchStatus? MyStatus
+    {
+        get => _myStatus;
+        private set
+        {
+            if (SetProperty(ref _myStatus, value))
+            {
+                OnPropertyChanged(nameof(PlannedButtonText));
+                OnPropertyChanged(nameof(WatchedButtonText));
+            }
+        }
+    }
+
+    public string PlannedButtonText => MyStatus == WatchStatus.Planned ? "✓ Заплановано" : "Заплановано";
+    public string WatchedButtonText => MyStatus == WatchStatus.Watched ? "✓ Переглянуто" : "Переглянуто";
+
     public ICommand SaveReviewCommand { get; }
     public ICommand DeleteReviewCommand { get; }
     public ICommand GoToLoginCommand { get; }
+    public ICommand SetPlannedCommand { get; }
+    public ICommand SetWatchedCommand { get; }
+    public ICommand AddToCollectionCommand { get; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public MovieDetailsViewModel(ApiService apiService, AuthService auth)
+    public MovieDetailsViewModel(ApiService apiService, AuthService auth, ITrackingService tracking)
     {
         _apiService = apiService;
         _auth = auth;
+        _tracking = tracking;
 
         SaveReviewCommand = new Command(async () => await SaveMyReviewAsync());
         DeleteReviewCommand = new Command(async () => await DeleteMyReviewAsync());
         GoToLoginCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(LoginPage)));
+
+        SetPlannedCommand = new Command(async () => await ToggleStatusAsync(WatchStatus.Planned));
+        SetWatchedCommand = new Command(async () => await ToggleStatusAsync(WatchStatus.Watched));
+        AddToCollectionCommand = new Command(async () => await AddToCollectionAsync());
     }
 
     public async Task LoadMovieAsync(int movieId)
@@ -242,6 +271,8 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
         if (_movieId <= 0) return;
 
         IsAuthenticated = _auth.IsAuthenticated;
+        _ = RefreshMyStatusAsync();
+
         if (!IsAuthenticated)
         {
             ApplyMyReview(null);
@@ -261,6 +292,67 @@ public class MovieDetailsViewModel : INotifyPropertyChanged
         {
             IsReviewBusy = false;
         }
+    }
+
+    private async Task RefreshMyStatusAsync()
+    {
+        if (_movieId <= 0 || !_auth.IsAuthenticated)
+        {
+            MyStatus = null;
+            return;
+        }
+
+        var (status, _) = await _tracking.GetMovieStatusAsync(_movieId);
+        MyStatus = status;
+    }
+
+    // Повторне натискання на активний статус прибирає його
+    private async Task ToggleStatusAsync(WatchStatus status)
+    {
+        if (_movieId <= 0) return;
+
+        var error = MyStatus == status
+            ? await _tracking.RemoveMovieStatusAsync(_movieId)
+            : await _tracking.SetMovieStatusAsync(_movieId, status);
+
+        if (error is not null)
+        {
+            await Shell.Current.DisplayAlertAsync("Помилка", error, "OK");
+            return;
+        }
+
+        MyStatus = MyStatus == status ? null : status;
+    }
+
+    private async Task AddToCollectionAsync()
+    {
+        if (_movieId <= 0) return;
+
+        var (items, error) = await _tracking.GetMyCollectionsAsync();
+        if (error is not null)
+        {
+            await Shell.Current.DisplayAlertAsync("Помилка", error, "OK");
+            return;
+        }
+
+        if (items is null || items.Count == 0)
+        {
+            await Shell.Current.DisplayAlertAsync("Колекції",
+                "У вас ще немає колекцій. Створіть її: Мій акаунт → Нова колекція.", "OK");
+            return;
+        }
+
+        var chosen = await Shell.Current.DisplayActionSheetAsync(
+            "Додати в колекцію", "Скасувати", null, items.Select(c => c.Name).ToArray());
+
+        var collection = items.FirstOrDefault(c => c.Name == chosen);
+        if (collection is null) return;
+
+        var addError = await _tracking.AddMovieToCollectionAsync(collection.Id, _movieId);
+        await Shell.Current.DisplayAlertAsync(
+            addError is null ? "Готово" : "Помилка",
+            addError ?? $"Фільм додано в колекцію «{collection.Name}».",
+            "OK");
     }
 
     private async Task SaveMyReviewAsync()
