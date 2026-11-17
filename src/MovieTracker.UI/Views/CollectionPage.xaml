@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.CollectionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    xmlns:dto="clr-namespace:MovieTracker.Core.Dtos;assembly=MovieTracker.Core"
+    x:DataType="vm:CollectionViewModel"
+    Title="Колекція"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <VerticalStackLayout Grid.Row="0">
+            <Label
+                Text="{Binding ErrorMessage}"
+                Style="{StaticResource ErrorLabel}"
+                IsVisible="{Binding HasError}"
+                HorizontalOptions="Center"
+                Margin="20,10,20,0" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#8B7CFF"
+                Margin="0,10,0,0" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout
+                x:Name="FormStack"
+                Padding="0,20"
+                Spacing="16"
+                HorizontalOptions="Center">
+
+                <Label
+                    Text="← Назад"
+                    TextColor="#A0A5B5"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Border
+                    BackgroundColor="#202331"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="24">
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label
+                            Text="{Binding Name}"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+                        <Label
+                            Text="{Binding OwnerName}"
+                            TextColor="#A0A5B5"
+                            FontSize="13" />
+                        <Label
+                            Text="{Binding Description}"
+                            IsVisible="{Binding HasDescription}"
+                            TextColor="#C5C9D6"
+                            FontSize="14" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding Movies}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="dto:CollectionMovieResponse">
+                            <Border
+                                BackgroundColor="#202331"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnMovieTapped" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="60,*" ColumnSpacing="12">
+                                    <Image
+                                        Source="{Binding PosterUrl}"
+                                        WidthRequest="60"
+                                        HeightRequest="90"
+                                        Aspect="AspectFill" />
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                                        <Label
+                                            Text="{Binding Title}"
+                                            FontAttributes="Bold"
+                                            TextColor="White"
+                                            FontSize="15" />
+                                        <Label
+                                            Text="{Binding ReleaseYear}"
+                                            TextColor="#A0A5B5"
+                                            FontSize="12" />
+                                        <Label
+                                            Text="{Binding Rating, StringFormat='★ {0:F1}'}"
+                                            TextColor="#FFC857"
+                                            FontSize="13" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

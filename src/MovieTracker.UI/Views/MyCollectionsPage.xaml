@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.MyCollectionsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    xmlns:models="clr-namespace:MovieTracker.UI.Models"
+    x:DataType="vm:MyCollectionsViewModel"
+    Title="Мої колекції"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <Grid
+        x:Name="Root"
+        RowDefinitions="Auto,Auto,Auto,*"
+        RowSpacing="12"
+        Padding="0,20,0,0"
+        HorizontalOptions="Center">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <Label
+                Text="← Назад"
+                TextColor="#A0A5B5"
+                FontSize="16"
+                FontAttributes="Bold"
+                VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Button
+                Grid.Column="1"
+                Text="+ Нова"
+                Style="{StaticResource PrimaryButton}"
+                HeightRequest="36"
+                Padding="18,0"
+                FontSize="13"
+                Command="{Binding CreateCommand}" />
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="1">
+            <Label
+                Text="{Binding ErrorMessage}"
+                Style="{StaticResource ErrorLabel}"
+                IsVisible="{Binding HasError}"
+                HorizontalOptions="Center" />
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#8B7CFF" />
+        </VerticalStackLayout>
+
+        <Label
+            Grid.Row="2"
+            Text="У вас ще немає колекцій. Натисніть «+ Нова»."
+            IsVisible="{Binding IsEmpty}"
+            TextColor="#A0A5B5"
+            FontSize="14"
+            HorizontalTextAlignment="Center"
+            HorizontalOptions="Center" />
+
+        <CollectionView
+            Grid.Row="3"
+            ItemsSource="{Binding Items}"
+            SelectionMode="None">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CollectionListItem">
+                    <Border
+                        BackgroundColor="#202331"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="16">
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                Text="{Binding Name}"
+                                TextColor="White"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                LineBreakMode="TailTruncation" />
+                            <Label
+                                Text="{Binding InfoText}"
+                                TextColor="#B8B1FF"
+                                FontSize="12" />
+                            <Label
+                                Text="{Binding Description}"
+                                IsVisible="{Binding HasDescription}"
+                                TextColor="#A0A5B5"
+                                FontSize="13"
+                                MaxLines="2"
+                                LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCollectionTapped" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

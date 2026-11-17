@@ -234,6 +234,9 @@
                                         StrokeThickness="0"
                                         StrokeShape="RoundRectangle 10"
                                         Padding="14">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnCollectionTapped" />
+                                        </Border.GestureRecognizers>
                                         <VerticalStackLayout Spacing="2">
                                             <Label
                                                 Text="{Binding Name}"

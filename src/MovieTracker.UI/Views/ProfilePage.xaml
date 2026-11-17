@@ -113,7 +113,25 @@
                         Command="{Binding LogoutCommand}"
                         IsEnabled="{Binding IsNotBusy}" />
                 </VerticalStackLayout>
-
+                <!-- Списки, колекції, сповіщення -->
+                <VerticalStackLayout Spacing="10">
+                    <Button
+                        Text="Мої списки"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding OpenListsCommand}" />
+                    <Button
+                        Text="Нова колекція"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding OpenCreateCollectionCommand}" />
+                        <Button
+                        Text="Мої колекції"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding OpenMyCollectionsCommand}" />
+                    <Button
+                        Text="Сповіщення"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding OpenNotificationsCommand}" />
+                </VerticalStackLayout>
                 <!-- Редагування профілю -->
                 <Border
                     BackgroundColor="#202331"
