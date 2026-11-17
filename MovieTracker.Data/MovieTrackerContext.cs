@@ -25,19 +25,19 @@ namespace MovieTracker.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
-                        builder.Entity<Notification>(e =>
-            {
-                e.HasKey(n => n.Id);
-                e.Property(n => n.Text).IsRequired().HasMaxLength(500);
 
-                e.HasIndex(n => new { n.UserId, n.IsRead, n.CreatedAt });
+            builder.Entity<Notification>(e =>
+{
+    e.HasKey(n => n.Id);
+    e.Property(n => n.Text).IsRequired().HasMaxLength(500);
 
-                e.HasOne(n => n.User)
-                 .WithMany()
-                 .HasForeignKey(n => n.UserId)
-                 .OnDelete(DeleteBehavior.Cascade);
-            });
+    e.HasIndex(n => new { n.UserId, n.IsRead, n.CreatedAt });
+
+    e.HasOne(n => n.User)
+     .WithMany()
+     .HasForeignKey(n => n.UserId)
+     .OnDelete(DeleteBehavior.Cascade);
+});
 
             builder.Entity<User>(e =>
             {
@@ -125,22 +125,22 @@ namespace MovieTracker.Data
                  .HasForeignKey(cm => cm.MovieId)
                  .OnDelete(DeleteBehavior.Cascade);
             });
-                        builder.Entity<UserFollow>(e =>
-            {
-                e.HasKey(f => new { f.FollowerId, f.FollowingId });
+            builder.Entity<UserFollow>(e =>
+{
+    e.HasKey(f => new { f.FollowerId, f.FollowingId });
 
-                e.HasIndex(f => f.FollowingId);
+    e.HasIndex(f => f.FollowingId);
 
-                e.HasOne(f => f.Follower)
-                 .WithMany()
-                 .HasForeignKey(f => f.FollowerId)
-                 .OnDelete(DeleteBehavior.Cascade);
+    e.HasOne(f => f.Follower)
+     .WithMany()
+     .HasForeignKey(f => f.FollowerId)
+     .OnDelete(DeleteBehavior.Cascade);
 
-                e.HasOne(f => f.Following)
-                 .WithMany()
-                 .HasForeignKey(f => f.FollowingId)
-                 .OnDelete(DeleteBehavior.Cascade);
-            });
+    e.HasOne(f => f.Following)
+     .WithMany()
+     .HasForeignKey(f => f.FollowingId)
+     .OnDelete(DeleteBehavior.Cascade);
+});
 
             builder.Entity<Movie>(e =>
             {
