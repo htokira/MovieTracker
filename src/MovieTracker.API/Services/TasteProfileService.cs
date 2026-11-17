@@ -24,6 +24,7 @@ public class TasteProfileService
     {
         public double Score { get; set; }
         public double Weight { get; set; }
+        public bool IsReview { get; set; }
         public List<(int Id, string Name)> Genres { get; set; } = new();
     }
 
@@ -47,6 +48,8 @@ public class TasteProfileService
 
     public async Task<TasteProfileDto> AnalyzeAsync(Guid userId)
     {
+        var now = DateTime.UtcNow;
+
         var reviews = await _db.Reviews
             .AsNoTracking()
             .Include(r => r.Movie)
@@ -54,25 +57,100 @@ public class TasteProfileService
             .Where(r => r.UserId == userId)
             .ToListAsync();
 
-        var now = DateTime.UtcNow;
+        var statuses = await _db.UserMovieStatuses
+            .AsNoTracking()
+            .Include(s => s.Movie)
+                .ThenInclude(m => m.Genres)
+            .Where(s => s.UserId == userId)
+            .ToListAsync();
 
-        var weightedReviews = reviews.Select(review =>
+        var collectionMovies = await _db.CollectionMovies
+            .AsNoTracking()
+            .Include(cm => cm.Collection)
+            .Include(cm => cm.Movie)
+                .ThenInclude(m => m.Genres)
+            .Where(cm => cm.Collection.UserId == userId)
+            .ToListAsync();
+
+        var weightedReviews = new List<WeightedReview>();
+
+        var reviewedMovieIds = reviews
+            .Select(r => r.MovieId)
+            .ToHashSet();
+
+        foreach (var review in reviews)
         {
-            var ageDays = Math.Max(0, (now - review.UpdatedAt).TotalDays);
+            var ageDays = Math.Max(
+                0, (now - review.UpdatedAt).TotalDays);
 
             var timeWeight = Math.Exp(-Lambda * ageDays);
 
             var normalizedScore = (review.Rating - 5.5) / 4.5;
 
-            return new WeightedReview
+            weightedReviews.Add(new WeightedReview
             {
                 Score = normalizedScore,
                 Weight = timeWeight,
+                IsReview = true,
                 Genres = review.Movie.Genres
                     .Select(g => (g.Id, g.Name))
                     .ToList()
+            });
+        }
+
+        foreach (var status in statuses)
+        {
+            if (reviewedMovieIds.Contains(status.MovieId))
+                continue;
+
+            var (score, baseWeight) = status.Status switch
+            {
+                WatchStatus.Watched => (0.15, 0.5),
+                WatchStatus.Planned => (0.10, 0.3),
+                WatchStatus.Dropped => (-0.15, 0.5),
+                _ => (0.0, 0.0)
             };
-        }).ToList();
+
+            if (baseWeight == 0)
+                continue;
+
+            var ageDays = Math.Max(
+                0, (now - status.UpdatedAt).TotalDays);
+
+            var timeWeight = Math.Exp(-Lambda * ageDays);
+
+            weightedReviews.Add(new WeightedReview
+            {
+                Score = score,
+                Weight = baseWeight * timeWeight,
+                IsReview = false,
+                Genres = status.Movie.Genres
+                    .Select(g => (g.Id, g.Name))
+                    .ToList()
+            });
+        }
+
+        var collectedMovies = collectionMovies
+            .GroupBy(cm => cm.MovieId)
+            .Select(g => g.OrderByDescending(cm => cm.AddedAt).First());
+
+        foreach (var collectionMovie in collectedMovies)
+        {
+            var ageDays = Math.Max(
+                0, (now - collectionMovie.AddedAt).TotalDays);
+
+            var timeWeight = Math.Exp(-Lambda * ageDays);
+
+            weightedReviews.Add(new WeightedReview
+            {
+                Score = 0.25,
+                Weight = 0.2 * timeWeight,
+                IsReview = false,
+                Genres = collectionMovie.Movie.Genres
+                    .Select(g => (g.Id, g.Name))
+                    .ToList()
+            });
+        }
 
         var genreCalculations = new Dictionary<int, GenreCalculation>();
 
@@ -104,7 +182,8 @@ public class TasteProfileService
                 calculation.WeightSquaredSum +=
                     genreWeight * genreWeight;
 
-                calculation.ReviewsCount++;
+                if (review.IsReview)
+                    calculation.ReviewsCount++;
 
                 calculation.Observations.Add(
                     (review.Score, genreWeight));
@@ -217,19 +296,19 @@ public class TasteProfileService
                 1 - variance / 1.0, 0, 1);
         }
 
-        var reviewWeights = weightedReviews
+        var observationWeights = weightedReviews
             .Select(r => r.Weight)
             .ToList();
 
-        var sumWeights = reviewWeights.Sum();
-        var sumSquaredWeights = reviewWeights.Sum(w => w * w);
+        var sumWeights = observationWeights.Sum();
+        var sumSquaredWeights = observationWeights.Sum(w => w * w);
 
-        var effectiveReviews = sumSquaredWeights > 0
+        var effectiveObservations = sumSquaredWeights > 0
             ? sumWeights * sumWeights / sumSquaredWeights
             : 0;
 
         var confidence = 1 - Math.Exp(
-            -effectiveReviews / ConfidenceScale);
+            -effectiveObservations / ConfidenceScale);
 
         var result = new TasteProfileDto
         {
