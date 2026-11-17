@@ -20,17 +20,28 @@
         Padding="0,20,0,0"
         HorizontalOptions="Center">
 
-        <Label
-            Grid.Row="0"
-            Text="← Назад"
-            TextColor="#A0A5B5"
-            FontSize="16"
-            FontAttributes="Bold"
-            HorizontalOptions="Start">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding GoBackCommand}" />
-            </Label.GestureRecognizers>
-        </Label>
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <Label
+                Text="← Назад"
+                TextColor="#A0A5B5"
+                FontSize="16"
+                FontAttributes="Bold"
+                VerticalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Button
+                Grid.Column="1"
+                Text="Прочитати всі"
+                Style="{StaticResource SecondaryButton}"
+                HeightRequest="36"
+                Padding="16,0"
+                FontSize="13"
+                Command="{Binding MarkAllReadCommand}"
+                IsEnabled="{Binding IsNotBusy}" />
+        </Grid>
 
         <VerticalStackLayout Grid.Row="1">
             <Label

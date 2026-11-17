@@ -34,42 +34,7 @@ public class TrackedMovieItem
     }
 }
 
-public class NotificationItem : INotifyPropertyChanged
-{
-    private bool _isRead;
 
-    public int Id { get; init; }
-    public string Text { get; init; } = string.Empty;
-    public DateTime CreatedAt { get; init; }
-
-    public bool IsRead
-    {
-        get => _isRead;
-        set
-        {
-            if (_isRead == value) return;
-            _isRead = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRead)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsUnread)));
-        }
-    }
-
-    public bool IsUnread => !_isRead;
-
-    public string TimeText
-    {
-        get
-        {
-            var diff = DateTime.Now - CreatedAt;
-            if (diff.TotalMinutes < 1) return "щойно";
-            if (diff.TotalHours < 1) return $"{(int)diff.TotalMinutes} хв тому";
-            if (diff.TotalDays < 1) return $"{(int)diff.TotalHours} год тому";
-            return CreatedAt.ToString("dd.MM.yyyy");
-        }
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-}
 
 public class CollectionListItem
 {
