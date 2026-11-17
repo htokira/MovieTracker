@@ -17,10 +17,6 @@ public class TasteProfileDto
     public int ReviewsCount { get; set; }
 
     public List<GenrePreferenceDto> GenrePreferences { get; set; } = new();
-
-    public List<string> FavoriteGenres { get; set; } = new();
-    public List<string> DislikedGenres { get; set; } = new();
-
     public List<int> FavoriteGenreIds { get; set; } = new();
     public List<int> DislikedGenreIds { get; set; } = new();
     public List<int> HighlyRatedMovieIds { get; set; } = new();

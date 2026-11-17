@@ -86,8 +86,6 @@ public class TasteProfileController : ControllerBase
     {
         ReviewsCount = profile.ReviewsCount,
         GenrePreferences = JsonSerializer.Deserialize<List<GenrePreferenceDto>>(profile.GenrePreferencesJson) ?? new(),
-        FavoriteGenres = JsonSerializer.Deserialize<List<string>>(profile.FavoriteGenresJson) ?? new(),
-        DislikedGenres = JsonSerializer.Deserialize<List<string>>(profile.DislikedGenresJson) ?? new(),
         FavoriteGenreIds = JsonSerializer.Deserialize<List<int>>(profile.FavoriteGenreIdsJson) ?? new(),
         DislikedGenreIds = JsonSerializer.Deserialize<List<int>>(profile.DislikedGenresIdsJson) ?? new(),
         HighlyRatedMovieIds = JsonSerializer.Deserialize<List<int>>(profile.HighlyRatedMovieIdsJson) ?? new(),

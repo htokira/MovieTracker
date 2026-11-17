@@ -190,12 +190,6 @@ namespace MovieTracker.Data
                 e.Property(p => p.GenrePreferencesJson)
                  .IsRequired();
 
-                e.Property(p => p.FavoriteGenresJson)
-                 .IsRequired();
-
-                e.Property(p => p.DislikedGenresJson)
-                 .IsRequired();
-
                 e.Property(p => p.FavoriteGenreIdsJson)
                  .IsRequired();
 
