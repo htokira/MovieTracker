@@ -10,9 +10,6 @@ namespace MovieTracker.Core.Models
         public int ReviewsCount { get; set; }
 
         public string GenrePreferencesJson { get; set; } = "[]";
-
-        public string FavoriteGenresJson { get; set; } = "[]";
-        public string DislikedGenresJson { get; set; } = "[]";
         public string FavoriteGenreIdsJson { get; set; } = "[]";
         public string DislikedGenresIdsJson { get; set; } = "[]";
         public string HighlyRatedMovieIdsJson { get; set; } = "[]";
