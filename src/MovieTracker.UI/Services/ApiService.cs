@@ -275,4 +275,17 @@ public class ApiService
             return null;
         }
     }
+        public async Task<CollectionDetailResponse?> GetCollectionAsync(Guid collectionId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<CollectionDetailResponse>(
+                $"api/collections/{collectionId}");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException
+                                       or System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
 }

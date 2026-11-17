@@ -33,4 +33,10 @@ public partial class UserProfilePage : ContentPage, IQueryAttributable
 
         FormStack.WidthRequest = Math.Min(420, Width - 40);
     }
+
+        private async void OnCollectionTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is BindableObject { BindingContext: CollectionSummaryResponse collection })
+            await Shell.Current.GoToAsync($"{nameof(CollectionPage)}?collectionId={collection.Id}");
+    }
 }

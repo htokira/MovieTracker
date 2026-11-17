@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MovieTracker.UI.Views.CreateCollectionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:MovieTracker.UI.ViewModels"
+    x:DataType="vm:CreateCollectionViewModel"
+    Title="Нова колекція"
+    BackgroundColor="#171923"
+    Shell.BackgroundColor="#202331"
+    Shell.ForegroundColor="White"
+    Shell.TitleColor="White"
+    SizeChanged="OnPageSizeChanged">
+
+    <ScrollView>
+        <VerticalStackLayout
+            x:Name="FormStack"
+            Padding="0,20"
+            Spacing="16"
+            HorizontalOptions="Center">
+
+            <Label
+                Text="← Назад"
+                TextColor="#A0A5B5"
+                FontSize="16"
+                FontAttributes="Bold"
+                HorizontalOptions="Start">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Label
+                Text="{Binding ErrorMessage}"
+                Style="{StaticResource ErrorLabel}"
+                IsVisible="{Binding HasError}"
+                HorizontalOptions="Center" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                Color="#8B7CFF" />
+
+            <Border
+                BackgroundColor="#202331"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 16"
+                Padding="24">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label
+                        Text="Нова колекція"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="White" />
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Назва" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Entry
+                                Style="{StaticResource FieldEntry}"
+                                Placeholder="Наприклад, Фантастика 2010-х"
+                                MaxLength="60"
+                                Text="{Binding Name}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Опис" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource FieldBorder}" StrokeShape="RoundRectangle 10">
+                            <Editor
+                                Style="{StaticResource FieldEditor}"
+                                Placeholder="Про що ця колекція"
+                                MaxLength="500"
+                                Text="{Binding Description}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                            <Label Text="Публічна колекція" TextColor="White" FontSize="14" FontAttributes="Bold" />
+                            <Label Text="{Binding PrivacyHint}" Style="{StaticResource FieldLabel}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding IsPublic}"
+                            OnColor="#6558D3"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <Button
+                        Text="Створити"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding CreateCommand}"
+                        IsEnabled="{Binding IsNotBusy}" />
+
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

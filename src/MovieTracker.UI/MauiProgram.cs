@@ -54,8 +54,21 @@ public static class MauiProgram
         builder.Services.AddTransient<UserProfilePage>();
         builder.Services.AddSingleton<AccountBarViewModel>();
         builder.Services.AddTransient<RecommendationsViewModel>();
-
-#if DEBUG
+        builder.Services.AddSingleton<ITrackingService, TrackingService>();
+        builder.Services.AddSingleton<INotificationService, MockNotificationService>();
+        builder.Services.AddTransient<TrackingListsViewModel>();
+        builder.Services.AddTransient<TrackingListsPage>();
+        builder.Services.AddTransient<CreateCollectionViewModel>();
+        builder.Services.AddTransient<CreateCollectionPage>();
+        builder.Services.AddTransient<NotificationsViewModel>();
+        builder.Services.AddTransient<NotificationsPage>();
+        builder.Services.AddTransient<MyCollectionsViewModel>();
+        builder.Services.AddTransient<MyCollectionsPage>();
+        builder.Services.AddTransient<CollectionDetailsViewModel>();
+        builder.Services.AddTransient<CollectionDetailsPage>();
+        builder.Services.AddTransient<CollectionViewModel>();
+        builder.Services.AddTransient<CollectionPage>();
+        #if DEBUG
         builder.Logging.AddDebug();
 #endif
 

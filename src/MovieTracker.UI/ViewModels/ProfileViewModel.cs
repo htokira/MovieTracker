@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using MovieTracker.UI.Views;
 
 namespace MovieTracker.UI.ViewModels
 {
@@ -60,6 +61,10 @@ namespace MovieTracker.UI.ViewModels
         public ICommand LogoutCommand { get; }
         public ICommand DeleteAccountCommand { get; }
         public ICommand GoBackCommand { get; }
+        public ICommand OpenListsCommand { get; }
+        public ICommand OpenCreateCollectionCommand { get; }
+        public ICommand OpenNotificationsCommand { get; }
+        public ICommand OpenMyCollectionsCommand { get; }
 
         public ProfileViewModel(AuthService auth)
         {
@@ -70,7 +75,10 @@ namespace MovieTracker.UI.ViewModels
             LogoutCommand = new Command(async () => await LogoutAsync());
             DeleteAccountCommand = new Command(async () => await DeleteAccountAsync());
             GoBackCommand = new Command(async () => await Shell.Current.GoToAsync(".."));
-
+            OpenListsCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(TrackingListsPage)));
+            OpenCreateCollectionCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(CreateCollectionPage)));
+            OpenNotificationsCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(NotificationsPage)));
+            OpenMyCollectionsCommand = new Command(async () => await Shell.Current.GoToAsync(nameof(MyCollectionsPage)));
             Load();
         }
 
